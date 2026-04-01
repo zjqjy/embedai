@@ -5,237 +5,204 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EmbedAI - 嵌入式与AI技术分享</title>
   <style>
+    :root {
+      --text-color: #333;
+      --secondary-text-color: #666;
+      --card-bg: #fff;
+      --border-color: #e1e1e1;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text-color: #e1e1e1;
+        --secondary-text-color: #a1a1a1;
+        --card-bg: #1a1a1a;
+        --border-color: #333;
+      }
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      min-height: 100vh;
-      color: #fff;
+      background: #f8f9fa;
+      color: var(--text-color);
       line-height: 1.6;
     }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
 
     .hero {
       text-align: center;
-      padding: 5rem 2rem 3rem;
-      background: linear-gradient(180deg, rgba(102,126,234,0.2) 0%, transparent 100%);
-    }
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
+      padding: 3rem 2rem;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      color: white;
     }
-    .hero p {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.7);
-    }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: white; }
+    .hero p { font-size: 1.1rem; opacity: 0.95; }
     .hero .notice {
-      margin-top: 2rem;
-      padding: 1rem 2rem;
-      background: rgba(102,126,234,0.2);
-      border-radius: 50px;
+      margin-top: 1rem;
       display: inline-block;
-      border: 1px solid rgba(102,126,234,0.3);
-    }
-    .hero .notice span {
-      color: #667eea;
-      font-weight: 600;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 1.5rem 3rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
     }
 
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
+    .section { margin-bottom: 1.5rem; }
+    .section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      padding-left: 0.5rem;
+      border-left: 4px solid #667eea;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .section-title::before {
-      content: '';
-      width: 4px;
-      height: 1.2rem;
-      background: linear-gradient(180deg, #667eea, #764ba2);
-      border-radius: 2px;
-    }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 
     .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.3s;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.25rem;
       text-decoration: none;
-      color: #fff;
+      color: var(--text-color);
+      transition: all 0.3s;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      display: block;
       position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      opacity: 0;
-      transition: opacity 0.3s;
     }
     .card:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(102,126,234,0.5);
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.15);
+      border-color: #667eea;
+      color: var(--text-color);
     }
-    .card:hover::before {
-      opacity: 1;
-    }
-    .card .icon {
-      font-size: 2rem;
-      margin-bottom: 0.75rem;
-    }
-    .card .title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .card .desc {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.4;
-    }
+    .card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .card .title { font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .card .desc { font-size: 0.8rem; color: var(--secondary-text-color); line-height: 1.4; }
     .card .badge {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 8px;
+      right: 8px;
       background: linear-gradient(135deg, #f093fb, #f5576c);
-      font-size: 0.65rem;
+      color: white;
+      font-size: 0.6rem;
       font-weight: 600;
-      padding: 0.2rem 0.5rem;
+      padding: 0.15rem 0.4rem;
       border-radius: 20px;
-      text-transform: uppercase;
     }
 
-    .about {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 2rem;
-      text-align: center;
-    }
-    .about p {
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-    }
-    .about .links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .about .links a {
-      color: #667eea;
+    .post-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 1rem;
       text-decoration: none;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-      background: rgba(102,126,234,0.1);
-      border-radius: 20px;
+      color: var(--text-color);
       transition: all 0.2s;
+      border: 1px solid var(--border-color);
+      display: flex;
+      gap: 0.75rem;
     }
-    .about .links a:hover {
-      background: rgba(102,126,234,0.2);
-    }
-    .about .links a .icon {
-      margin-right: 0.3rem;
-    }
+    .post-card:hover { border-color: #667eea; color: var(--text-color); }
+    .post-card .icon { font-size: 1.2rem; flex-shrink: 0; }
+    .post-card .info { flex: 1; }
+    .post-card .title { font-size: 0.9rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .post-card .meta { font-size: 0.75rem; color: var(--secondary-text-color); }
+
+    .about { text-align: center; padding: 1.5rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); }
+    .about p { color: var(--secondary-text-color); font-size: 0.9rem; margin-bottom: 1rem; }
+    .about .links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .about .links a { color: #667eea; text-decoration: none; font-size: 0.85rem; }
+    .about .links a:hover { text-decoration: underline; }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2.5rem; }
-      .hero { padding: 3rem 1.5rem 2rem; }
-      .grid { grid-template-columns: 1fr; }
-      .about .links { gap: 0.75rem; }
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+      .hero { padding: 2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <section class="hero">
-    <h1>EmbedAI</h1>
-    <p>嵌入式技术 | AI人工智能 | 提示词工程</p>
-    <div class="notice">
-      🎉 网站正在建设中... <span>敬请期待！</span>
-    </div>
-  </section>
-
   <div class="container">
+    <section class="hero">
+      <h1>EmbedAI</h1>
+      <p>嵌入式技术 | AI人工智能 | 提示词工程</p>
+      <div class="notice">🎉 网站正在建设中... 敬请期待！</div>
+    </section>
+
     <!-- 嵌入式技术 -->
-    <h2 class="section-title">🚀 嵌入式技术</h2>
-    <div class="grid">
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">📦</div>
-        <div class="title">开源项目</div>
-        <div class="desc">分享个人和社区的开源嵌入式项目</div>
-      </a>
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">🔧</div>
-        <div class="title">开源复刻</div>
-        <div class="desc">优秀开源项目的复刻与改进</div>
-      </a>
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">📝</div>
-        <div class="title">技术文章</div>
-        <div class="desc">STM32、Arduino、RTOS等技术分享</div>
-      </a>
-    </div>
+    <section class="section">
+      <h2>🚀 嵌入式技术</h2>
+      <div class="grid-3">
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">📦</div>
+          <div class="title">开源项目</div>
+          <div class="desc">分享个人和社区的开源嵌入式项目</div>
+        </a>
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">🔧</div>
+          <div class="title">开源复刻</div>
+          <div class="desc">优秀开源项目的复刻与改进</div>
+        </a>
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">📝</div>
+          <div class="title">技术文章</div>
+          <div class="desc">STM32、Arduino、RTOS等技术分享</div>
+        </a>
+      </div>
+    </section>
 
     <!-- AI 应用 -->
-    <h2 class="section-title">🤖 AI 应用</h2>
-    <div class="grid">
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">💡</div>
-        <div class="title">AI 工具使用</div>
-        <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
-      </a>
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">📝</div>
-        <div class="title">提示词工程</div>
-        <div class="desc">高效提示词编写与优化技巧</div>
-      </a>
-      <a class="card" href="/coming-soon/">
-        <span class="badge">期待</span>
-        <div class="icon">🤖</div>
-        <div class="title">AI 人工智能</div>
-        <div class="desc">AI 技术原理与应用探索</div>
-      </a>
-    </div>
+    <section class="section">
+      <h2>🤖 AI 应用</h2>
+      <div class="grid-3">
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">💡</div>
+          <div class="title">AI 工具使用</div>
+          <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
+        </a>
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">📝</div>
+          <div class="title">提示词工程</div>
+          <div class="desc">高效提示词编写与优化技巧</div>
+        </a>
+        <a class="card" href="/coming-soon/">
+          <span class="badge">期待</span>
+          <div class="icon">🤖</div>
+          <div class="title">AI 人工智能</div>
+          <div class="desc">AI 技术原理与应用探索</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 最新文章 -->
+    <section class="section">
+      <h2>📚 最新文章</h2>
+      <div class="grid-2">
+        <div class="post-card" style="opacity: 0.6;">
+          <div class="icon">📄</div>
+          <div class="info">
+            <div class="title">暂无文章</div>
+            <div class="meta">内容正在准备中...</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- 关于 -->
     <div class="about">
       <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
       <div class="links">
-        <a href="/about/"><span class="icon">👤</span>关于本站</a>
-        <a href="https://space.bilibili.com/478531832" target="_blank"><span class="icon">📺</span>B站</a>
-        <a href="https://b23.tv/yT4tCJd" target="_blank"><span class="icon">🎬</span>视频</a>
+        <a href="/about/">关于本站</a>
+        <a href="https://space.bilibili.com/478531832" target="_blank">📺 B站</a>
+        <a href="https://b23.tv/yT4tCJd" target="_blank">🎬 视频</a>
       </div>
     </div>
   </div>
