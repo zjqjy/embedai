@@ -26,8 +26,8 @@
 <meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
 <meta property="og:description" content="敬请期待 - EmbedAI        * { box-sizing: border-box; margin: 0; padding: 0; }     body {       font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;       background:">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-04-01T14:11:47.491Z">
-<meta property="article:modified_time" content="2026-04-01T14:11:47.490Z">
+<meta property="article:published_time" content="2026-04-01T14:17:20.211Z">
+<meta property="article:modified_time" content="2026-04-01T14:17:20.210Z">
 <meta property="article:author" content="EmbedAI">
 <meta property="article:tag" content="嵌入式, STM32, Arduino, AI, ChatGPT, 提示词, 技术博客">
 <meta name="twitter:card" content="summary_large_image">
@@ -347,18 +347,19 @@
     .container {
       text-align: center;
       padding: 2rem;
+      max-width: 500px;
     }
     .rocket {
-      font-size: 4rem;
-      margin-bottom: 1rem;
+      font-size: 3.5rem;
+      margin-bottom: 0.75rem;
       animation: float 3s ease-in-out infinite;
     }
     @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50% { transform: translateY(-20px) rotate(5deg); }
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-15px) rotate(3deg); }
     }
     h1 {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -367,63 +368,32 @@
       background-clip: text;
     }
     p {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
       margin-bottom: 1.5rem;
     }
     .btn {
       display: inline-block;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 0.75rem 2rem;
-      border-radius: 50px;
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(102,126,234,0.4);
     }
     .btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 8px 30px rgba(102,126,234,0.6);
-    }
-    .btn .icon {
-      margin-right: 0.3rem;
-    }
-    .dots {
-      margin-top: 2rem;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 50%;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.3); opacity: 1; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="rocket">🚀</div>
-    <h1 id="敬请期待">敬请期待</h1>
-    <p>内容正在紧张开发中...</p>
-    <a href="https://b23.tv/vMZmSdE" target="_blank" class="btn">
-      <span class="icon">📺</span>关注 B站
-    </a>
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
+    <h1 id="内容即将上线">内容即将上线</h1>
+    <p>精彩内容正在准备中...</p>
+    <a href="https://b23.tv/vMZmSdE" target="_blank" class="btn">📺 关注B站</a>
   </div>
 </body>
 </html>
