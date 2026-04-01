@@ -45,6 +45,9 @@
       margin-bottom: 1rem;
       padding-left: 0.75rem;
       border-left: 4px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
@@ -60,6 +63,7 @@
       border: 1px solid var(--border-color);
       text-align: center;
       display: block;
+      position: relative;
     }
     .card:hover {
       transform: translateY(-4px);
@@ -71,6 +75,31 @@
     .card .title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
     .card .desc { font-size: 0.85rem; color: var(--secondary-text-color); line-height: 1.5; }
     .card .link { margin-top: 0.75rem; font-size: 0.85rem; color: #667eea; font-weight: 500; }
+
+    /* Coming Soon Badge */
+    .coming-soon {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(245, 87, 108, 0.4);
+    }
+    .card.disabled {
+      opacity: 0.7;
+      cursor: default;
+    }
+    .card.disabled:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--border-color);
+    }
 
     .post-card {
       background: var(--card-bg);
@@ -96,6 +125,17 @@
     .about .links a { color: #667eea; text-decoration: none; }
     .about .links a:hover { text-decoration: underline; }
 
+    .notice {
+      background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+      border: 1px dashed #667eea;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .notice p { color: var(--secondary-text-color); font-size: 0.95rem; }
+    .notice .highlight { color: #667eea; font-weight: 600; }
+
     @media (max-width: 768px) {
       .grid-3, .grid-2 { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2rem; }
@@ -109,68 +149,83 @@
       <p>嵌入式技术 | AI人工智能 | 提示词工程</p>
     </section>
 
+    <!-- 公告 -->
+    <div class="notice">
+      <p>网站正在建设中，内容将陆续上线～ <span class="highlight">敬请期待！</span></p>
+    </div>
+
+    <!-- 嵌入式技术 -->
     <section class="section">
       <h2>🚀 嵌入式技术</h2>
       <div class="grid-3">
-        <a class="card" href="/categories/projects/">
+        <a class="card disabled" href="/categories/projects/">
+          <span class="coming-soon">期待</span>
           <div class="icon">📦</div>
           <div class="title">开源项目</div>
           <div class="desc">分享个人和社区的开源嵌入式项目</div>
-          <div class="link">查看项目 →</div>
+          <div class="link">即将上线 →</div>
         </a>
-        <a class="card" href="/categories/replication/">
+        <a class="card disabled" href="/categories/replication/">
+          <span class="coming-soon">期待</span>
           <div class="icon">🔧</div>
           <div class="title">开源复刻</div>
           <div class="desc">优秀开源项目的复刻与改进</div>
-          <div class="link">查看复刻 →</div>
+          <div class="link">即将上线 →</div>
         </a>
-        <a class="card" href="/categories/embedded/">
+        <a class="card disabled" href="/categories/embedded/">
+          <span class="coming-soon">期待</span>
           <div class="icon">📝</div>
           <div class="title">技术文章</div>
           <div class="desc">STM32、Arduino、RTOS等技术分享</div>
-          <div class="link">阅读文章 →</div>
+          <div class="link">即将上线 →</div>
         </a>
       </div>
     </section>
 
+    <!-- AI 应用 -->
     <section class="section">
       <h2>🤖 AI 应用</h2>
       <div class="grid-3">
-        <a class="card" href="/categories/ai-tools/">
+        <a class="card disabled" href="/categories/ai-tools/">
+          <span class="coming-soon">期待</span>
           <div class="icon">💡</div>
           <div class="title">AI 工具使用</div>
           <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
-          <div class="link">探索工具 →</div>
+          <div class="link">即将上线 →</div>
         </a>
-        <a class="card" href="/categories/prompt/">
+        <a class="card disabled" href="/categories/prompt/">
+          <span class="coming-soon">期待</span>
           <div class="icon">📝</div>
           <div class="title">提示词工程</div>
           <div class="desc">高效提示词编写与优化技巧</div>
-          <div class="link">学习提示词 →</div>
+          <div class="link">即将上线 →</div>
         </a>
-        <a class="card" href="/categories/ai/">
+        <a class="card disabled" href="/categories/ai/">
+          <span class="coming-soon">期待</span>
           <div class="icon">🤖</div>
           <div class="title">AI 人工智能</div>
           <div class="desc">AI 技术原理与应用探索</div>
-          <div class="link">了解更多 →</div>
+          <div class="link">即将上线 →</div>
         </a>
       </div>
     </section>
 
+    <!-- 最新文章 -->
     <section class="section">
       <h2>📚 最新文章</h2>
       <div class="grid-2">
-        <a class="post-card" href="/2026/03/31/hello-world/">
+        <div class="post-card" style="opacity: 0.6;">
           <div class="icon">📄</div>
           <div class="info">
-            <div class="title">Hello World</div>
-            <div class="meta">2026-03-31</div>
-            <div class="excerpt">欢迎来到 EmbedAI 技术博客</div>
+            <div class="title">暂无文章</div>
+            <div class="meta">...</div>
+            <div class="excerpt">内容正在准备中...</div>
           </div>
-        </a>
+        </div>
       </div>
     </section>
 
+    <!-- 关于 -->
     <section class="about">
       <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
       <div class="links">
