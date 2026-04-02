@@ -26,6 +26,15 @@
       margin-bottom: 2rem;
       color: white;
     }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.3);
+      margin-bottom: 1rem;
+      object-fit: cover;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
     .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: white; }
     .hero p { font-size: 1.1rem; opacity: 0.95; }
     .hero .notice {
@@ -81,25 +90,39 @@
     }
     .about {
       text-align: center;
-      padding: 1.5rem;
+      padding: 2rem;
       background: #fff;
       border-radius: 12px;
       border: 1px solid #e1e1e1;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
     }
-    .about p { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
-    .about .links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .about .avatar {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+    .about .info { text-align: left; flex: 1; }
+    .about p { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .about .links { display: flex; gap: 1rem; flex-wrap: wrap; }
     .about .links a { color: #667eea; text-decoration: none; font-size: 0.85rem; }
     .about .links a:hover { text-decoration: underline; }
     @media (max-width: 768px) {
       .grid-3 { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2rem; }
       .hero { padding: 2rem 1.5rem; }
+      .about { flex-direction: column; text-align: center; }
+      .about .info { text-align: center; }
+      .about .links { justify-content: center; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
+      <img class="avatar" src="/img/avatar.jpg" alt="Avatar" onerror="this.style.display='none'">
       <h1>EmbedAI</h1>
       <p>嵌入式技术 | AI人工智能 | 提示词工程</p>
       <div class="notice">🎉 网站正在建设中... 敬请期待！</div>
@@ -151,10 +174,13 @@
 
     <!-- 关于 -->
     <div class="about">
-      <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
-      <div class="links">
-        <a href="/about/">关于本站</a>
-        <a href="https://b23.tv/vMZmSdE" target="_blank">📺 关注B站</a>
+      <img class="avatar" src="/img/avatar.jpg" alt="Avatar" onerror="this.style.display='none'">
+      <div class="info">
+        <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
+        <div class="links">
+          <a href="/about/">关于本站</a>
+          <a href="https://b23.tv/vMZmSdE" target="_blank">📺 关注B站</a>
+        </div>
       </div>
     </div>
   </div>
