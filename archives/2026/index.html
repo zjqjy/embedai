@@ -65,6 +65,11 @@
   
       
       
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
       
     const detectApple = () => {
       if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
