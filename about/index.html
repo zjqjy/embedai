@@ -21,72 +21,86 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1rem;
       width: 100%;
     }
     .about-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 16px;
-      padding: 2rem;
-      max-width: 500px;
+      padding: 1.5rem;
+      max-width: 480px;
+      width: 100%;
       text-align: center;
     }
     .intro {
-      color: rgba(255,255,255,0.85);
-      line-height: 1.8;
-      margin-bottom: 1.5rem;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.7;
+      margin-bottom: 1rem;
       font-size: 0.95rem;
     }
-    .tech-stack {
-      color: rgba(255,255,255,0.7);
-      line-height: 1.8;
+    .section {
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
       font-size: 0.9rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.8rem;
     }
-    .tech-stack strong {
+    .section:last-of-type {
+      margin-bottom: 1.2rem;
+    }
+    .section strong {
       color: #667eea;
     }
-    .ai-tools strong {
+    .section.ai-tools strong {
       color: #f093fb;
     }
     .greeting {
-      color: rgba(255,255,255,0.85);
+      color: rgba(255,255,255,0.9);
       font-size: 0.95rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.8rem;
     }
     .author {
       color: rgba(255,255,255,0.6);
       font-size: 0.85rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
     }
     .links {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 1rem;
     }
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 0.7rem 2rem;
+      padding: 0.6rem 1.5rem;
       border-radius: 25px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
-      transition: transform 0.2s;
+      font-size: 0.85rem;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .btn:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
     }
-    .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.2);
+    @media (max-width: 480px) {
+      .about-card {
+        padding: 1.2rem;
+        margin: 0.5rem;
+      }
+      .links {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.7rem 1.5rem;
+      }
     }
   </style>
 </head>
@@ -96,17 +110,17 @@
       <p class="intro">
         分享嵌入式技术、AI应用与提示词工程，记录学习历程。
       </p>
-      <p class="tech-stack">
+      <p class="section">
         <strong>技术栈</strong>：STM32 / GD32 / Arduino / ESP32 / RTOS
       </p>
-      <p class="tech-stack ai-tools">
+      <p class="section ai-tools">
         <strong>AI工具</strong>：ChatGPT / Claude / Gemini / 各类 AI 应用
       </p>
       <p class="greeting">欢迎交流学习！</p>
       <p class="author">—— 阿程</p>
       <div class="links">
         <a href="https://b23.tv/yT4tCJd" target="_blank" class="btn">📺 B站主页</a>
-        <a href="/" class="btn btn-secondary">🏠 返回首页</a>
+        <a href="/" class="btn">🏠 返回首页</a>
       </div>
     </div>
   </div>
