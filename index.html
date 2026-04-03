@@ -42,14 +42,9 @@
       width: 100%;
       height: 100%;
       background-image:
-        linear-gradient(rgba(102,126,234,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(102,126,234,0.05) 1px, transparent 1px);
-      background-size: 80px 80px;
-      animation: gridMove 20s linear infinite;
-    }
-    @keyframes gridMove {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(80px); }
+        linear-gradient(rgba(102,126,234,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102,126,234,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
     }
 
     /* 动态光球 */
@@ -59,78 +54,109 @@
       filter: blur(80px);
     }
     .orb-1 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(102,126,234,0.4) 0%, transparent 70%);
-      top: -150px;
-      left: -150px;
-      animation: orbFloat1 12s ease-in-out infinite;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(102,126,234,0.5) 0%, rgba(102,126,234,0) 70%);
+      top: -200px;
+      left: -200px;
+      animation: orbFloat1 15s ease-in-out infinite;
     }
     .orb-2 {
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(240,147,251,0.35) 0%, transparent 70%);
-      top: 30%;
-      right: -100px;
-      animation: orbFloat2 10s ease-in-out infinite;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(240,147,251,0.4) 0%, rgba(240,147,251,0) 70%);
+      top: 20%;
+      right: -150px;
+      animation: orbFloat2 12s ease-in-out infinite;
     }
     .orb-3 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(118,75,162,0.4) 0%, transparent 70%);
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(118,75,162,0.5) 0%, rgba(118,75,162,0) 70%);
       bottom: -100px;
-      left: 20%;
-      animation: orbFloat3 14s ease-in-out infinite;
+      left: 25%;
+      animation: orbFloat3 18s ease-in-out infinite;
     }
     @keyframes orbFloat1 {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(50px, 30px) scale(1.1); }
-      66% { transform: translate(-30px, 50px) scale(0.9); }
+      33% { transform: translate(80px, 60px) scale(1.1); }
+      66% { transform: translate(-40px, 80px) scale(0.9); }
     }
     @keyframes orbFloat2 {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-40px, -60px) scale(1.15); }
+      50% { transform: translate(-60px, -80px) scale(1.2); }
     }
     @keyframes orbFloat3 {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(60px, -40px) scale(1.1); }
+      50% { transform: translate(100px, -60px) scale(1.15); }
     }
 
-    /* 星星粒子 */
-    .stars {
+    /* 浮动的光斑/星云 */
+    .nebula {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.6;
+    }
+    .nebula-1 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(102,126,234,0.3) 0%, transparent 70%);
+      top: 20%;
+      left: 10%;
+      animation: nebulaFloat1 8s ease-in-out infinite;
+    }
+    .nebula-2 {
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(240,147,251,0.25) 0%, transparent 70%);
+      top: 60%;
+      right: 15%;
+      animation: nebulaFloat2 10s ease-in-out infinite;
+    }
+    .nebula-3 {
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(118,75,162,0.3) 0%, transparent 70%);
+      bottom: 25%;
+      left: 60%;
+      animation: nebulaFloat3 12s ease-in-out infinite;
+    }
+    @keyframes nebulaFloat1 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(30px, -20px) rotate(10deg); }
+    }
+    @keyframes nebulaFloat2 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-20px, 30px) rotate(-10deg); }
+    }
+    @keyframes nebulaFloat3 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-30px, -25px) rotate(5deg); }
+    }
+
+    /* 浮动的圆点 */
+    .dots {
       position: absolute;
       width: 100%;
       height: 100%;
     }
-    .star {
+    .dot {
       position: absolute;
-      width: 3px;
-      height: 3px;
-      background: #fff;
       border-radius: 50%;
-      animation: twinkle 3s ease-in-out infinite;
+      animation: dotFloat 20s linear infinite;
     }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.5); }
-    }
-
-    /* 流星 */
-    .meteor {
-      position: absolute;
-      width: 100px;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
-      border-radius: 50%;
-      animation: meteor 8s linear infinite;
-    }
-    .meteor:nth-child(1) { top: 10%; left: -100px; animation-delay: 0s; }
-    .meteor:nth-child(2) { top: 30%; left: -100px; animation-delay: -3s; }
-    .meteor:nth-child(3) { top: 60%; left: -100px; animation-delay: -6s; }
-    @keyframes meteor {
-      0% { transform: translateX(0) translateY(0); opacity: 0; }
+    .dot:nth-child(1) { width: 6px; height: 6px; background: rgba(102,126,234,0.8); top: 10%; left: 5%; animation-duration: 25s; animation-delay: 0s; }
+    .dot:nth-child(2) { width: 4px; height: 4px; background: rgba(240,147,251,0.8); top: 20%; left: 80%; animation-duration: 20s; animation-delay: -5s; }
+    .dot:nth-child(3) { width: 5px; height: 5px; background: rgba(118,75,162,0.8); top: 50%; left: 15%; animation-duration: 22s; animation-delay: -10s; }
+    .dot:nth-child(4) { width: 3px; height: 3px; background: rgba(102,126,234,0.9); top: 70%; left: 90%; animation-duration: 18s; animation-delay: -8s; }
+    .dot:nth-child(5) { width: 4px; height: 4px; background: rgba(240,147,251,0.7); top: 85%; left: 30%; animation-duration: 24s; animation-delay: -3s; }
+    .dot:nth-child(6) { width: 5px; height: 5px; background: rgba(118,75,162,0.9); top: 35%; left: 50%; animation-duration: 21s; animation-delay: -12s; }
+    @keyframes dotFloat {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
       10% { opacity: 1; }
-      100% { transform: translateX(calc(100vw + 200px)) translateY(200px); opacity: 0; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
     }
 
     /* 主内容 */
@@ -152,15 +178,15 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.15);
+      border: 3px solid rgba(102,126,234,0.3);
       margin-bottom: 1.5rem;
       object-fit: cover;
-      box-shadow: 0 0 40px rgba(102,126,234,0.6);
+      box-shadow: 0 0 50px rgba(102,126,234,0.7);
       animation: avatarGlow 3s ease-in-out infinite;
     }
     @keyframes avatarGlow {
-      0%, 100% { box-shadow: 0 0 40px rgba(102,126,234,0.6); }
-      50% { box-shadow: 0 0 60px rgba(102,126,234,0.9); }
+      0%, 100% { box-shadow: 0 0 50px rgba(102,126,234,0.7); }
+      50% { box-shadow: 0 0 80px rgba(102,126,234,1); }
     }
     .hero h1 {
       font-size: 2.8rem;
@@ -314,23 +340,17 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
-
-    <!-- 星星 -->
-    <div class="stars">
-      <div class="star" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
-      <div class="star" style="top: 25%; left: 45%; animation-delay: 0.5s;"></div>
-      <div class="star" style="top: 10%; left: 70%; animation-delay: 1s;"></div>
-      <div class="star" style="top: 45%; left: 15%; animation-delay: 1.5s;"></div>
-      <div class="star" style="top: 65%; left: 80%; animation-delay: 2s;"></div>
-      <div class="star" style="top: 80%; left: 30%; animation-delay: 2.5s;"></div>
-      <div class="star" style="top: 35%; left: 90%; animation-delay: 0.8s;"></div>
-      <div class="star" style="top: 55%; left: 5%; animation-delay: 1.2s;"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
-
-    <!-- 流星 -->
-    <div class="meteor"></div>
-    <div class="meteor"></div>
-    <div class="meteor"></div>
   </div>
 
   <div class="container">
