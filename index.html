@@ -9,154 +9,49 @@
     html, body { height: 100%; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0a0a14;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       color: #fff;
       line-height: 1.6;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    /* 背景 */
-    .bg-container {
+    /* 背景光效 */
+    .bg-glow {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
-      overflow: hidden;
+      pointer-events: none;
     }
-    .bg-gradient {
+    .glow-1 {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(ellipse at 15% 25%, rgba(102,126,234,0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 85% 75%, rgba(118,75,162,0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(240,147,251,0.1) 0%, transparent 60%);
-    }
-
-    /* 网格线 */
-    .grid-lines {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image:
-        linear-gradient(rgba(102,126,234,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(102,126,234,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    /* 动态光球 */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-    }
-    .orb-1 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(102,126,234,0.5) 0%, rgba(102,126,234,0) 70%);
-      top: -200px;
-      left: -200px;
-      animation: orbFloat1 15s ease-in-out infinite;
-    }
-    .orb-2 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(240,147,251,0.4) 0%, rgba(240,147,251,0) 70%);
-      top: 20%;
-      right: -150px;
-      animation: orbFloat2 12s ease-in-out infinite;
-    }
-    .orb-3 {
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(118,75,162,0.5) 0%, rgba(118,75,162,0) 70%);
-      bottom: -100px;
-      left: 25%;
-      animation: orbFloat3 18s ease-in-out infinite;
-    }
-    @keyframes orbFloat1 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(80px, 60px) scale(1.1); }
-      66% { transform: translate(-40px, 80px) scale(0.9); }
-    }
-    @keyframes orbFloat2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(-60px, -80px) scale(1.2); }
-    }
-    @keyframes orbFloat3 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(100px, -60px) scale(1.15); }
-    }
-
-    /* 浮动的光斑/星云 */
-    .nebula {
-      position: absolute;
-      border-radius: 50%;
+      top: -20%;
+      left: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(102,126,234,0.15) 0%, transparent 70%);
       filter: blur(60px);
-      opacity: 0.6;
     }
-    .nebula-1 {
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(102,126,234,0.3) 0%, transparent 70%);
-      top: 20%;
-      left: 10%;
-      animation: nebulaFloat1 8s ease-in-out infinite;
-    }
-    .nebula-2 {
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(240,147,251,0.25) 0%, transparent 70%);
-      top: 60%;
-      right: 15%;
-      animation: nebulaFloat2 10s ease-in-out infinite;
-    }
-    .nebula-3 {
-      width: 180px;
-      height: 180px;
-      background: radial-gradient(circle, rgba(118,75,162,0.3) 0%, transparent 70%);
-      bottom: 25%;
-      left: 60%;
-      animation: nebulaFloat3 12s ease-in-out infinite;
-    }
-    @keyframes nebulaFloat1 {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(30px, -20px) rotate(10deg); }
-    }
-    @keyframes nebulaFloat2 {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(-20px, 30px) rotate(-10deg); }
-    }
-    @keyframes nebulaFloat3 {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(-30px, -25px) rotate(5deg); }
-    }
-
-    /* 浮动的圆点 */
-    .dots {
+    .glow-2 {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      bottom: -20%;
+      right: -10%;
+      width: 50%;
+      height: 50%;
+      background: radial-gradient(circle, rgba(118,75,162,0.15) 0%, transparent 70%);
+      filter: blur(60px);
     }
-    .dot {
+    .glow-3 {
       position: absolute;
-      border-radius: 50%;
-      animation: dotFloat 20s linear infinite;
-    }
-    .dot:nth-child(1) { width: 6px; height: 6px; background: rgba(102,126,234,0.8); top: 10%; left: 5%; animation-duration: 25s; animation-delay: 0s; }
-    .dot:nth-child(2) { width: 4px; height: 4px; background: rgba(240,147,251,0.8); top: 20%; left: 80%; animation-duration: 20s; animation-delay: -5s; }
-    .dot:nth-child(3) { width: 5px; height: 5px; background: rgba(118,75,162,0.8); top: 50%; left: 15%; animation-duration: 22s; animation-delay: -10s; }
-    .dot:nth-child(4) { width: 3px; height: 3px; background: rgba(102,126,234,0.9); top: 70%; left: 90%; animation-duration: 18s; animation-delay: -8s; }
-    .dot:nth-child(5) { width: 4px; height: 4px; background: rgba(240,147,251,0.7); top: 85%; left: 30%; animation-duration: 24s; animation-delay: -3s; }
-    .dot:nth-child(6) { width: 5px; height: 5px; background: rgba(118,75,162,0.9); top: 35%; left: 50%; animation-duration: 21s; animation-delay: -12s; }
-    @keyframes dotFloat {
-      0% { transform: translateY(0) translateX(0); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40%;
+      height: 40%;
+      background: radial-gradient(circle, rgba(240,147,251,0.1) 0%, transparent 70%);
+      filter: blur(80px);
     }
 
     /* 主内容 */
@@ -178,15 +73,10 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      border: 3px solid rgba(102,126,234,0.3);
+      border: 3px solid rgba(255,255,255,0.2);
       margin-bottom: 1.5rem;
       object-fit: cover;
-      box-shadow: 0 0 50px rgba(102,126,234,0.7);
-      animation: avatarGlow 3s ease-in-out infinite;
-    }
-    @keyframes avatarGlow {
-      0%, 100% { box-shadow: 0 0 50px rgba(102,126,234,0.7); }
-      50% { box-shadow: 0 0 80px rgba(102,126,234,1); }
+      box-shadow: 0 0 30px rgba(102,126,234,0.5);
     }
     .hero h1 {
       font-size: 2.8rem;
@@ -199,23 +89,22 @@
     }
     .hero p {
       font-size: 1.1rem;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.7);
       margin-bottom: 1rem;
     }
     .notice {
       display: inline-block;
-      background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(102,126,234,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
       padding: 0.5rem 1.5rem;
       border-radius: 50px;
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.9);
     }
 
     /* 标题栏 */
     .section-title {
       font-size: 1.1rem;
-      color: rgba(255,255,255,0.9);
+      color: rgba(255,255,255,0.95);
       margin-bottom: 1rem;
       padding-left: 1rem;
       border-left: 3px solid #667eea;
@@ -232,55 +121,38 @@
       gap: 1rem;
     }
     .card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 16px;
       padding: 1.5rem;
       text-decoration: none;
       color: #fff;
       transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15));
-      opacity: 0;
-      transition: opacity 0.3s;
     }
     .card:hover {
       transform: translateY(-5px);
+      background: rgba(255,255,255,0.12);
       border-color: rgba(102,126,234,0.5);
-      box-shadow: 0 15px 50px rgba(102,126,234,0.25);
+      box-shadow: 0 10px 40px rgba(102,126,234,0.2);
     }
-    .card:hover::before {
-      opacity: 1;
-    }
-    .card-content { position: relative; z-index: 1; }
     .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
     .card .title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .card .desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .card .desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
     .card .badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
+      display: inline-block;
       background: linear-gradient(135deg, #f093fb, #f5576c);
       color: white;
       font-size: 0.65rem;
       font-weight: 600;
       padding: 0.2rem 0.5rem;
       border-radius: 20px;
+      margin-bottom: 0.5rem;
     }
 
     /* 最新文章 */
     .recent-posts {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px;
       padding: 1.5rem;
       margin-bottom: 2rem;
@@ -289,39 +161,40 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 0.75rem;
+      border-radius: 10px;
       text-decoration: none;
       color: #fff;
       transition: all 0.2s;
     }
-    .recent-item:last-child { border-bottom: none; }
-    .recent-item:hover { background: rgba(102,126,234,0.1); padding-left: 0.5rem; border-radius: 8px; }
+    .recent-item:hover {
+      background: rgba(102,126,234,0.15);
+    }
     .recent-item .icon { font-size: 1.2rem; }
     .recent-item .info { flex: 1; }
     .recent-item .title { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; }
-    .recent-item .date { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
-    .recent-item .arrow { color: rgba(255,255,255,0.3); }
+    .recent-item .date { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    .recent-item .arrow { color: rgba(255,255,255,0.3); font-size: 1.2rem; }
 
     /* 关于 */
     .about {
       text-align: center;
       padding: 2rem;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px;
       margin-top: 1rem;
     }
-    .about p { color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 1rem; }
+    .about p { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 1rem; }
     .about .links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
-    .about .links a { color: #a5b4fc; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .about .links a { color: #a5b4fc; text-decoration: none; font-size: 0.9rem; }
     .about .links a:hover { color: #fff; }
 
     /* 底部 */
     .footer {
       text-align: center;
       padding: 2rem 0 1rem;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.4);
       font-size: 0.8rem;
     }
 
@@ -334,23 +207,10 @@
 </head>
 <body>
   <!-- 背景 -->
-  <div class="bg-container">
-    <div class="bg-gradient"></div>
-    <div class="grid-lines"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="nebula nebula-1"></div>
-    <div class="nebula nebula-2"></div>
-    <div class="nebula nebula-3"></div>
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
+  <div class="bg-glow">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+    <div class="glow-3"></div>
   </div>
 
   <div class="container">
@@ -383,27 +243,21 @@
       <div class="grid">
         <a class="card" href="/coming-soon/">
           <span class="badge">期待</span>
-          <div class="card-content">
-            <div class="icon">📦</div>
-            <div class="title">开源项目</div>
-            <div class="desc">分享个人和社区的开源嵌入式项目</div>
-          </div>
+          <div class="icon">📦</div>
+          <div class="title">开源项目</div>
+          <div class="desc">分享个人和社区的开源嵌入式项目</div>
         </a>
         <a class="card" href="/coming-soon/">
           <span class="badge">期待</span>
-          <div class="card-content">
-            <div class="icon">🔧</div>
-            <div class="title">开源复刻</div>
-            <div class="desc">优秀开源项目的复刻与改进</div>
-          </div>
+          <div class="icon">🔧</div>
+          <div class="title">开源复刻</div>
+          <div class="desc">优秀开源项目的复刻与改进</div>
         </a>
         <a class="card" href="/coming-soon/">
           <span class="badge">期待</span>
-          <div class="card-content">
-            <div class="icon">📝</div>
-            <div class="title">技术文章</div>
-            <div class="desc">STM32、Arduino、RTOS等技术分享</div>
-          </div>
+          <div class="icon">📝</div>
+          <div class="title">技术文章</div>
+          <div class="desc">STM32、Arduino、RTOS等技术分享</div>
         </a>
       </div>
     </section>
@@ -414,19 +268,15 @@
       <div class="grid">
         <a class="card" href="/categories/ai-tools/">
           <span class="badge">NEW</span>
-          <div class="card-content">
-            <div class="icon">💡</div>
-            <div class="title">AI 工具使用</div>
-            <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
-          </div>
+          <div class="icon">💡</div>
+          <div class="title">AI 工具使用</div>
+          <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
         </a>
         <a class="card" href="/coming-soon/">
           <span class="badge">期待</span>
-          <div class="card-content">
-            <div class="icon">📝</div>
-            <div class="title">提示词工程</div>
-            <div class="desc">高效提示词编写与优化技巧</div>
-          </div>
+          <div class="icon">📝</div>
+          <div class="title">提示词工程</div>
+          <div class="desc">高效提示词编写与优化技巧</div>
         </a>
       </div>
     </section>
