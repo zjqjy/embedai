@@ -1,299 +1,134 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EmbedAI - 嵌入式与AI技术分享</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      color: #fff;
-      line-height: 1.6;
-      min-height: 100vh;
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EmbedAI - 嵌入式与AI技术分享 - 嵌入式技术 | AI人工智能 | 提示词工程</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="分享嵌入式技术、AI应用与提示词工程，记录学习历程">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EmbedAI - 嵌入式与AI技术分享">
+<meta property="og:url" content="https://embedai.top/index.html">
+<meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
+<meta property="og:description" content="分享嵌入式技术、AI应用与提示词工程，记录学习历程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://embedai.top/img/butterfly-icon.png">
+<meta property="article:author" content="EmbedAI">
+<meta property="article:tag" content="嵌入式, STM32, Arduino, AI, ChatGPT, 提示词, 技术博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://embedai.top/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "EmbedAI - 嵌入式与AI技术分享",
+  "alternateName": [
+    "嵌入式技术 | AI人工智能 | 提示词工程",
+    "embedai.top"
+  ],
+  "url": "https://embedai.top/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://embedai.top/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
     }
 
-    /* 背景光效 */
-    .bg-glow {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
     }
-    .glow-1 {
-      position: absolute;
-      top: -20%;
-      left: -10%;
-      width: 60%;
-      height: 60%;
-      background: radial-gradient(circle, rgba(102,126,234,0.15) 0%, transparent 70%);
-      filter: blur(60px);
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
     }
-    .glow-2 {
-      position: absolute;
-      bottom: -20%;
-      right: -10%;
-      width: 50%;
-      height: 50%;
-      background: radial-gradient(circle, rgba(118,75,162,0.15) 0%, transparent 70%);
-      filter: blur(60px);
-    }
-    .glow-3 {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40%;
-      height: 40%;
-      background: radial-gradient(circle, rgba(240,147,251,0.1) 0%, transparent 70%);
-      filter: blur(80px);
-    }
-
-    /* 主内容 */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 4rem 2rem;
-      margin-bottom: 2rem;
-    }
-    .avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.2);
-      margin-bottom: 1.5rem;
-      object-fit: cover;
-      box-shadow: 0 0 30px rgba(102,126,234,0.5);
-    }
-    .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #667eea 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
-    }
-    .hero p {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 1rem;
-    }
-    .notice {
-      display: inline-block;
-      background: rgba(102,126,234,0.3);
-      border: 1px solid rgba(255,255,255,0.15);
-      padding: 0.5rem 1.5rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-    }
-
-    /* 标题栏 */
-    .section-title {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.95);
-      margin-bottom: 1rem;
-      padding-left: 1rem;
-      border-left: 3px solid #667eea;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .section { margin-bottom: 2rem; }
-
-    /* 卡片网格 */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-    .card {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-decoration: none;
-      color: #fff;
-      transition: all 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(102,126,234,0.5);
-      box-shadow: 0 10px 40px rgba(102,126,234,0.2);
-    }
-    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
-    .card .title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .card .desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
-    .card .badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #f093fb, #f5576c);
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 600;
-      padding: 0.2rem 0.5rem;
-      border-radius: 20px;
-      margin-bottom: 0.5rem;
-    }
-
-    /* 最新文章 */
-    .recent-posts {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .recent-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.75rem;
-      border-radius: 10px;
-      text-decoration: none;
-      color: #fff;
-      transition: all 0.2s;
-    }
-    .recent-item:hover {
-      background: rgba(102,126,234,0.15);
-    }
-    .recent-item .icon { font-size: 1.2rem; }
-    .recent-item .info { flex: 1; }
-    .recent-item .title { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; }
-    .recent-item .date { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-    .recent-item .arrow { color: rgba(255,255,255,0.3); font-size: 1.2rem; }
-
-    /* 关于 */
-    .about {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      margin-top: 1rem;
-    }
-    .about p { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 1rem; }
-    .about .links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
-    .about .links a { color: #a5b4fc; text-decoration: none; font-size: 0.9rem; }
-    .about .links a:hover { color: #fff; }
-
-    /* 底部 */
-    .footer {
-      text-align: center;
-      padding: 2rem 0 1rem;
-      color: rgba(255,255,255,0.4);
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2rem; }
-      .hero { padding: 3rem 1.5rem; }
-      .grid { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-  <!-- 背景 -->
-  <div class="bg-glow">
-    <div class="glow-1"></div>
-    <div class="glow-2"></div>
-    <div class="glow-3"></div>
-  </div>
-
-  <div class="container">
-    <!-- Hero -->
-    <section class="hero">
-      <img class="avatar" src="/img/avatar.jpg" alt="Avatar">
-      <h1>EmbedAI</h1>
-      <p>嵌入式技术 | AI人工智能 | 提示词工程</p>
-      <span class="notice">🎉 网站正在建设中... 敬请期待！</span>
-    </section>
-
-    <!-- 最新文章 -->
-    <section class="section">
-      <h3 class="section-title">📚 最新文章</h3>
-      <div class="recent-posts">
-        <a class="recent-item" href="/2026/04/02/claude-code-install-guide/">
-          <div class="icon">🤖</div>
-          <div class="info">
-            <div class="title">Claude Code 安装教程</div>
-            <div class="date">2026-04-02</div>
-          </div>
-          <div class="arrow">›</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- 嵌入式技术 -->
-    <section class="section">
-      <h3 class="section-title">🚀 嵌入式技术</h3>
-      <div class="grid">
-        <a class="card" href="/coming-soon/">
-          <span class="badge">期待</span>
-          <div class="icon">📦</div>
-          <div class="title">开源项目</div>
-          <div class="desc">分享个人和社区的开源嵌入式项目</div>
-        </a>
-        <a class="card" href="/coming-soon/">
-          <span class="badge">期待</span>
-          <div class="icon">🔧</div>
-          <div class="title">开源复刻</div>
-          <div class="desc">优秀开源项目的复刻与改进</div>
-        </a>
-        <a class="card" href="/coming-soon/">
-          <span class="badge">期待</span>
-          <div class="icon">📝</div>
-          <div class="title">技术文章</div>
-          <div class="desc">STM32、Arduino、RTOS等技术分享</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- AI 应用 -->
-    <section class="section">
-      <h3 class="section-title">🤖 AI 应用</h3>
-      <div class="grid">
-        <a class="card" href="/categories/ai-tools/">
-          <span class="badge">NEW</span>
-          <div class="icon">💡</div>
-          <div class="title">AI 工具使用</div>
-          <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
-        </a>
-        <a class="card" href="/coming-soon/">
-          <span class="badge">期待</span>
-          <div class="icon">📝</div>
-          <div class="title">提示词工程</div>
-          <div class="desc">高效提示词编写与优化技巧</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- 关于 -->
-    <div class="about">
-      <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
-      <div class="links">
-        <a href="/about/">关于本站</a>
-        <a href="https://b23.tv/vMZmSdE" target="_blank">📺 关注B站</a>
-      </div>
-    </div>
-
-    <!-- 底部 -->
-    <div class="footer">
-      <p>© 2026 EmbedAI</p>
-    </div>
-  </div>
-</body>
-</html>
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EmbedAI - 嵌入式与AI技术分享',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><h1 class="title-seo">EmbedAI - 嵌入式与AI技术分享</h1></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/04/02/claude-code-install-guide/" title="Claude Code 安装教程">Claude Code 安装教程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-02T13:10:00.000Z" title="发表于 2026-04-02 21:10:00">2026-04-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/ai-tools/">AI工具</a></span></div><div class="content">Claude Code 安装教程前言Claude Code 是 Anthropic 推出的命令行工具，可以让你在终端中直接使用 Claude AI 进行编程辅助。本文提供国内下载安装方式。 名词解释   名词 作用    ccwsitch 管理 Claude Code 等 coding 工作环境的工具   Claude Code Anthropic 推出的 AI 编程辅助 CLI 工具   Git 版本控制工具，Claude Code 部分命令依赖它   下载准备百度网盘下载（点击即可跳转）：  百度网盘链接：install_cloud_code.zip  网盘包含：  ccwsitch 安装包 Claude Code 安装包 Git 安装包（如系统没有）  安装步骤1. Git 安装及环境配置1.1 安装 Git 解压 Git 压缩包 运行安装程序 默认选项一路下一步  1.2 验证安装打开终端，输入： 1git --version  如果显示版本号，说明安装成功。 1.3 配置环境变量（如需要）[待补充]  2. ccswitch 安装及配置2.1 安装 ccswitch 解...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div></div></body></html>
