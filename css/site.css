@@ -1,0 +1,264 @@
+/* ============================================================
+ * EmbedAI 站点共享交互样式
+ * - 自定义光标
+ * - 磁吸过渡
+ * - 3D 倾斜 perspective
+ * - 滚动揭示
+ * - 涟漪点击
+ * - 页面入场
+ * - 进度条 / 回到顶部
+ * - 通用 :root 变量
+ * ============================================================ */
+
+/* -------- 自定义光标 -------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+  mix-blend-mode: difference;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  transition: width 0.25s ease, height 0.25s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.cursor-ring.is-hover {
+  width: 56px;
+  height: 56px;
+  border-color: rgba(165, 180, 252, 0.95);
+}
+
+.cursor-dot.is-hover {
+  width: 4px;
+  height: 4px;
+}
+
+body.cursor-hidden .cursor-dot,
+body.cursor-hidden .cursor-ring {
+  opacity: 0;
+}
+
+/* 在不支持精细指针的设备上隐藏自定义光标 */
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* -------- 磁吸按钮 -------- */
+[data-magnetic] {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+/* -------- 3D 倾斜 -------- */
+.tilt-stage {
+  perspective: 1000px;
+}
+
+[data-tilt] {
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+[data-tilt] .tilt-inner {
+  transform: translateZ(20px);
+}
+
+/* -------- 滚动揭示 -------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+[data-reveal][data-reveal="left"] { transform: translate3d(-32px, 0, 0); }
+[data-reveal][data-reveal="right"] { transform: translate3d(32px, 0, 0); }
+[data-reveal][data-reveal="fade"] { transform: translate3d(0, 0, 0); }
+[data-reveal][data-reveal="scale"] { transform: scale(0.92); }
+[data-reveal][data-reveal="scale"].is-revealed { transform: scale(1); }
+
+/* 错位延迟 */
+[data-reveal-delay="1"] { transition-delay: 0.06s; }
+[data-reveal-delay="2"] { transition-delay: 0.12s; }
+[data-reveal-delay="3"] { transition-delay: 0.18s; }
+[data-reveal-delay="4"] { transition-delay: 0.24s; }
+[data-reveal-delay="5"] { transition-delay: 0.30s; }
+[data-reveal-delay="6"] { transition-delay: 0.36s; }
+
+/* -------- 点击涟漪 -------- */
+.ripple-host {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  background: currentColor;
+  opacity: 0.35;
+  animation: ripple-expand 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  z-index: 0;
+}
+
+@keyframes ripple-expand {
+  to {
+    transform: translate(-50%, -50%) scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* -------- 进度条 / 回到顶部 -------- */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, #667eea, #a5b4fc, #f093fb);
+  z-index: 9998;
+  transition: width 0.05s linear;
+  pointer-events: none;
+}
+
+.to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(26, 26, 31, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+  z-index: 9997;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.to-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.to-top:hover {
+  background: #667eea;
+}
+
+.to-top:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+/* -------- 页面入场 -------- */
+body {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+body.is-ready {
+  opacity: 1;
+}
+
+/* -------- 装饰小图标入场 -------- */
+.fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* 角色字符逐字入场 */
+[data-char] {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.4em, 0);
+  animation: char-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes char-in {
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* 打字机光标 */
+.typed-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  vertical-align: -2px;
+  margin-left: 2px;
+  background: currentColor;
+  animation: typed-blink 1s steps(2) infinite;
+}
+
+@keyframes typed-blink {
+  50% { opacity: 0; }
+}
+
+/* 数值计数器 */
+.count-up {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  body { opacity: 1; }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
