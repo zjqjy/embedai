@@ -6,3 +6,10 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+playwright-report/
+test-results/
+verify-artifacts/
+
+# 项目元数据(不进 git)
+.emv2/
+.screenshots/

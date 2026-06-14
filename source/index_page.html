@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmbedAI - 嵌入式与AI技术分享</title>
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* 背景光效 */
+    .bg-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .glow-1, .glow-2, .glow-3 {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform;
+    }
+    .glow-1 {
+      top: -20%;
+      left: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(102,126,234,0.18) 0%, transparent 70%);
+      filter: blur(60px);
+    }
+    .glow-2 {
+      bottom: -20%;
+      right: -10%;
+      width: 50%;
+      height: 50%;
+      background: radial-gradient(circle, rgba(118,75,162,0.18) 0%, transparent 70%);
+      filter: blur(60px);
+    }
+    .glow-3 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40%;
+      height: 40%;
+      background: radial-gradient(circle, rgba(240,147,251,0.12) 0%, transparent 70%);
+      filter: blur(80px);
+    }
+
+    /* 鼠标跟随光晕(在卡片上) */
+    .mouse-glow {
+      position: fixed;
+      pointer-events: none;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(102,126,234,0.18) 0%, transparent 60%);
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    /* 主内容 */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      margin-bottom: 2rem;
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.2);
+      margin-bottom: 1.5rem;
+      object-fit: cover;
+      box-shadow: 0 0 30px rgba(102,126,234,0.5);
+      transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.4s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.05) rotate(-3deg);
+      box-shadow: 0 0 50px rgba(102,126,234,0.75);
+    }
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #667eea 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1rem;
+    }
+    .hero .role {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.85);
+      min-height: 1.6em;
+    }
+    .hero .role::after { content: ''; }
+    .notice {
+      display: inline-block;
+      background: rgba(102,126,234,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .notice:hover {
+      background: rgba(102,126,234,0.45);
+      transform: translateY(-1px);
+    }
+
+    /* 标题栏 */
+    .section-title {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.95);
+      margin-bottom: 1rem;
+      padding-left: 1rem;
+      border-left: 3px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section { margin-bottom: 2.5rem; }
+
+    /* 卡片网格 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: #fff;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .card:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(102,126,234,0.5);
+      box-shadow: 0 10px 40px rgba(102,126,234,0.2);
+      color: #fff;
+    }
+    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .card .title { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .card .desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+    .card .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      margin-bottom: 0.5rem;
+    }
+    .card .corner {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      font-family: 'JetBrains Mono', monospace;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .card:hover .corner {
+      color: #a5b4fc;
+      transform: translate(2px, -2px);
+    }
+
+    /* 最新文章 */
+    .recent-posts {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .recent-item:hover {
+      background: rgba(102,126,234,0.15);
+      color: #fff;
+    }
+    .recent-item .icon { font-size: 1.2rem; }
+    .recent-item .info { flex: 1; }
+    .recent-item .title { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .recent-item .date { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    .recent-item .arrow {
+      color: rgba(255,255,255,0.3);
+      font-size: 1.2rem;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .recent-item:hover .arrow {
+      color: #a5b4fc;
+      transform: translateX(4px);
+    }
+
+    /* 统计 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .stat:hover {
+      background: rgba(102,126,234,0.1);
+      transform: translateY(-2px);
+    }
+    .stat .num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat .label { font-size: 0.75rem; color: rgba(255,255,255,0.55); font-family: 'JetBrains Mono', monospace; }
+
+    /* 关于 */
+    .about {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      margin-top: 1rem;
+    }
+    .about p { color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 1rem; }
+    .about .links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+    .about .links a {
+      color: #a5b4fc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .about .links a:hover { color: #fff; background: rgba(102,126,234,0.2); }
+
+    /* 底部 */
+    .footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero { padding: 3rem 1.5rem; }
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景光效(视差) -->
+  <div class="bg-glow">
+    <div class="glow-1" data-parallax="0.15"></div>
+    <div class="glow-2" data-parallax="-0.1"></div>
+    <div class="glow-3" data-parallax="0.05"></div>
+  </div>
+  <div class="mouse-glow" id="mouseGlow"></div>
+
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero" data-reveal="fade">
+      <img class="avatar" src="/img/avatar.jpg" alt="Avatar" data-magnetic="0.15">
+      <h1 data-char-in>EmbedAI</h1>
+      <p class="role"><span data-typewriter="嵌入式 × AI 实践者|STM32 / ESP32 折腾|提示词工程|每周一更|记录学习历程">嵌入式 × AI 实践者</span></p>
+      <a class="notice" data-magnetic="0.25" data-ripple href="#latest">🎉 网站正在建设中... 敬请期待！</a>
+    </section>
+
+    <!-- 统计 -->
+    <section class="stats tilt-stage" data-reveal="up" data-reveal-delay="1">
+      <div class="stat" data-tilt data-tilt-max="6" data-tilt-scale="1.03">
+        <div class="num count-up" data-count-up="13" data-count-suffix="+">0</div>
+        <div class="label">// 笔记里程碑</div>
+      </div>
+      <div class="stat" data-tilt data-tilt-max="6" data-tilt-scale="1.03">
+        <div class="num count-up" data-count-up="2" data-count-suffix=" 年">0</div>
+        <div class="label">// 持续输出</div>
+      </div>
+      <div class="stat" data-tilt data-tilt-max="6" data-tilt-scale="1.03">
+        <div class="num count-up" data-count-up="365" data-count-suffix=" 天">0</div>
+        <div class="label">// AI 陪伴开发</div>
+      </div>
+    </section>
+
+    <!-- 最新文章 -->
+    <section class="section" id="latest" data-reveal="up">
+      <h3 class="section-title">📚 最新文章</h3>
+      <div class="recent-posts" data-reveal="up" data-reveal-delay="1">
+        <a class="recent-item" href="/2026/05/31/claude-code-oneclick-install/" data-magnetic="0.2" data-ripple>
+          <div class="icon">⚡</div>
+          <div class="info">
+            <div class="title">Claude Code 一键安装脚本</div>
+            <div class="date">2026-05-31</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+        <a class="recent-item" href="/2026/04/02/claude-code-install-guide/" data-magnetic="0.2" data-ripple>
+          <div class="icon">🤖</div>
+          <div class="info">
+            <div class="title">Claude Code 安装教程</div>
+            <div class="date">2026-04-02</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+        <a class="recent-item" href="/2026/05/03/em-skill-install/" data-magnetic="0.2" data-ripple>
+          <div class="icon">🛠️</div>
+          <div class="info">
+            <div class="title">EM-SKILL 嵌入式开发管家安装</div>
+            <div class="date">2026-05-03</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 嵌入式技术 -->
+    <section class="section" data-reveal="up">
+      <h3 class="section-title">🚀 嵌入式技术</h3>
+      <div class="grid">
+        <a class="card" href="/coming-soon/" data-reveal="up" data-reveal-delay="1" data-tilt data-tilt-max="10" data-tilt-scale="1.02" data-ripple>
+          <span class="corner">01/</span>
+          <span class="badge">期待</span>
+          <div class="icon">📦</div>
+          <div class="title">开源项目</div>
+          <div class="desc">分享个人和社区的开源嵌入式项目</div>
+        </a>
+        <a class="card" href="/coming-soon/" data-reveal="up" data-reveal-delay="2" data-tilt data-tilt-max="10" data-tilt-scale="1.02" data-ripple>
+          <span class="corner">02/</span>
+          <span class="badge">期待</span>
+          <div class="icon">🔧</div>
+          <div class="title">开源复刻</div>
+          <div class="desc">优秀开源项目的复刻与改进</div>
+        </a>
+        <a class="card" href="/coming-soon/" data-reveal="up" data-reveal-delay="3" data-tilt data-tilt-max="10" data-tilt-scale="1.02" data-ripple>
+          <span class="corner">03/</span>
+          <span class="badge">期待</span>
+          <div class="icon">📝</div>
+          <div class="title">技术文章</div>
+          <div class="desc">STM32、Arduino、RTOS等技术分享</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- AI 应用 -->
+    <section class="section" data-reveal="up">
+      <h3 class="section-title">🤖 AI 应用</h3>
+      <div class="grid">
+        <a class="card" href="/categories/ai-tools/" data-reveal="up" data-reveal-delay="1" data-tilt data-tilt-max="10" data-tilt-scale="1.02" data-ripple>
+          <span class="corner">04/</span>
+          <span class="badge">NEW</span>
+          <div class="icon">💡</div>
+          <div class="title">AI 工具使用</div>
+          <div class="desc">ChatGPT、Claude 等 AI 工具使用技巧</div>
+        </a>
+        <a class="card" href="/coming-soon/" data-reveal="up" data-reveal-delay="2" data-tilt data-tilt-max="10" data-tilt-scale="1.02" data-ripple>
+          <span class="corner">05/</span>
+          <span class="badge">期待</span>
+          <div class="icon">📝</div>
+          <div class="title">提示词工程</div>
+          <div class="desc">高效提示词编写与优化技巧</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 关于 -->
+    <div class="about" data-reveal="up">
+      <p>分享嵌入式技术、AI应用与提示词工程，记录学习历程。</p>
+      <div class="links">
+        <a href="/about/" data-magnetic="0.3" data-ripple>关于本站</a>
+        <a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.3" data-ripple>📺 关注B站</a>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <p>© 2026 EmbedAI · 持续打磨中</p>
+    </div>
+  </div>
+
+  <script src="/js/site.js"></script>
+  <script>
+    // 鼠标跟随大光晕(只在桌面端启用)
+    (function () {
+      if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const glow = document.getElementById('mouseGlow');
+      if (!glow) return;
+      let tx = window.innerWidth / 2;
+      let ty = window.innerHeight / 2;
+      let cx = tx;
+      let cy = ty;
+      let active = false;
+      document.addEventListener('mousemove', (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+        if (!active) {
+          active = true;
+          glow.style.opacity = '1';
+        }
+      });
+      document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; active = false; });
+      function tick() {
+        cx += (tx - cx) * 0.08;
+        cy += (ty - cy) * 0.08;
+        glow.style.left = cx + 'px';
+        glow.style.top = cy + 'px';
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

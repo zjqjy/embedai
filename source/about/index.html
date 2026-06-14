@@ -3,126 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>关于 - EmbedAI</title>
+  <title>关于 — EmbedAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
   <style>
+    :root {
+      --bg: #faf9f6;
+      --bg-soft: #f3f1ec;
+      --bg-elev: #ffffff;
+      --border: rgba(26,26,31,0.08);
+      --border-strong: rgba(26,26,31,0.14);
+      --text: #1a1a1f;
+      --text-2: rgba(26,26,31,0.7);
+      --text-3: rgba(26,26,31,0.48);
+      --accent: #6b9e83;
+      --accent-soft: #d8e6dd;
+      --accent-glow: rgba(107,158,131,0.18);
+      --warm: #e8a87c;
+      --warm-soft: #f7e3d0;
+      --peach: #f4c6a8;
+      --sky: #a8c8e0;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    html, body { background: var(--bg); color: var(--text); }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      line-height: 1.65;
       min-height: 100vh;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
     }
-    .content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      width: 100%;
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 0%, var(--peach) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 0% 30%, var(--sky) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 100% 80%, var(--accent-soft) 0%, transparent 60%);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
     }
-    .about-card {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px;
-      padding: 1.5rem;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
+    .container { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-3);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .intro {
-      color: rgba(255,255,255,0.9);
-      line-height: 1.7;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .status-dot {
+      display: inline-block; width: 8px; height: 8px;
+      background: var(--accent); border-radius: 50%;
+      margin-right: 0.5rem; box-shadow: 0 0 0 4px var(--accent-glow);
+      animation: pulse 2.5s ease-in-out infinite; vertical-align: middle;
     }
-    .section {
-      color: rgba(255,255,255,0.75);
-      line-height: 1.7;
-      font-size: 0.9rem;
-      margin-bottom: 0.8rem;
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 4px var(--accent-glow); }
+      50% { box-shadow: 0 0 0 8px transparent; }
     }
-    .section:last-of-type {
-      margin-bottom: 1.2rem;
-    }
-    .section strong {
-      color: #667eea;
-    }
-    .section.ai-tools strong {
-      color: #f093fb;
-    }
-    .greeting {
-      color: rgba(255,255,255,0.9);
-      font-size: 0.95rem;
-      margin-bottom: 0.8rem;
-    }
-    .author {
-      color: rgba(255,255,255,0.6);
-      font-size: 0.85rem;
-      margin-bottom: 1.2rem;
-    }
-    .links {
-      display: flex;
-      gap: 0.8rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 0.6rem 1.5rem;
-      border-radius: 25px;
+    .topbar a {
+      color: var(--text-2);
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
+      transition: color 0.2s;
+      padding: 0.25rem 0.4rem;
+      border-radius: 6px;
+    }
+    .topbar a:hover { color: var(--accent); background: var(--accent-soft); }
+    .topbar-links { display: flex; gap: 0.5rem; }
+
+    .page { padding: 5rem 0 3rem; }
+    .page-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+    h1 .accent {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .lead {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      max-width: 620px;
+      margin-bottom: 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 50%;
+      height: 200%;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+      transform: translateX(-100%) rotate(15deg);
+      transition: transform 0.8s cubic-bezier(0.2,0.8,0.2,1);
+      pointer-events: none;
+    }
+    .card:hover::after { transform: translateX(220%) rotate(15deg); }
+    .card:hover { box-shadow: 0 12px 30px rgba(26,26,31,0.06); border-color: var(--border-strong); }
+    .card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.25rem;
+    }
+    .card p { color: var(--text-2); margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.7; }
+    .card p strong { color: var(--text); font-weight: 600; }
+    .signature { color: var(--text-3); font-size: 0.9rem; margin-top: 1.5rem; }
+
+    .stack { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.9; }
+    .stack .row {
+      display: flex; gap: 1rem; padding: 0.5rem 0;
+      border-bottom: 1px dashed var(--border);
+      align-items: center;
+      transition: padding-left 0.25s ease, color 0.2s ease;
+    }
+    .stack .row:hover { padding-left: 0.5rem; color: var(--accent); }
+    .stack .row:last-child { border-bottom: none; }
+    .stack .key { color: var(--text-3); min-width: 100px; font-size: 0.78rem; }
+    .stack .val { color: var(--text); font-weight: 500; }
+    .stack .pill {
+      display: inline-block; font-size: 0.65rem;
+      background: var(--accent-soft); color: #4a7a64;
+      padding: 0.1rem 0.5rem; border-radius: 999px;
+      margin-left: 0.4rem; font-weight: 500;
+    }
+
+    /* 数据条 */
+    .bars { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .bar .bar-label {
+      display: flex; justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--text-3);
+      margin-bottom: 0.3rem;
+    }
+    .bar-track {
+      height: 6px; background: var(--bg-soft); border-radius: 999px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--warm));
+      border-radius: 999px;
+      transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .bar.is-revealed .bar-fill { /* width set inline */ }
+
+    .actions { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 2rem; }
+    .action {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 1.2rem;
+      background: var(--bg-soft);
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: var(--text); text-decoration: none; font-size: 0.9rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .action:hover { background: var(--accent-soft); transform: translateX(2px); }
+    .action .arrow { font-family: 'JetBrains Mono', monospace; color: var(--text-3); transition: transform 0.2s; }
+    .action:hover .arrow { color: var(--accent); transform: translateX(2px); }
+
+    /* 计数器 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.25rem 1rem;
+      text-align: center;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+    .stat:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(26,26,31,0.06); }
+    .stat .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-variant-numeric: tabular-nums;
+      line-height: 1; margin-bottom: 0.4rem;
+    }
+    .stat .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    .footer {
+      padding: 2.5rem 0; border-top: 1px dashed var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--text-3);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+      margin-top: 4rem;
+    }
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .page { padding: 3rem 0 2rem; }
+      .stats { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 480px) {
-      .about-card {
-        padding: 1.2rem;
-        margin: 0.5rem;
-      }
-      .links {
-        flex-direction: column;
-        gap: 0.6rem;
-      }
-      .btn {
-        width: 100%;
-        justify-content: center;
-        padding: 0.7rem 1.5rem;
-      }
+      html, body { overflow-x: hidden; }
+      .container { padding: 0 1.25rem; }
+      .topbar-inner { font-size: 0.65rem; gap: 0.5rem; }
+      .topbar-links { gap: 0.4rem; }
+      h1 { font-size: 2rem; }
+      .card { padding: 1.5rem; border-radius: 18px; }
+      .action { padding: 0.8rem 1rem; font-size: 0.85rem; }
+      .stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="content">
-    <div class="about-card">
-      <p class="intro">
-        分享嵌入式技术、AI应用与提示词工程，记录学习历程。
-      </p>
-      <p class="section">
-        <strong>技术栈</strong>：STM32 / GD32 / Arduino / ESP32 / RTOS
-      </p>
-      <p class="section ai-tools">
-        <strong>AI工具</strong>：ChatGPT / Claude / Gemini / 各类 AI 应用
-      </p>
-      <p class="greeting">欢迎交流学习！</p>
-      <p class="author">—— 阿程</p>
-      <div class="links">
-        <a href="https://b23.tv/yT4tCJd" target="_blank" class="btn">📺 B站主页</a>
-        <a href="/" class="btn">🏠 返回首页</a>
+  <div class="container">
+    <div class="topbar" data-reveal="fade">
+      <div class="topbar-inner">
+        <span><span class="status-dot"></span>embedai.top &nbsp;//&nbsp; about</span>
+        <div class="topbar-links">
+          <a href="/" data-magnetic="0.25">/home</a>
+          <a href="/about/" data-magnetic="0.25">/about</a>
+          <a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25">/bilibili ↗</a>
+        </div>
       </div>
     </div>
+
+    <section class="page">
+      <div class="page-label" data-reveal="up">// about</div>
+      <h1 data-reveal="up" data-reveal-delay="1">About.<br><span class="accent" data-char-in>阿程.</span></h1>
+      <p class="lead" data-reveal="up" data-reveal-delay="2">分享嵌入式技术、AI 应用与提示词工程，记录学习历程。</p>
+
+      <!-- 统计 -->
+      <div class="stats tilt-stage" data-reveal="up" data-reveal-delay="3">
+        <div class="stat" data-tilt data-tilt-max="6">
+          <div class="num count-up" data-count-up="2" data-count-suffix=" 年">0</div>
+          <div class="label">// embedded dev</div>
+        </div>
+        <div class="stat" data-tilt data-tilt-max="6">
+          <div class="num count-up" data-count-up="13" data-count-suffix="+">0</div>
+          <div class="label">// notes</div>
+        </div>
+        <div class="stat" data-tilt data-tilt-max="6">
+          <div class="num count-up" data-count-up="6" data-count-suffix="+">0</div>
+          <div class="label">// tools built</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card" data-reveal="left" data-tilt data-tilt-max="4" data-tilt-scale="1.01">
+          <div class="card-label">// hello</div>
+          <p>长期折腾 <strong>STM32 / GD32 / Arduino / ESP32</strong> 和各类 RTOS，同时也重度使用 <strong>Claude Code</strong> 解决工程问题。</p>
+          <p>这个站点用来沉淀可复现的工程笔记，避免下次再踩同样的坑。</p>
+          <p class="signature">—— 阿程</p>
+          <div class="actions">
+            <a href="https://b23.tv/yT4tCJd" target="_blank" rel="noopener" class="action" data-magnetic="0.2" data-ripple>
+              <span>B 站主页</span>
+              <span class="arrow">↗</span>
+            </a>
+            <a href="/" class="action" data-magnetic="0.2" data-ripple>
+              <span>返回首页</span>
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </div>
+        <div class="card" data-reveal="right">
+          <div class="card-label">// stack</div>
+          <div class="stack">
+            <div class="row"><span class="key">frontend</span><span class="val">Hexo + Butterfly</span></div>
+            <div class="row"><span class="key">deploy</span><span class="val">GitHub Pages</span></div>
+            <div class="row"><span class="key">domain</span><span class="val">embedai.top</span></div>
+            <div class="row"><span class="key">hardware</span><span class="val">STM32 / ESP32</span></div>
+            <div class="row"><span class="key">ai</span><span class="val">Claude Code <span class="pill">daily</span></span></div>
+            <div class="row"><span class="key">topic</span><span class="val">嵌入式 × AI</span></div>
+          </div>
+
+          <div class="card-label" style="margin-top: 1.75rem;">// skills</div>
+          <div class="bars" data-skills>
+            <div class="bar" data-reveal="up" data-reveal-delay="1">
+              <div class="bar-label"><span>C / Embedded</span><span>85%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width: 85%;"></div></div>
+            </div>
+            <div class="bar" data-reveal="up" data-reveal-delay="2">
+              <div class="bar-label"><span>RTOS / Linux</span><span>70%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width: 70%;"></div></div>
+            </div>
+            <div class="bar" data-reveal="up" data-reveal-delay="3">
+              <div class="bar-label"><span>AI / Prompt</span><span>90%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width: 90%;"></div></div>
+            </div>
+            <div class="bar" data-reveal="up" data-reveal-delay="4">
+              <div class="bar-label"><span>Web / Frontend</span><span>60%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width: 60%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>© 2026 EmbedAI</span>
+      <span>embedai.top</span>
+    </div>
   </div>
+
+  <script src="/js/site.js"></script>
+  <script>
+    // 进度条: 可见时把 width 同步到元素 inline style 上,触发 CSS transition
+    (function () {
+      const skills = document.querySelector('[data-skills]');
+      if (!skills || !('IntersectionObserver' in window)) {
+        document.querySelectorAll('.bar').forEach((b) => b.classList.add('is-revealed'));
+        return;
+      }
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.4 }
+      );
+      document.querySelectorAll('.bar').forEach((b) => io.observe(b));
+    })();
+  </script>
 </body>
 </html>

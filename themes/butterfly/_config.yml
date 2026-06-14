@@ -54,7 +54,7 @@ social:
 favicon: /img/favicon.png
 
 avatar:
-  img: /img/butterfly-icon.png
+  img: /img/avatar.jpg
   effect: false
 
 # Disable all banner images
@@ -269,7 +269,7 @@ footer:
 # --------------------------------------
 
 aside:
-  enable: false
+  enable: true
 
 # --------------------------------------
 # Bottom right button

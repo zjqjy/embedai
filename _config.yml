@@ -95,11 +95,15 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - "themes/butterfly/layout/index.pug"
 exclude:
 ignore:
 skip_render:
-  - "coming-soon/**"
-  - "about/**"
+  - "index_page.html"
+  - "coming-soon/*"
+  - "coming-soon/**/*"
+  - "about/*"
+  - "about/**/*"
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/

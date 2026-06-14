@@ -33,6 +33,7 @@ type: page
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  margin-bottom: 2rem;
 }
 .card {
   background: var(--card-bg);
@@ -43,6 +44,7 @@ type: page
   transition: all 0.3s;
   border: 1px solid var(--border-color);
   text-align: center;
+  display: block;
 }
 .card:hover {
   transform: translateY(-3px);
@@ -75,6 +77,12 @@ type: page
 .about-section .links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
 .about-section .links a { color: #667eea; text-decoration: none; font-size: 0.9rem; }
 .about-section .links a:hover { text-decoration: underline; }
+#content-inner h3 {
+  font-size: 1.3rem;
+  margin: 2rem 0 1rem;
+  padding-left: 0.5rem;
+  border-left: 4px solid #667eea;
+}
 @media (max-width: 768px) {
   .card-grid { grid-template-columns: 1fr; }
   .hero-section h1 { font-size: 2rem; }
