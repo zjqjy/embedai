@@ -43,9 +43,8 @@ html(lang="zh-CN")
         position: fixed; inset: 0;
         background:
           radial-gradient(ellipse 60% 50% at 80% 0%, var(--peach) 0%, transparent 60%),
-          radial-gradient(ellipse 50% 40% at 0% 30%, var(--sky) 0%, transparent 60%),
           radial-gradient(ellipse 50% 40% at 100% 80%, var(--accent-soft) 0%, transparent 60%);
-        opacity: 0.35;
+        opacity: 0.3;
         pointer-events: none;
         z-index: 0;
       }
@@ -527,9 +526,10 @@ html(lang="zh-CN")
       /* 关于 */
       .about {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 1.5rem;
         margin-top: 0;
+        max-width: 720px;
       }
       .about-card {
         background: var(--bg-elev);
@@ -556,7 +556,7 @@ html(lang="zh-CN")
         margin-bottom: 1rem;
       }
       .about-card p strong { color: var(--text); font-weight: 600; }
-      .about-actions { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 2rem; }
+      .about-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap; }
       .about-btn {
         display: flex;
         align-items: center;
@@ -654,7 +654,7 @@ html(lang="zh-CN")
         .topbar-inner
           span
             span.status-dot
-            | embedai.top &nbsp;//&nbsp; live
+            | 阿程的碎碎念 &nbsp;//&nbsp; live
           .topbar-links
             a(href="/" data-magnetic="0.25") /home
             a(href="/about/" data-magnetic="0.25") /about
@@ -662,7 +662,7 @@ html(lang="zh-CN")
       section.hero(data-reveal="up")
         .hero-meta
           span.tag.accent ✦ online
-          span.tag ~/embedai
+          span.tag ~/阿程
           span 2026 — present
           span · v2.0
         .title-chip
@@ -670,9 +670,9 @@ html(lang="zh-CN")
           span.chip-title(data-char-in) 阿程的碎碎念
           span.cursor
         p.hero-sub
-          | 一个关于嵌入式系统、AI 工具与提示词工程的技术笔记站点。记录项目、复刻实验,以及让 AI 真正落地的方法论。
+          | 我的工程笔记本。STM32、提示词、用 AI 写代码的真实踩坑——能复现的那种，慢慢写慢慢更。
         a.hero-cta(href="#latest" data-magnetic="0.3" data-ripple)
-          | 阅读最新文章
+          | 看最新几篇
           span.arrow →
       .stats(data-reveal="up" data-reveal-delay="1")
         .stat(data-tilt data-tilt-max="5" data-tilt-scale="1.02")
@@ -767,54 +767,30 @@ html(lang="zh-CN")
               span 即将上线
       section.section(data-reveal="up")
         .section-head
-          h2 关于
+          h2 关于我
           .index // 03
         .about
           .about-card(data-tilt data-tilt-max="4" data-tilt-scale="1.01")
-            .about-label // hello
+            .about-label // 我
             p
-              | 分享嵌入式技术、AI 应用与提示词工程，记录学习历程。
-            p
-              | 站主长期折腾
-              strong STM32 / GD32 / Arduino / ESP32
-              |  和各类 RTOS，同时也重度使用
+              | 折腾
+              strong STM32 / ESP32 / RTOS
+              | ，也重度使用
               strong Claude Code
-              |  解决工程问题。这里写的是真实可复现的笔记，不是水文。
-            p —— 阿程
+              | 写代码。这个站点是我的工程笔记本——能复现的那种，慢慢写慢慢更。
+            p.signature —— 阿程
             .about-actions
               a.about-btn(href="/about/" data-magnetic="0.25" data-ripple)
-                span 关于本站
+                span 多聊两句
                 span.arrow →
               a.about-btn(href="https://b23.tv/yT4tCJd" target="_blank" rel="noopener" data-magnetic="0.25" data-ripple)
-                span B 站主页
+                span B 站
                 span.arrow ↗
-          .about-card(data-tilt data-tilt-max="4" data-tilt-scale="1.01")
-            .about-label // stack
-            .about-stack
-              .row
-                span.key frontend
-                span.val Hexo + Butterfly
-              .row
-                span.key deploy
-                span.val GitHub Pages
-              .row
-                span.key domain
-                span.val embedai.top
-              .row
-                span.key hardware
-                span.val STM32 / ESP32
-              .row
-                span.key ai
-                span.val Claude / GPT
-                  span.pill daily
-              .row
-                span.key topic
-                span.val 嵌入式 × AI
       .footer
-        span © 2026 EmbedAI
+        span © 2026 阿程 · embedai.top
         .build
           span sha: embedai@main
-          span embedai.top
+          span 阿程的碎碎念
 
     script.
       (function(){
