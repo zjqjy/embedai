@@ -94,6 +94,7 @@ html(lang="zh-CN")
       .hero {
         padding: 6rem 0 4rem;
         position: relative;
+        text-align: center;
       }
       .hero-meta {
         font-family: 'JetBrains Mono', monospace;
@@ -102,6 +103,7 @@ html(lang="zh-CN")
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         flex-wrap: wrap;
       }
@@ -118,31 +120,129 @@ html(lang="zh-CN")
         border-color: transparent;
         color: var(--accent);
       }
-      .hero h1 {
-        font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        font-weight: 800;
-        line-height: 1.05;
-        letter-spacing: -0.03em;
-        margin-bottom: 1.5rem;
-        color: var(--text);
+      /* Hero 玻璃艺术字合体药丸:头像嵌左,标题居中 */
+      .title-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.1rem;
+        padding: 0.45rem 1.6rem 0.45rem 0.45rem;
+        border-radius: 999px;
+        margin-bottom: 1.2rem;
+        position: relative;
+        overflow: hidden;
+
+        /* 毛玻璃主体 */
+        background:
+          linear-gradient(135deg,
+            rgba(255,255,255,0.55) 0%,
+            rgba(255,255,255,0.25) 50%,
+            rgba(255,255,255,0.45) 100%),
+          linear-gradient(135deg, var(--accent-soft), var(--warm-soft));
+        backdrop-filter: blur(18px) saturate(150%);
+        -webkit-backdrop-filter: blur(18px) saturate(150%);
+
+        /* 多层阴影 */
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.85),
+          inset 0 -1px 0 rgba(232,168,124,0.22),
+          inset 0 0 40px rgba(232,168,124,0.14),
+          0 14px 44px rgba(232,168,124,0.28),
+          0 4px 14px rgba(26,26,31,0.06);
+
+        animation: chip-float 4s ease-in-out infinite;
+        will-change: transform;
       }
-      .hero h1 .accent {
-        background: linear-gradient(135deg, var(--accent), var(--warm));
+      @keyframes chip-float {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-6px); }
+      }
+
+      /* 药丸内左侧头像 */
+      .chip-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 2px solid rgba(255,255,255,0.85);
+        box-shadow:
+          0 0 0 3px rgba(255,255,255,0.4),
+          0 4px 12px rgba(232,168,124,0.25);
+        transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1);
+      }
+      .chip-avatar:hover {
+        transform: scale(1.08);
+      }
+
+      /* 药丸内右侧标题文字 */
+      .chip-title {
+        font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+        font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      /* 因为 data-char-in 会把每个字包成 inline-block span,
+         父级的 background-clip:text 失效,所以渐变移到每个字符 span 上 */
+      .chip-title [data-char] {
+        background: linear-gradient(135deg,
+          var(--text) 0%,
+          var(--warm) 55%,
+          var(--warm-soft) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        position: relative;
+        filter: drop-shadow(0 1px 1px rgba(255,255,255,0.7));
       }
+
+      /* 药丸内打字机光标 */
+      .title-chip .cursor {
+        display: inline-block;
+        width: 0.16em;
+        height: 0.85em;
+        background: linear-gradient(180deg, var(--accent), var(--warm));
+        border-radius: 2px;
+        vertical-align: -0.1em;
+        margin-left: 0.05em;
+        animation: blink 1.1s steps(1) infinite;
+        box-shadow: 0 0 8px rgba(232,168,124,0.5);
+        flex-shrink: 0;
+      }
+
+      /* Hover 高光扫过 */
+      .title-chip::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 55%;
+        height: 100%;
+        background: linear-gradient(120deg,
+          transparent 0%,
+          rgba(255,255,255,0.55) 45%,
+          rgba(255,255,255,0.18) 55%,
+          transparent 100%);
+        transform: skewX(-22deg);
+        transition: left 0.9s cubic-bezier(0.2,0.8,0.2,1);
+        pointer-events: none;
+        border-radius: inherit;
+      }
+      .title-chip:hover::before {
+        left: 130%;
+      }
+
       .hero h1 .cursor {
         display: inline-block;
-        width: 0.4em;
-        height: 0.75em;
-        background: var(--accent);
+        width: 0.18em;
+        height: 0.85em;
+        background: linear-gradient(180deg, var(--accent), var(--warm));
         border-radius: 2px;
-        vertical-align: -0.05em;
-        margin-left: 0.08em;
+        vertical-align: -0.08em;
+        margin-left: 0.06em;
         animation: blink 1.1s steps(1) infinite;
+        box-shadow: 0 0 8px rgba(232,168,124,0.5);
       }
       @keyframes blink {
         0%, 50% { opacity: 1; }
@@ -152,7 +252,9 @@ html(lang="zh-CN")
         font-size: 1.1rem;
         color: var(--text-2);
         max-width: 600px;
-        margin-bottom: 2.5rem;
+        margin: 0 auto 2.5rem;
+        text-align: center;
+        line-height: 1.7;
       }
       .hero-cta {
         display: inline-flex;
@@ -521,7 +623,10 @@ html(lang="zh-CN")
         .categories { grid-template-columns: repeat(2, 1fr); }
         .about { grid-template-columns: 1fr; }
         .hero { padding: 4rem 0 3rem; }
-        .hero h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
+        .hero h1.glass-title { font-size: clamp(1.8rem, 6vw, 2.8rem); padding: 0.5rem 1.4rem; }
+        .title-chip { gap: 0.9rem; padding: 0.4rem 1.3rem 0.4rem 0.4rem; }
+        .chip-avatar { width: 48px; height: 48px; }
+        .chip-title { font-size: clamp(1.4rem, 5vw, 2rem); }
       }
       @media (max-width: 480px) {
         html, body { overflow-x: hidden; }
@@ -533,7 +638,10 @@ html(lang="zh-CN")
         .topbar-inner { font-size: 0.65rem; gap: 0.5rem; }
         .topbar-links { gap: 0.75rem; }
         .hero { padding: 3rem 0 2rem; }
-        .hero h1 { font-size: 2rem; }
+        .hero h1.glass-title { font-size: 1.6rem; padding: 0.45rem 1.1rem; border-radius: 16px; }
+        .title-chip { gap: 0.7rem; padding: 0.35rem 1.1rem 0.35rem 0.35rem; margin-bottom: 1rem; }
+        .chip-avatar { width: 42px; height: 42px; border-width: 1.5px; }
+        .chip-title { font-size: 1.3rem; }
         .hero-sub { font-size: 0.95rem; }
         .post-card, .post-card.featured { padding: 1.25rem; border-radius: 16px; }
         .post-card.featured h3 { font-size: 1.25rem; }
@@ -557,11 +665,9 @@ html(lang="zh-CN")
           span.tag ~/embedai
           span 2026 — present
           span · v2.0
-        h1(data-char-in)
-          | Embedded.
-          br
-          | Intelligent.
-          span.accent &nbsp;笔记.
+        .title-chip
+          img.chip-avatar(src="/img/avatar.jpg" alt="阿程")
+          span.chip-title(data-char-in) 阿程的碎碎念
           span.cursor
         p.hero-sub
           | 一个关于嵌入式系统、AI 工具与提示词工程的技术笔记站点。记录项目、复刻实验,以及让 AI 真正落地的方法论。
