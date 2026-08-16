@@ -733,21 +733,20 @@
           card.dataset.article = articleSlug;
           card.dataset.key = link.key;
           card.innerHTML = `
-            <div class="live-item-head">
-              <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
-              <span class="status-badge status-${status}">${statusIcon} ${status}</span>
+            <div class="live-item-row1">
+              <span class="live-item-name" title="${escapeHtml(link.label || link.key)}">${escapeHtml(link.label || link.key)}</span>
+              <span class="status-dot-inline status-${status}" title="${status}">${statusIcon}</span>
+              <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
             </div>
-            <div class="live-item-tagline">${escapeHtml(link.url || '')}</div>
+            <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
             <div class="live-item-meta">
-              <span class="chip">${escapeHtml(link.type || '?')}</span>
-              ${link.extract_code ? `<span class="chip">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-            </div>
-            <div class="live-item-actions">
-              <button class="btn btn-small btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button">✏️ 编辑</button>
+              <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
+              ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
+              <span class="chip-mini chip-key">${escapeHtml(link.key)}</span>
             </div>
           `;
           card.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-edit-link')) return;
+            if (e.target.classList.contains('btn-edit-link') || e.target.classList.contains('btn-icon')) return;
             editLink(articleSlug, link.key);
           });
           grid.appendChild(card);

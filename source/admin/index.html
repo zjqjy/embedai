@@ -633,6 +633,86 @@
       border-top: 1px solid var(--border);
       padding-top: 0.5rem;
     }
+
+    /* ===== Compact Link Card ===== */
+    .live-item-link {
+      padding: 0.5rem 0.65rem !important;
+    }
+    .live-item-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .live-item-row1 {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.25rem;
+    }
+    .live-item-row1 .live-item-name {
+      flex: 1;
+      font-size: 0.85rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .status-dot-inline {
+      font-size: 0.85rem;
+      flex: 0;
+    }
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex: 0;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .live-item-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 0.35rem;
+      padding-left: 0.25rem;
+      border-left: 2px solid var(--border);
+    }
+    .live-item-link .live-item-meta {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      font-size: 0.65rem;
+      margin-bottom: 0;
+    }
+    .chip-mini {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--text-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+    }
+    .chip-mini.chip-code {
+      background: rgba(232, 168, 124, 0.15);
+      color: #c47a45;
+    }
+    .chip-mini.chip-key {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
     .live-item-actions .btn {
       flex: 1;
       padding: 0.25rem 0.5rem;
