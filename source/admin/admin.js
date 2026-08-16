@@ -65,7 +65,8 @@
   // 表单状态（运行时镜像）
   const state = {
     tools: clone(emptyToolsForm),
-    links: clone(emptyLinksForm)
+    links: clone(emptyLinksForm),
+    articles: { slug: '', title: '', date: '', tags: '', categories: '', description: '', content: '' }
   };
 
   function clone(obj) {
@@ -109,6 +110,10 @@
         renderOutput();
         updateOutputName();
         renderLiveList(); // tab 切换时刷新当前数据列表
+        if (target === 'articles') {
+          // 文章 tab 切换时刷新列表
+          loadArticlesList();
+        }
       });
     });
   }
@@ -608,7 +613,8 @@
   async function loadLiveData() {
     const empty = $('#live-empty');
     const list = $('#live-list');
-    list.innerHTML = '<div class="live-empty"><p>加载中...</p></div>';
+    // live-list 元素已在 v3 重构中移除（顶部 panel-live 删除）,安全跳过
+    if (list) list.innerHTML = '<div class="live-empty"><p>加载中...</p></div>';
 
     try {
       const [toolsResp, linksResp] = await Promise.all([
@@ -622,16 +628,18 @@
       }
       liveData.tools = toolsData.data || [];
       liveData.links = linksData.data || {};
-      empty.hidden = true;
+      if (empty) empty.hidden = true;
       renderLiveList();
       const articleCount = Object.keys(liveData.links).length;
       const linkCount = Object.values(liveData.links).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
-      $('#live-source').textContent = `${liveData.tools.length} 工具 / ${linkCount} 链接 / ${articleCount} 文章`;
+      const src = $('#live-source');
+      if (src) src.textContent = `${liveData.tools.length} 工具 / ${linkCount} 链接 / ${articleCount} 文章`;
       toast(`✅ 已加载 ${liveData.tools.length} 工具 + ${linkCount} 链接 (跨 ${articleCount} 文章)`);
     } catch (e) {
-      empty.hidden = false;
-      list.innerHTML = '';
-      $('#live-source').textContent = '未连接';
+      if (empty) empty.hidden = false;
+      if (list) list.innerHTML = '';
+      const src = $('#live-source');
+      if (src) src.textContent = '未连接';
       if (!e.message.includes('Failed to fetch')) {
         toast('加载失败：' + e.message, 'error');
       }
@@ -640,6 +648,7 @@
 
   function renderLiveList() {
     const list = $('#live-list');
+    if (!list) return; // 顶部 panel-live 已删除
     list.innerHTML = '';
     const tab = activeTab;
     if (tab === 'tools') {
@@ -805,6 +814,182 @@
   // -----------------------------------------------------------
   // 启动
   // -----------------------------------------------------------
+  // -----------------------------------------------------------
+  // Articles Tab — 文件管理（列表 / 编辑 / 新建 / 删除）
+  // -----------------------------------------------------------
+  let articlesList = [];
+  let editingArticleSlug = null;
+  const emptyArticle = { slug: '', title: '', date: todayISO(), tags: '', categories: '', description: '', content: '' };
+
+  async function loadArticlesList() {
+    const listEl = $('#articles-list');
+    const sourceEl = $('#articles-source');
+    listEl.innerHTML = '<p class="hint">加载中...</p>';
+    try {
+      const resp = await fetch('/api/posts');
+      const data = await resp.json();
+      if (!data.ok) throw new Error(data.error);
+      articlesList = data.data || [];
+      sourceEl.textContent = `${articlesList.length} 篇`;
+      renderArticlesList();
+    } catch (e) {
+      listEl.innerHTML = `<p class="hint">❌ 加载失败：${escapeHtml(e.message)}<br>需要 <code>npm run admin</code></p>`;
+      sourceEl.textContent = '未连接';
+      if (!e.message.includes('Failed to fetch')) toast('加载失败：' + e.message, 'error');
+    }
+  }
+
+  function renderArticlesList() {
+    const listEl = $('#articles-list');
+    listEl.innerHTML = '';
+    if (articlesList.length === 0) {
+      listEl.innerHTML = '<div class="empty">暂无文章,点「＋ 新建文章」开始</div>';
+      return;
+    }
+    articlesList.forEach((post) => {
+      const card = document.createElement('div');
+      card.className = 'article-item';
+      const tagsHtml = (post.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+      card.innerHTML = `
+        <div class="article-item-head">
+          <span class="article-item-title">${escapeHtml(post.title || post.slug)}</span>
+        </div>
+        <div class="article-item-meta">${escapeHtml(post.slug)} · ${escapeHtml(post.date || '')}</div>
+        <div class="article-item-excerpt">${escapeHtml(post.excerpt || '')}</div>
+        <div class="article-item-tags">${tagsHtml}</div>
+      `;
+      card.addEventListener('click', () => loadArticleForEdit(post.slug));
+      listEl.appendChild(card);
+    });
+  }
+
+  async function loadArticleForEdit(slug) {
+    try {
+      const resp = await fetch(`/api/posts/${encodeURIComponent(slug)}`);
+      const data = await resp.json();
+      if (!data.ok) throw new Error(data.error);
+      editingArticleSlug = slug;
+      // 用表单字段填文章数据
+      const aForm = {
+        slug: data.slug,
+        title: data.data.title || '',
+        date: (data.data.date || '').slice(0, 10),
+        tags: Array.isArray(data.data.tags) ? data.data.tags.join(', ') : (data.data.tags || ''),
+        categories: Array.isArray(data.data.categories) ? data.data.categories.join(', ') : (data.data.categories || ''),
+        description: data.data.description || '',
+        content: data.body || ''
+      };
+      // 把数据塞进通用 form state 用 tools/links 同样的方式渲染 — 借用 tools 表单做文章编辑
+      // 简化做法:复用 .data-field 选择器 + state.articles
+      windowStateForArticles(aForm);
+      toast(`✏️ 编辑文章：${slug}`);
+      document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {
+      toast('加载失败：' + e.message, 'error');
+    }
+  }
+
+  // 复用通用 state + form 渲染机制
+  function windowStateForArticles(data) {
+    state.articles = { ...data };
+    syncArticleFormToDOM();
+  }
+
+  function syncArticleFormToDOM() {
+    const fields = ['slug', 'title', 'date', 'tags', 'categories', 'description', 'content'];
+    fields.forEach((f) => {
+      const el = document.querySelector(`[data-pane="articles"] [data-field="${f}"]`);
+      if (el) el.value = state.articles[f] || '';
+    });
+  }
+
+  function bindArticlesFields() {
+    const fields = ['slug', 'title', 'date', 'tags', 'categories', 'description', 'content'];
+    fields.forEach((f) => {
+      const el = document.querySelector(`[data-pane="articles"] [data-field="${f}"]`);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        state.articles[f] = el.value;
+      });
+    });
+  }
+
+  function newArticle() {
+    editingArticleSlug = null;
+    state.articles = { ...emptyArticle };
+    syncArticleFormToDOM();
+    toast('＋ 新建文章模式（保存会写入新 .md 文件）');
+  }
+
+  function cancelArticleEdit() {
+    editingArticleSlug = null;
+    state.articles = { ...emptyArticle };
+    syncArticleFormToDOM();
+  }
+
+  async function saveArticle() {
+    const a = state.articles;
+    if (!a.slug) { toast('slug 不能为空', 'error'); return; }
+    if (!/^[a-zA-Z0-9_-]+$/.test(a.slug)) {
+      toast('slug 只能包含英文、数字、下划线、连字符', 'error');
+      return;
+    }
+    const targetSlug = a.slug;
+    const btn = $('#btn-article-save');
+    btn.disabled = true;
+    btn.textContent = '⏳ 保存中...';
+    try {
+      const resp = await fetch(`/api/posts/${encodeURIComponent(targetSlug)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            title: a.title || targetSlug,
+            date: a.date || todayISO(),
+            tags: a.tags ? a.tags.split(',').map(s => s.trim()).filter(Boolean) : [],
+            categories: a.categories ? a.categories.split(',').map(s => s.trim()).filter(Boolean) : [],
+            description: a.description || ''
+          },
+          content: a.content || ''
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || `HTTP ${resp.status}`);
+      toast(`✅ ${data.filename} 已保存 (${data.message.split('(')[1] || ''}`, 'success', 4000);
+      editingArticleSlug = targetSlug;
+      loadArticlesList();
+    } catch (e) {
+      if (e.message.includes('Failed to fetch')) {
+        toast('❌ 后端未启动。请先运行 `npm run admin`', 'error');
+      } else {
+        toast('❌ 保存失败：' + e.message, 'error');
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 保存到文件';
+    }
+  }
+
+  async function deleteArticle() {
+    if (!editingArticleSlug) {
+      toast('当前没有正在编辑的文章', 'error');
+      return;
+    }
+    if (!confirm(`确认删除 ${editingArticleSlug}.md?\n(会自动备份为 .bak-deleted)`)) return;
+    try {
+      const resp = await fetch(`/api/posts/${encodeURIComponent(editingArticleSlug)}`, { method: 'DELETE' });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error);
+      toast(`🗑 ${data.message}`, 'success');
+      editingArticleSlug = null;
+      state.articles = { ...emptyArticle };
+      syncArticleFormToDOM();
+      loadArticlesList();
+    } catch (e) {
+      toast('❌ 删除失败：' + e.message, 'error');
+    }
+  }
+
   function init() {
     loadDraft();
     injectDatalist();
@@ -812,10 +997,16 @@
     bindToolsFields();
     bindLinksFields();
     bindAddToolLink();
+    bindArticlesFields();
     syncFormToDOM();
+    syncArticleFormToDOM();
     renderOutput();
     updateOutputName();
     loadLiveData();
+    loadArticlesList();
+    // 默认给文章 tab 一个空表单
+    state.articles = { ...emptyArticle };
+    syncArticleFormToDOM();
 
     $('#btn-copy').addEventListener('click', copyYAML);
     $('#btn-download').addEventListener('click', downloadYAML);
@@ -824,6 +1015,11 @@
     $('#btn-clear').addEventListener('click', clearDraft);
     $('#btn-reload-live')?.addEventListener('click', loadLiveData);
     $('#btn-new')?.addEventListener('click', newItem);
+    $('#btn-articles-reload')?.addEventListener('click', loadArticlesList);
+    $('#btn-article-new')?.addEventListener('click', newArticle);
+    $('#btn-article-cancel')?.addEventListener('click', cancelArticleEdit);
+    $('#btn-article-save')?.addEventListener('click', saveArticle);
+    $('#btn-article-delete')?.addEventListener('click', deleteArticle);
   }
 
   if (document.readyState === 'loading') {

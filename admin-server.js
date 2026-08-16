@@ -27,6 +27,53 @@ const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'source/_data');
 const TOOLS_YML = path.join(DATA_DIR, 'tools.yml');
 const LINKS_YML = path.join(DATA_DIR, 'links.yml');
+const POSTS_DIR = path.join(ROOT, 'source/_posts');
+
+// 简单的 frontmatter 解析(只支持标准 YAML 风格,不依赖库)
+function parseFrontmatter(raw) {
+  if (!raw.startsWith('---')) return { data: {}, body: raw };
+  const end = raw.indexOf('\n---', 3);
+  if (end < 0) return { data: {}, body: raw };
+  const fmBlock = raw.substring(4, end); // 去掉前导 ---\n
+  const body = raw.substring(end + 4).replace(/^\n/, '');
+  // 极简 YAML 解析: 只支持 key: value 和 key: [a, b] 列表
+  const data = {};
+  fmBlock.split(/\r?\n/).forEach((line) => {
+    const m = line.match(/^(\w[\w-]*)\s*:\s*(.*)$/);
+    if (!m) return;
+    const key = m[1];
+    let val = m[2].trim();
+    if (val.startsWith('[') && val.endsWith(']')) {
+      val = val.slice(1, -1).split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+    } else if (val.startsWith('"') && val.endsWith('"')) {
+      val = val.slice(1, -1);
+    } else if (val.startsWith("'") && val.endsWith("'")) {
+      val = val.slice(1, -1);
+    }
+    data[key] = val;
+  });
+  return { data, body };
+}
+
+function buildFrontmatter(data) {
+  const lines = ['---'];
+  Object.entries(data).forEach(([k, v]) => {
+    if (Array.isArray(v)) {
+      lines.push(`${k}: [${v.map((s) => `'${s}'`).join(', ')}]`);
+    } else if (typeof v === 'string') {
+      // 如果包含特殊字符,用引号包裹
+      if (/[:#\[\]&*?|<>=!%@`]/.test(v) || v.includes(': ')) {
+        lines.push(`${k}: "${v.replace(/"/g, '\\"')}"`);
+      } else {
+        lines.push(`${k}: ${v}`);
+      }
+    } else {
+      lines.push(`${k}: ${v}`);
+    }
+  });
+  lines.push('---', '');
+  return lines.join('\n');
+}
 
 // ---------- middleware ----------
 // 用 express.raw + 手动 utf-8 解码（express.text 的自动 charset 检测在 Windows 下会乱码）
@@ -279,6 +326,97 @@ app.post('/api/rebuild', (_req, res) => {
     console.log('  ✓ rebuild 成功');
     res.json({ ok: true, message: 'rebuild 成功', output: stdout });
   });
+});
+
+// ---------- 文章管理 ----------
+// 列出所有文章 (从 frontmatter 提取 title/date/tags)
+app.get('/api/posts', (_req, res) => {
+  try {
+    if (!fs.existsSync(POSTS_DIR)) {
+      return res.json({ ok: true, data: [] });
+    }
+    const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith('.md'));
+    const posts = files.map((filename) => {
+      const raw = fs.readFileSync(path.join(POSTS_DIR, filename), 'utf8');
+      const { data } = parseFrontmatter(raw);
+      return {
+        slug: filename.replace(/\.md$/, ''),
+        filename,
+        title: data.title || filename,
+        date: data.date || '',
+        tags: Array.isArray(data.tags) ? data.tags : (data.tags ? [data.tags] : []),
+        categories: Array.isArray(data.categories) ? data.categories : (data.categories ? [data.categories] : []),
+        excerpt: raw.split(/\r?\n/).slice(0, 5).join(' ').substring(0, 100)
+      };
+    });
+    posts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    res.json({ ok: true, data: posts });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// 读取单篇文章
+app.get('/api/posts/:slug', (req, res) => {
+  try {
+    const slug = req.params.slug.replace(/[^a-zA-Z0-9_-]/g, '');
+    const filePath = path.join(POSTS_DIR, `${slug}.md`);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ ok: false, error: '文章不存在' });
+    }
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const { data, body } = parseFrontmatter(raw);
+    res.json({ ok: true, slug, data, body, filename: `${slug}.md` });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// 创建或更新文章
+// body: { slug, data: {title, date, tags, categories}, content: string }
+app.post('/api/posts/:slug', (req, res) => {
+  try {
+    const slug = req.params.slug.replace(/[^a-zA-Z0-9_-]/g, '');
+    if (!slug) return res.status(400).json({ ok: false, error: 'slug 无效' });
+    const filePath = path.join(POSTS_DIR, `${slug}.md`);
+    const incoming = req.body || {};
+    const front = incoming.data || {};
+    const content = incoming.content || '';
+    // 默认值
+    if (!front.title) front.title = slug;
+    if (!front.date) front.date = new Date().toISOString().slice(0, 10);
+    // 备份
+    if (fs.existsSync(filePath)) {
+      fs.copyFileSync(filePath, filePath + '.bak');
+    }
+    const fileContent = buildFrontmatter(front) + '\n' + content + '\n';
+    fs.writeFileSync(filePath, fileContent, 'utf8');
+    res.json({
+      ok: true,
+      slug,
+      filename: `${slug}.md`,
+      message: `已保存 ${slug}.md (${fileContent.length} 字节)`
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// 删除文章
+app.delete('/api/posts/:slug', (req, res) => {
+  try {
+    const slug = req.params.slug.replace(/[^a-zA-Z0-9_-]/g, '');
+    const filePath = path.join(POSTS_DIR, `${slug}.md`);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ ok: false, error: '文章不存在' });
+    }
+    // 备份
+    fs.copyFileSync(filePath, filePath + '.bak-deleted');
+    fs.unlinkSync(filePath);
+    res.json({ ok: true, slug, message: `已删除 ${slug}.md (备份到 .bak-deleted)` });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // ---------- 启动 ----------

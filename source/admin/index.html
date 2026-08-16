@@ -441,6 +441,95 @@
       border-left: 2px solid var(--border);
     }
     .link-row-fields-secondary .input { font-size: 0.8rem; padding: 0.4rem 0.5rem; }
+
+    /* ===== Articles Tab ===== */
+    .articles-toolbar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .articles-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .article-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .article-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .article-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-title {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .article-item-meta {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-excerpt {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .article-item-tags {
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .article-item-tags .chip {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-2);
+    }
+    .section-divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+    .article-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .actions-spacer { flex: 1; }
+    .articles-list .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-3);
+      padding: 2rem;
+    }
     .file-saved-indicator {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
@@ -692,6 +781,7 @@
       <nav class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="tools" role="tab">📦 工具</button>
         <button class="tab-btn" data-tab="links" role="tab">🔗 链接</button>
+        <button class="tab-btn" data-tab="articles" role="tab">📄 文章</button>
       </nav>
 
       <!-- ★ 主操作按钮：固定在 header 下方,永远可见 -->
@@ -707,26 +797,6 @@
         <span id="file-saved-indicator" class="file-saved-indicator"></span>
       </div>
     </header>
-
-    <!-- ===== Live Data Panel ===== -->
-    <section class="panel panel-live" id="panel-live">
-      <div class="panel-head">
-        <span>// 当前数据 <span id="live-source" class="live-source">本地 yml</span></span>
-        <span class="panel-actions">
-          <button class="btn btn-small" id="btn-reload-live" type="button">🔄 刷新</button>
-          <button class="btn btn-small btn-primary" id="btn-new" type="button">＋ 新增</button>
-        </span>
-      </div>
-      <div class="panel-body">
-        <div class="live-empty" id="live-empty" hidden>
-          <p>⚠️ 当前显示空表单,点击「🔄 刷新」从 <code>source/_data/*.yml</code> 加载现有数据</p>
-          <p class="hint">需先 <code>npm run admin</code> 启动后端</p>
-        </div>
-        <div class="live-list" id="live-list">
-          <!-- JS 注入当前工具/链接列表,每条带「✏️ 编辑」「🗑 删除」按钮 -->
-        </div>
-      </div>
-    </section>
 
     <main class="panels">
       <!-- ===== Form Panel ===== -->
@@ -853,6 +923,63 @@
                 <label class="field-label" for="l-added">added</label>
                 <input id="l-added" class="input" type="date" data-field="added">
                 <span class="field-hint">// 默认今天</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Articles Tab ===== -->
+          <div class="tab-pane" data-pane="articles">
+            <!-- 文章列表 -->
+            <div class="articles-toolbar">
+              <button class="btn btn-small btn-primary" id="btn-article-new" type="button">＋ 新建文章</button>
+              <button class="btn btn-small" id="btn-articles-reload" type="button">🔄 刷新列表</button>
+              <span id="articles-source" class="live-source"></span>
+            </div>
+            <div class="articles-list" id="articles-list">
+              <p class="hint">加载中...</p>
+            </div>
+            <hr class="section-divider">
+            <!-- 当前编辑表单 -->
+            <div class="form-grid">
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-slug">slug (文件名) <span class="req">*</span></label>
+                  <input id="p-slug" class="input" type="text" data-field="slug" placeholder="例：2026-08-20-my-new-post">
+                  <span class="field-hint">// 文件名格式 YYYY-MM-DD-name.md</span>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-date">date <span class="req">*</span></label>
+                  <input id="p-date" class="input" type="date" data-field="date">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-title">title <span class="req">*</span></label>
+                <input id="p-title" class="input" type="text" data-field="title" placeholder="文章标题">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-tags">tags (逗号分隔)</label>
+                  <input id="p-tags" class="input" type="text" data-field="tags" placeholder="嵌入式, Claude Code, 教程">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-categories">categories (逗号分隔)</label>
+                  <input id="p-categories" class="input" type="text" data-field="categories" placeholder="AI工具">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-desc">description</label>
+                <input id="p-desc" class="input" type="text" data-field="description" placeholder="可选,SEO/摘要">
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-body">content (Markdown)</label>
+                <textarea id="p-body" class="textarea" data-field="content" placeholder="## 正文&#10;&#10;Markdown 内容..." rows="18" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></textarea>
+                <span class="field-hint">// Hexo 会自动渲染,可用 {% link "claude_oneclick" %} 等 helper</span>
+              </div>
+              <div class="article-actions">
+                <button class="btn btn-danger" id="btn-article-delete" type="button">🗑 删除</button>
+                <span class="actions-spacer"></span>
+                <button class="btn btn-small" id="btn-article-cancel" type="button">取消编辑</button>
+                <button class="btn btn-primary" id="btn-article-save" title="需 npm run admin">💾 保存到文件</button>
               </div>
             </div>
           </div>
