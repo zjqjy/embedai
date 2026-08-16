@@ -362,7 +362,449 @@
       border-color: transparent;
     }
     .btn-primary:hover { filter: brightness(1.05); color: white; }
+    .btn-save-server {
+      background: var(--bg-elev);
+      border-color: var(--warm);
+      color: var(--warm);
+      font-weight: 600;
+    }
+    .btn-save-server:hover {
+      background: var(--warm);
+      color: white;
+      border-color: var(--warm);
+    }
     .btn-danger:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+
+    /* ===== Live Data Panel ===== */
+    .panel-live { margin-bottom: 1.5rem; }
+    .live-source {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      font-weight: normal;
+      margin-left: 0.5rem;
+    }
+    .panel-actions { display: flex; gap: 0.5rem; }
+
+    /* ===== Primary Actions (固定在 header 下) ===== */
+    .primary-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      align-items: center;
+    }
+    .primary-actions .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+    .primary-actions .btn-link {
+      background: transparent;
+      border-color: transparent;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.5rem 0.7rem;
+    }
+    .primary-actions .btn-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .actions-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* ===== Tool Link Row (stacked: 5 fields, roomy) ===== */
+    .link-row-stacked {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.7rem 0.85rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.6rem;
+    }
+    .link-row-stacked .input { font-size: 0.85rem; padding: 0.5rem 0.65rem; }
+    .link-row-stack-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .link-row-stack-line .input-small { max-width: 140px; }
+    .link-row-stack-line .select { font-size: 0.85rem; padding: 0.45rem 0.5rem; }
+    .link-row-stack-line .row-remove {
+      width: 36px; height: 36px;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    @media (max-width: 700px) {
+      .link-row-stack-line { grid-template-columns: 1fr; }
+    }
+
+    /* ===== Articles Tab ===== */
+    .articles-toolbar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .articles-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .article-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .article-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .article-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-title {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .article-item-meta {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-excerpt {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .article-item-tags {
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .article-item-tags .chip {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-2);
+    }
+    .section-divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+    .article-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .actions-spacer { flex: 1; }
+    .articles-list .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-3);
+      padding: 2rem;
+    }
+    .file-saved-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-3);
+      transition: all 0.3s;
+    }
+    .file-saved-indicator.saved {
+      color: #4a7d65;
+      font-weight: 600;
+      background: rgba(107, 158, 131, 0.15);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+    .file-saved-indicator code {
+      background: rgba(107, 158, 131, 0.2);
+      padding: 0.05rem 0.3rem;
+      border-radius: 3px;
+    }
+    .btn-small { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+    .live-empty {
+      padding: 1.5rem;
+      background: var(--bg-soft);
+      border-radius: 8px;
+      color: var(--text-2);
+    }
+    .live-empty code {
+      background: var(--bg-elev);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .live-empty .hint { font-size: 0.85rem; color: var(--text-3); margin-top: 0.5rem; }
+    .live-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .live-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .live-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .live-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .live-item-icon { font-size: 1.2rem; }
+    .live-item-name {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .live-item-tagline {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .live-item-meta {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .live-item-meta .chip {
+      background: var(--bg-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .live-item-actions {
+      display: flex;
+      gap: 0.4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
+    }
+
+    /* ===== Compact Link Card (minimal: name + url only) ===== */
+    .live-item-link {
+      padding: 0.55rem 0.7rem !important;
+      position: relative;
+    }
+    .live-item-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .live-item-row1 {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+    .live-item-row1 .live-item-name {
+      flex: 1;
+      font-size: 0.88rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .status-dot-inline {
+      font-size: 0.85rem;
+      flex: 0;
+    }
+    .live-item-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-left: 0.3rem;
+      border-left: 2px solid var(--border);
+    }
+    .live-item-hover {
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border);
+    }
+    .live-item-link:hover .live-item-hover {
+      display: flex;
+    }
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex: 0;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .chip-mini {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--text-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+    }
+    .chip-mini.chip-code {
+      background: rgba(232, 168, 124, 0.18);
+      color: #c47a45;
+    }
+    .chip-mini.chip-hint {
+      background: var(--bg-soft);
+      color: var(--text-3);
+      font-style: italic;
+    }
+    .badge-inline {
+      font-size: 0.6rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background: rgba(232, 168, 124, 0.15);
+      color: #c47a45;
+      font-family: 'JetBrains Mono', monospace;
+      flex: 0;
+    }
+    .live-item-link.status-inline {
+      border-left: 3px solid #e8a87c;
+    }
+    .status-dot-inline-mark {
+      font-size: 0.85rem;
+    }
+    .live-item-actions .btn {
+      flex: 1;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    /* ===== Article Section (Links Tab) ===== */
+    .live-article-section {
+      grid-column: 1 / -1;
+      margin-bottom: 0.5rem;
+    }
+    .live-article-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+    .article-icon { font-size: 1rem; }
+    .article-slug {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .article-count {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .live-list-nested {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.6rem;
+    }
+
+    /* ===== Status Badges ===== */
+    .status-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-badge.status-active {
+      background: rgba(107, 158, 131, 0.15);
+      color: #4a7d65;
+    }
+    .status-badge.status-warning {
+      background: rgba(232, 168, 124, 0.18);
+      color: #c47a45;
+    }
+    .status-badge.status-broken {
+      background: rgba(220, 90, 90, 0.15);
+      color: #c44545;
+    }
+    .live-item-link.status-warning {
+      border-left: 3px solid #e8a87c;
+    }
+    .live-item-link.status-broken {
+      border-left: 3px solid #c44545;
+      opacity: 0.7;
+    }
+    .live-item-link.status-broken .live-item-name {
+      text-decoration: line-through;
+    }
 
     /* ===== Toast ===== */
     .toast {
@@ -446,15 +888,47 @@
       <nav class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="tools" role="tab">📦 工具</button>
         <button class="tab-btn" data-tab="links" role="tab">🔗 链接</button>
+        <button class="tab-btn" data-tab="articles" role="tab">📄 文章</button>
       </nav>
+
+      <!-- ★ 主操作按钮：固定在 header 下方,永远可见 -->
+      <div class="primary-actions">
+        <button class="btn btn-primary" id="btn-save-server" title="需先运行 npm run admin 启动本地后端">💾 写入文件</button>
+        <button class="btn" id="btn-copy">📋 复制 YAML</button>
+        <button class="btn" id="btn-download">⬇ 下载 .yml</button>
+        <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
+        <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
+        <span class="actions-divider"></span>
+        <a class="btn btn-link" href="/tools/" target="_blank" title="新窗口打开 /tools/ 公开页">👁 浏览 /tools/</a>
+        <a class="btn btn-link" href="/" target="_blank" title="新窗口打开首页">🏠 首页</a>
+        <span id="file-saved-indicator" class="file-saved-indicator"></span>
+      </div>
     </header>
+
+    <!-- ===== Live Data Panel（按 tab 显示：工具列表/链接列表/文章列表）===== -->
+    <section class="panel panel-live" id="panel-live">
+      <div class="panel-head">
+        <span>// <span id="live-tab-name">当前数据</span></span>
+        <span class="panel-actions">
+          <button class="btn btn-small" id="btn-reload-live" type="button">🔄 刷新</button>
+          <button class="btn btn-small btn-primary" id="btn-new" type="button">＋ 新增</button>
+        </span>
+      </div>
+      <div class="panel-body">
+        <div class="live-empty" id="live-empty" hidden>
+          <p>⚠️ 未连接后端，请先运行 <code>npm run admin</code> 启动服务</p>
+        </div>
+        <div class="live-list" id="live-list">
+          <!-- JS 注入当前 tab 对应列表 -->
+        </div>
+      </div>
+    </section>
 
     <main class="panels">
       <!-- ===== Form Panel ===== -->
       <section class="panel">
         <div class="panel-head">
           <span>// form</span>
-          <span id="form-status" style="color: var(--text-3);">draft saved</span>
         </div>
         <div class="panel-body">
 
@@ -512,10 +986,21 @@
             <div class="form-grid">
               <div class="field-row">
                 <div class="field">
+                  <label class="field-label" for="l-article">article_slug <span class="req">*</span></label>
+                  <input id="l-article" class="input" type="text" data-field="article_slug" placeholder="例：claude-code-install-guide" list="article-slugs-list">
+                  <datalist id="article-slugs-list">
+                    <!-- 由 JS 动态填充（来自 source/_posts/*.md） -->
+                  </datalist>
+                  <span class="field-hint">// 归属文章 (slug 格式 yyyy-mm-dd-name)</span>
+                </div>
+                <div class="field">
                   <label class="field-label" for="l-key">key <span class="req">*</span></label>
                   <input id="l-key" class="input" type="text" data-field="key" placeholder="例：claude_oneclick">
                   <span class="field-hint">// 英文短标识，文中用 {% link "key" %} 引用</span>
                 </div>
+              </div>
+
+              <div class="field-row">
                 <div class="field">
                   <label class="field-label" for="l-type">type <span class="req">*</span></label>
                   <select id="l-type" class="select" data-field="type">
@@ -526,6 +1011,15 @@
                     <option value="signup">signup / 订阅/注册</option>
                     <option value="doc">doc / 文档</option>
                   </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="l-status">status</label>
+                  <select id="l-status" class="select" data-field="status">
+                    <option value="active">✓ active / 正常</option>
+                    <option value="warning">⚠ warning / 警告</option>
+                    <option value="broken">❌ broken / 失效</option>
+                  </select>
+                  <span class="field-hint">// 链接状态标记</span>
                 </div>
               </div>
 
@@ -557,6 +1051,52 @@
             </div>
           </div>
 
+          <!-- ===== Articles Tab ===== -->
+          <div class="tab-pane" data-pane="articles">
+            <div class="form-grid">
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-slug">slug (文件名) <span class="req">*</span></label>
+                  <input id="p-slug" class="input" type="text" data-field="slug" placeholder="例：2026-08-20-my-new-post">
+                  <span class="field-hint">// 文件名格式 YYYY-MM-DD-name.md</span>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-date">date <span class="req">*</span></label>
+                  <input id="p-date" class="input" type="date" data-field="date">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-title">title <span class="req">*</span></label>
+                <input id="p-title" class="input" type="text" data-field="title" placeholder="文章标题">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-tags">tags (逗号分隔)</label>
+                  <input id="p-tags" class="input" type="text" data-field="tags" placeholder="嵌入式, Claude Code, 教程">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-categories">categories (逗号分隔)</label>
+                  <input id="p-categories" class="input" type="text" data-field="categories" placeholder="AI工具">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-desc">description</label>
+                <input id="p-desc" class="input" type="text" data-field="description" placeholder="可选,SEO/摘要">
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-body">content (Markdown)</label>
+                <textarea id="p-body" class="textarea" data-field="content" placeholder="## 正文&#10;&#10;Markdown 内容..." rows="18" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></textarea>
+                <span class="field-hint">// Hexo 会自动渲染,可用 {% link "claude_oneclick" %} 等 helper</span>
+              </div>
+              <div class="article-actions">
+                <button class="btn btn-danger" id="btn-article-delete" type="button">🗑 删除</button>
+                <span class="actions-spacer"></span>
+                <button class="btn btn-small" id="btn-article-cancel" type="button">取消编辑</button>
+                <button class="btn btn-primary" id="btn-article-save" title="需 npm run admin">💾 保存到文件</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -567,12 +1107,6 @@
           <span id="output-name" style="color: var(--text-3);">tools.yml</span>
         </div>
         <textarea id="yaml-output" class="output-area" readonly spellcheck="false"></textarea>
-        <div class="actions">
-          <button class="btn btn-primary" id="btn-copy">📋 复制 YAML</button>
-          <button class="btn" id="btn-download">💾 下载 .yml</button>
-          <button class="btn" id="btn-save">💾 保存草稿</button>
-          <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
-        </div>
       </section>
     </main>
 

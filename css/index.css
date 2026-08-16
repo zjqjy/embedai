@@ -448,7 +448,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects,
 .shuoshuo-navigation button:not(:disabled),
 #aside-content .card-info #card-info-btn,
-.post-reward .reward-button,
 #rightside > div > button,
 #rightside > div > a,
 .container .btn-beautify,
@@ -471,7 +470,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects:hover,
 .shuoshuo-navigation button:not(:disabled):hover,
 #aside-content .card-info #card-info-btn:hover,
-.post-reward .reward-button:hover,
 #rightside > div > button:hover,
 #rightside > div > a:hover,
 .container .btn-beautify:hover,
@@ -490,7 +488,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects:active,
 .shuoshuo-navigation button:not(:disabled):active,
 #aside-content .card-info #card-info-btn:active,
-.post-reward .reward-button:active,
 #rightside > div > button:active,
 #rightside > div > a:active,
 .container .btn-beautify:active,
@@ -511,7 +508,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects i,
 .shuoshuo-navigation button:not(:disabled) i,
 #aside-content .card-info #card-info-btn i,
-.post-reward .reward-button i,
 #rightside > div > button i,
 #rightside > div > a i,
 .container .btn-beautify i,
@@ -529,7 +525,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects:hover i,
 .shuoshuo-navigation button:not(:disabled):hover i,
 #aside-content .card-info #card-info-btn:hover i,
-.post-reward .reward-button:hover i,
 #rightside > div > button:hover i,
 #rightside > div > a:hover i,
 .container .btn-beautify:hover i,
@@ -545,7 +540,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects i + span,
 .shuoshuo-navigation button:not(:disabled) i + span,
 #aside-content .card-info #card-info-btn i + span,
-.post-reward .reward-button i + span,
 #rightside > div > button i + span,
 #rightside > div > a i + span,
 .container .btn-beautify i + span,
@@ -563,7 +557,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects:hover i + span,
 .shuoshuo-navigation button:not(:disabled):hover i + span,
 #aside-content .card-info #card-info-btn:hover i + span,
-.post-reward .reward-button:hover i + span,
 #rightside > div > button:hover i + span,
 #rightside > div > a:hover i + span,
 .container .btn-beautify:hover i + span,
@@ -575,7 +568,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects::before,
 .shuoshuo-navigation button:not(:disabled)::before,
 #aside-content .card-info #card-info-btn::before,
-.post-reward .reward-button::before,
 #rightside > div > button::before,
 #rightside > div > a::before,
 .container .btn-beautify::before,
@@ -603,7 +595,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects:hover::before,
 .shuoshuo-navigation button:not(:disabled):hover::before,
 #aside-content .card-info #card-info-btn:hover::before,
-.post-reward .reward-button:hover::before,
 #rightside > div > button:hover::before,
 #rightside > div > a:hover::before,
 .container .btn-beautify:hover::before,
@@ -615,7 +606,6 @@ canvas:not(#ribbon-canvas),
 .btn-effects > *,
 .shuoshuo-navigation button:not(:disabled) > *,
 #aside-content .card-info #card-info-btn > *,
-.post-reward .reward-button > *,
 #rightside > div > button > *,
 #rightside > div > a > *,
 .container .btn-beautify > *,
@@ -626,7 +616,6 @@ canvas:not(#ribbon-canvas),
   z-index: 2;
 }
 .btn-effects-large:hover,
-.post-reward .reward-button:hover,
 .container .btn-beautify.larger:hover {
   -webkit-box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
@@ -5143,83 +5132,178 @@ figure.highlight pre .javascript .function {
   -webkit-line-clamp: 3;
 }
 .post-reward {
-  position: relative;
-  margin-top: 80px;
-  width: 100%;
-  text-align: center;
-  pointer-events: none;
+  position: fixed;
+  right: 20px;
+  bottom: 120px;
+  z-index: 999;
 }
-.post-reward > * {
-  pointer-events: auto;
+.post-reward > summary {
+  list-style: none;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.post-reward > summary::-webkit-details-marker {
+  display: none;
 }
 .post-reward .reward-button {
-  display: inline-block;
-  padding: 4px 24px;
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  height: 40px;
+  border-radius: 20px;
   background: var(--btn-bg);
   color: var(--btn-color);
+  font-weight: 700;
+  font-size: 13.5px;
   cursor: pointer;
-  border-radius: 6px;
+  -webkit-box-shadow: 0 6px 20px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08);
+  -webkit-transition: -webkit-transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -moz-transition: -moz-transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -o-transition: -o-transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -ms-transition: -ms-transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .post-reward .reward-button i {
-  margin-right: 5px;
-  vertical-align: baseline;
+  font-size: 16px;
 }
-.post-reward:hover .reward-button {
+.post-reward .reward-button .txt {
+  letter-spacing: 0.02em;
+}
+.post-reward .reward-button:hover {
+  -webkit-transform: translateY(-2px) scale(1.04);
+  -moz-transform: translateY(-2px) scale(1.04);
+  -o-transform: translateY(-2px) scale(1.04);
+  -ms-transform: translateY(-2px) scale(1.04);
+  transform: translateY(-2px) scale(1.04);
+  -webkit-box-shadow: 0 10px 28px rgba(0,0,0,0.18), 0 3px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18), 0 3px 8px rgba(0,0,0,0.1);
   background: var(--btn-hover-color);
 }
-.post-reward:hover > .reward-main {
-  display: block;
+.post-reward[open] .reward-button {
+  background: var(--btn-hover-color);
+  -webkit-box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
 }
 .post-reward .reward-main {
   position: absolute;
-  bottom: 50px;
-  left: 0;
-  z-index: 100;
-  display: none;
-  padding: 0 0 15px;
-  width: 100%;
-}
-.post-reward .reward-main .reward-all {
-  display: inline-block;
-  margin: 0;
-  padding: 20px 10px;
-  background: var(--reward-pop);
-  border-radius: 6px;
-}
-.post-reward .reward-main .reward-all:before {
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 20px;
-  content: '';
-}
-.post-reward .reward-main .reward-all:after {
-  position: absolute;
   right: 0;
-  bottom: 2px;
-  left: 0;
-  margin: 0 auto;
-  width: 0;
-  height: 0;
-  border-top: 13px solid var(--reward-pop);
-  border-right: 13px solid transparent;
-  border-left: 13px solid transparent;
-  content: '';
+  bottom: calc(100% + 14px);
+  width: 280px;
+  padding: 14px;
+  background: var(--reward-pop);
+  border-radius: 12px;
+  -webkit-box-shadow: 0 12px 32px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.08);
+  display: none;
 }
-.post-reward .reward-main .reward-all .reward-item {
-  display: inline-block;
-  padding: 0 8px;
-  list-style-type: none;
-  vertical-align: top;
+.post-reward[open] .reward-main {
+  display: block;
 }
-.post-reward .reward-main .reward-all .reward-item img {
-  width: 130px;
-  height: 130px;
-}
-.post-reward .reward-main .reward-all .reward-item .post-qr-code-desc {
-  width: 130px;
+.post-reward .reward-tip {
+  font-size: 12.5px;
   color: #858585;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0 0 10px;
+}
+.post-reward .reward-all {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.post-reward .reward-all .reward-item {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -o-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 4px;
+}
+.post-reward .reward-all .reward-item img {
+  width: 116px;
+  height: 116px;
+  border-radius: 4px;
+}
+.post-reward .reward-all .reward-item .post-qr-code-desc {
+  font-size: 11.5px;
+  color: #858585;
+  font-weight: 600;
+}
+.post-reward::after {
+  content: '';
+  position: absolute;
+  right: 24px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--reward-pop);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border-radius: 0 0 3px 0;
+}
+@media (max-width: 640px) {
+  .post-reward {
+    right: 12px;
+    bottom: 90px;
+  }
+  .post-reward .reward-button {
+    padding: 8px 14px;
+    font-size: 12.5px;
+  }
+  .post-reward .reward-button .txt {
+    display: none;
+  }
+  .post-reward .reward-main {
+    width: 240px;
+  }
+  .post-reward .reward-main .reward-all .reward-item img {
+    width: 96px;
+    height: 96px;
+  }
 }
 #rightside {
   position: fixed;
