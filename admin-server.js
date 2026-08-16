@@ -100,11 +100,29 @@ app.post('/api/tools', (req, res) => {
     if (!yamlText.trim()) {
       return res.status(400).json({ ok: false, error: 'YAML 内容为空' });
     }
-    const data = yaml.load(yamlText);
-    if (!Array.isArray(data)) {
+    const newItems = yaml.load(yamlText);
+    if (!Array.isArray(newItems)) {
       return res.status(400).json({ ok: false, error: 'tools 数据必须是数组' });
     }
-    const dump = yaml.dump(data, {
+    // merge 模式:按 name 匹配,存在的更新,不存在的新增
+    let existing = [];
+    try {
+      const raw = fs.readFileSync(TOOLS_YML, 'utf8');
+      existing = yaml.load(raw) || [];
+      if (!Array.isArray(existing)) existing = [];
+    } catch (e) { existing = []; }
+    const stats = { added: 0, updated: 0 };
+    newItems.forEach((item) => {
+      const idx = existing.findIndex((e) => e && e.name === item.name);
+      if (idx >= 0) {
+        existing[idx] = item;
+        stats.updated++;
+      } else {
+        existing.push(item);
+        stats.added++;
+      }
+    });
+    const dump = yaml.dump(existing, {
       lineWidth: -1,
       noRefs: true,
       sortKeys: false,
@@ -118,9 +136,10 @@ app.post('/api/tools', (req, res) => {
     res.json({
       ok: true,
       file: 'tools.yml',
-      count: data.length,
+      count: existing.length,
       bytes,
-      message: `已写入 tools.yml (${data.length} 条, ${bytes} bytes)`
+      stats,
+      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${existing.length} 条)`
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
@@ -133,11 +152,24 @@ app.post('/api/links', (req, res) => {
     if (!yamlText.trim()) {
       return res.status(400).json({ ok: false, error: 'YAML 内容为空' });
     }
-    const data = yaml.load(yamlText);
-    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    const newItems = yaml.load(yamlText);
+    if (!newItems || typeof newItems !== 'object' || Array.isArray(newItems)) {
       return res.status(400).json({ ok: false, error: 'links 数据必须是对象' });
     }
-    const dump = yaml.dump(data, {
+    // merge 模式:按 key 匹配
+    let existing = {};
+    try {
+      const raw = fs.readFileSync(LINKS_YML, 'utf8');
+      existing = yaml.load(raw) || {};
+      if (typeof existing !== 'object' || Array.isArray(existing)) existing = {};
+    } catch (e) { existing = {}; }
+    const stats = { added: 0, updated: 0 };
+    Object.entries(newItems).forEach(([key, value]) => {
+      if (existing[key]) stats.updated++;
+      else stats.added++;
+      existing[key] = value;
+    });
+    const dump = yaml.dump(existing, {
       lineWidth: -1,
       noRefs: true,
       sortKeys: false,
@@ -151,9 +183,10 @@ app.post('/api/links', (req, res) => {
     res.json({
       ok: true,
       file: 'links.yml',
-      count: Object.keys(data).length,
+      count: Object.keys(existing).length,
       bytes,
-      message: `已写入 links.yml (${Object.keys(data).length} 条, ${bytes} bytes)`
+      stats,
+      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${Object.keys(existing).length} 条)`
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });

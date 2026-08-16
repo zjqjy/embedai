@@ -107,6 +107,7 @@
         $$('.tab-pane').forEach((p) => p.classList.toggle('active', p.dataset.pane === target));
         renderOutput();
         updateOutputName();
+        renderLiveList(); // tab 切换时刷新当前数据列表
       });
     });
   }
@@ -484,6 +485,9 @@
         throw new Error(data.error || `HTTP ${resp.status}`);
       }
       toast('✅ ' + data.message, 'success');
+      // 重新拉取 live data 刷新列表
+      loadLiveData();
+      editingKey = null;
 
       // 询问是否触发 rebuild
       if (confirm('已写入文件。是否立即触发 hexo generate？（选「取消」可稍后手动 `npm run build`）')) {
@@ -509,6 +513,180 @@
   }
 
   // -----------------------------------------------------------
+  // 实时数据 (从 admin-server 拉取)
+  // -----------------------------------------------------------
+  let liveData = { tools: [], links: {} };
+  let editingKey = null; // 当前编辑的工具名/链接 key,null 表示新增
+
+  async function loadLiveData() {
+    const empty = $('#live-empty');
+    const list = $('#live-list');
+    list.innerHTML = '<div class="live-empty"><p>加载中...</p></div>';
+
+    try {
+      const [toolsResp, linksResp] = await Promise.all([
+        fetch('/api/tools'),
+        fetch('/api/links')
+      ]);
+      const toolsData = await toolsResp.json();
+      const linksData = await linksResp.json();
+      if (!toolsData.ok || !linksData.ok) {
+        throw new Error(toolsData.error || linksData.error || '加载失败');
+      }
+      liveData.tools = toolsData.data || [];
+      liveData.links = linksData.data || {};
+      empty.hidden = true;
+      renderLiveList();
+      $('#live-source').textContent = `${liveData.tools.length} 工具 / ${Object.keys(liveData.links).length} 链接`;
+      toast(`✅ 已加载 ${liveData.tools.length} 工具 + ${Object.keys(liveData.links).length} 链接`);
+    } catch (e) {
+      empty.hidden = false;
+      list.innerHTML = '';
+      $('#live-source').textContent = '未连接';
+      if (!e.message.includes('Failed to fetch')) {
+        toast('加载失败：' + e.message, 'error');
+      }
+    }
+  }
+
+  function renderLiveList() {
+    const list = $('#live-list');
+    list.innerHTML = '';
+    const tab = activeTab;
+    if (tab === 'tools') {
+      if (liveData.tools.length === 0) {
+        list.innerHTML = '<div class="live-empty"><p>暂无工具,点「＋ 新增」添加</p></div>';
+        return;
+      }
+      liveData.tools.forEach((tool) => {
+        const card = document.createElement('div');
+        card.className = 'live-item';
+        card.dataset.name = tool.name;
+        const tags = (tool.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+        const cat = tool.category || '?';
+        const icon = tool.icon || '📦';
+        const tagline = tool.tagline || '';
+        card.innerHTML = `
+          <div class="live-item-head">
+            <span class="live-item-icon">${escapeHtml(icon)}</span>
+            <span class="live-item-name">${escapeHtml(tool.name)}</span>
+          </div>
+          <div class="live-item-tagline">${escapeHtml(tagline)}</div>
+          <div class="live-item-meta">
+            <span class="chip">${cat}</span>
+            ${tags}
+          </div>
+          <div class="live-item-actions">
+            <button class="btn btn-small btn-edit-item" data-name="${escapeHtml(tool.name)}" type="button">✏️ 编辑</button>
+          </div>
+        `;
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('btn-edit-item')) return;
+          editTool(tool.name);
+        });
+        list.appendChild(card);
+      });
+      list.querySelectorAll('.btn-edit-item').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          editTool(btn.dataset.name);
+        });
+      });
+    } else {
+      const keys = Object.keys(liveData.links);
+      if (keys.length === 0) {
+        list.innerHTML = '<div class="live-empty"><p>暂无链接,点「＋ 新增」添加</p></div>';
+        return;
+      }
+      keys.forEach((key) => {
+        const link = liveData.links[key];
+        const card = document.createElement('div');
+        card.className = 'live-item';
+        card.dataset.key = key;
+        card.innerHTML = `
+          <div class="live-item-head">
+            <span class="live-item-name">${escapeHtml(link.label || key)}</span>
+          </div>
+          <div class="live-item-tagline">${escapeHtml(link.url || '')}</div>
+          <div class="live-item-meta">
+            <span class="chip">${escapeHtml(link.type || '?')}</span>
+            ${link.extract_code ? `<span class="chip">码: ${escapeHtml(link.extract_code)}</span>` : ''}
+          </div>
+          <div class="live-item-actions">
+            <button class="btn btn-small btn-edit-link" data-key="${escapeHtml(key)}" type="button">✏️ 编辑</button>
+          </div>
+        `;
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('btn-edit-link')) return;
+          editLink(key);
+        });
+        list.appendChild(card);
+      });
+      list.querySelectorAll('.btn-edit-link').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          editLink(btn.dataset.key);
+        });
+      });
+    }
+  }
+
+  function editTool(name) {
+    const tool = liveData.tools.find(t => t.name === name);
+    if (!tool) return;
+    state.tools = {
+      name: tool.name || '',
+      category: tool.category || 'dev',
+      icon: tool.icon || '',
+      tagline: tool.tagline || '',
+      reason: tool.reason || '',
+      tags: (tool.tags || []).join(', '),
+      links: (tool.links || []).map(l => ({ key: l.key || '', type: l.type || '' }))
+    };
+    editingKey = name;
+    syncFormToDOM();
+    renderOutput();
+    updateOutputName();
+    toast(`✏️ 编辑: ${name}（保存后会更新现有条目）`);
+    document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function editLink(key) {
+    const link = liveData.links[key];
+    if (!link) return;
+    state.links = {
+      key: key,
+      label: link.label || '',
+      url: link.url || '',
+      type: link.type || 'official',
+      extract_code: link.extract_code || '',
+      note: link.note || '',
+      added: (link.added || '').slice(0, 10)
+    };
+    editingKey = key;
+    syncFormToDOM();
+    renderOutput();
+    updateOutputName();
+    toast(`✏️ 编辑: ${key}（保存后会更新现有条目）`);
+    document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function newItem() {
+    editingKey = null;
+    state[activeTab] = clone(activeTab === 'tools' ? emptyToolsForm : emptyLinksForm);
+    syncFormToDOM();
+    renderOutput();
+    updateOutputName();
+    toast('＋ 新增模式（保存会追加新条目）');
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+  }
+
+  // -----------------------------------------------------------
   // 启动
   // -----------------------------------------------------------
   function init() {
@@ -521,12 +699,15 @@
     syncFormToDOM();
     renderOutput();
     updateOutputName();
+    loadLiveData();
 
     $('#btn-copy').addEventListener('click', copyYAML);
     $('#btn-download').addEventListener('click', downloadYAML);
     $('#btn-save').addEventListener('click', saveDraft);
     $('#btn-save-server').addEventListener('click', saveToServer);
     $('#btn-clear').addEventListener('click', clearDraft);
+    $('#btn-reload-live')?.addEventListener('click', loadLiveData);
+    $('#btn-new')?.addEventListener('click', newItem);
   }
 
   if (document.readyState === 'loading') {

@@ -375,6 +375,99 @@
     }
     .btn-danger:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
 
+    /* ===== Live Data Panel ===== */
+    .panel-live { margin-bottom: 1.5rem; }
+    .live-source {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      font-weight: normal;
+      margin-left: 0.5rem;
+    }
+    .panel-actions { display: flex; gap: 0.5rem; }
+    .btn-small { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+    .live-empty {
+      padding: 1.5rem;
+      background: var(--bg-soft);
+      border-radius: 8px;
+      color: var(--text-2);
+    }
+    .live-empty code {
+      background: var(--bg-elev);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .live-empty .hint { font-size: 0.85rem; color: var(--text-3); margin-top: 0.5rem; }
+    .live-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .live-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .live-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .live-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .live-item-icon { font-size: 1.2rem; }
+    .live-item-name {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .live-item-tagline {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .live-item-meta {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .live-item-meta .chip {
+      background: var(--bg-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .live-item-actions {
+      display: flex;
+      gap: 0.4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
+    }
+    .live-item-actions .btn {
+      flex: 1;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
     /* ===== Toast ===== */
     .toast {
       position: fixed;
@@ -459,6 +552,26 @@
         <button class="tab-btn" data-tab="links" role="tab">🔗 链接</button>
       </nav>
     </header>
+
+    <!-- ===== Live Data Panel ===== -->
+    <section class="panel panel-live" id="panel-live">
+      <div class="panel-head">
+        <span>// 当前数据 <span id="live-source" class="live-source">本地 yml</span></span>
+        <span class="panel-actions">
+          <button class="btn btn-small" id="btn-reload-live" type="button">🔄 刷新</button>
+          <button class="btn btn-small btn-primary" id="btn-new" type="button">＋ 新增</button>
+        </span>
+      </div>
+      <div class="panel-body">
+        <div class="live-empty" id="live-empty" hidden>
+          <p>⚠️ 当前显示空表单,点击「🔄 刷新」从 <code>source/_data/*.yml</code> 加载现有数据</p>
+          <p class="hint">需先 <code>npm run admin</code> 启动后端</p>
+        </div>
+        <div class="live-list" id="live-list">
+          <!-- JS 注入当前工具/链接列表,每条带「✏️ 编辑」「🗑 删除」按钮 -->
+        </div>
+      </div>
+    </section>
 
     <main class="panels">
       <!-- ===== Form Panel ===== -->
