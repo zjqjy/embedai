@@ -365,7 +365,169 @@ app.post('/api/deploy', (_req, res) => {
   });
 });
 
-// ---------- 文章管理 ----------
+// ---------- 从文章扫描工具候选 ----------
+// 解析 markdown table 行,提取 (name, url, description) 作为工具候选
+// GET /api/tools/candidates?article=slug
+app.get('/api/tools/candidates', (req, res) => {
+  try {
+    const slug = (req.query.article || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    if (!slug) return res.status(400).json({ ok: false, error: '缺少 article 参数' });
+    const filePath = path.join(POSTS_DIR, `${slug}.md`);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ ok: false, error: '文章不存在' });
+    }
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const candidates = extractToolsFromMarkdown(raw, slug);
+
+    // 读取现有 tools.yml,标记已存在的
+    let existing = [];
+    try {
+      existing = yaml.load(fs.readFileSync(TOOLS_YML, 'utf8')) || [];
+      if (!Array.isArray(existing)) existing = [];
+    } catch (e) { existing = []; }
+    const existingNames = new Set(existing.map(t => t && t.name).filter(Boolean));
+    candidates.forEach(c => { c.exists = existingNames.has(c.name); });
+
+    res.json({ ok: true, slug, candidates, existingCount: existing.length });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// 解析 markdown 提取工具候选
+function extractToolsFromMarkdown(md, slug) {
+  const candidates = [];
+  // 1. 匹配 markdown 表格行: | col1 | col2 | col3 |
+  // 注意:不能用 g flag(会让 .match() 丢掉捕获组)
+  const tableRowRe = /^\s*\|(.+)\|\s*$/m;
+  const rows = [];
+  md.split(/\r?\n/).forEach((line) => {
+    const m = line.match(tableRowRe);
+    if (m && m[1]) rows.push(m[1].split('|').map(c => c.trim()));
+  });
+  // 过滤掉表头分隔行(只含 - : 等)
+  const dataRows = rows.filter(r => !r.every(c => /^[-:]+$/.test(c)));
+
+  for (const cols of dataRows) {
+    // 期望: [序号, 软件名, URL, 描述?] 或 [软件名, URL, 描述]
+    if (cols.length < 2) continue;
+    // 找包含 URL 的列
+    const urlIdx = cols.findIndex(c => /https?:\/\//.test(c));
+    if (urlIdx < 0) continue;
+    // name 是 URL 列的前一列(或同列去掉 URL 后剩下的)
+    let nameCol = cols[urlIdx - 1] || cols[urlIdx];
+    let descCol = cols[urlIdx + 1] || '';
+    // 清洗 name (去掉 `<br>`、`<br/>`、注释)
+    let name = nameCol.replace(/<br\s*\/?>/gi, '').replace(/<!--.*?-->/g, '').trim();
+    // 提取 URL(去掉 <> 包裹)
+    const urlMatch = cols[urlIdx].match(/https?:\/\/[^\s<>"')\]]+/);
+    if (!urlMatch) continue;
+    const url = urlMatch[0];
+    // 跳过纯数字 name(序号列)
+    if (/^\d+$/.test(name)) continue;
+    if (!name || name.length < 2) continue;
+
+    // 推断 category
+    const n = name.toLowerCase();
+    let category = 'util';
+    // AI/学习辅助类:Claude/GPT/Cursor 等 AI 工具,skill/助手
+    if (/claude|gpt|chatgpt|cursor|copilot|minimax|openai|anthropic|skill|助手|assistant|obsidian|notion/.test(n)) category = 'ai';
+    // 软件开发类:STM32/ESP32 等嵌入式 IDE,Git 等版本控制,VSCode 等编辑器
+    else if (/stm32|esp32|cube|mx|arduino|ide|ccswitch|platformio|keil|vscode|visual ?studio|git|github|svn|嵌入式|embedded/.test(n)) category = 'dev';
+    // 调试烧录类
+    else if (/openocd|jlink|j-link|st-link|debug|烧录|烧写|voffa|串口|pulse|jtag|swd/.test(n)) category = 'debug';
+
+    // extract_code
+    let extract_code = '';
+    const pwdMatch = url.match(/[?&]pwd=([a-zA-Z0-9]+)/);
+    if (pwdMatch) extract_code = pwdMatch[1];
+
+    // type
+    const type = /baidu|pan\.baidu/.test(url) ? 'baidu' :
+                 /github|gitee/.test(url) ? 'github' : 'official';
+
+    // tags
+    const tags = ['AI', '工具'].filter(t => n.includes(t.toLowerCase()));
+    if (category === 'dev') tags.push('嵌入式');
+    tags.push(category);
+
+    candidates.push({
+      name,
+      url,
+      category,
+      tagline: descCol ? descCol.replace(/<br\s*\/?>/gi, '').trim() : `${name} - ${category}`,
+      reason: `从文章 ${slug} 提取`,
+      tags: [...new Set(tags)],
+      icon: name.includes('Claude') ? '🤖' : name.includes('Git') ? '🔀' :
+            name.includes('STM') ? '🔧' : name.includes('Keil') ? '⚙️' : '📦',
+      type,
+      extract_code,
+      status: 'active',
+      added: new Date().toISOString().slice(0, 10),
+      exists: false // 后面 fill 时更新
+    });
+  }
+  return candidates;
+}
+
+// POST /api/tools/import - 批量导入工具候选
+app.post('/api/tools/import', (req, res) => {
+  try {
+    const incoming = req.body || {};
+    const items = Array.isArray(incoming.items) ? incoming.items : [];
+    if (items.length === 0) {
+      return res.status(400).json({ ok: false, error: '没有要导入的工具' });
+    }
+    let existing = [];
+    try {
+      existing = yaml.load(fs.readFileSync(TOOLS_YML, 'utf8')) || [];
+      if (!Array.isArray(existing)) existing = [];
+    } catch (e) { existing = []; }
+    const stats = { added: 0, skipped: 0 };
+    const newItems = [];
+    items.forEach((item) => {
+      if (!item || !item.name) { stats.skipped++; return; }
+      if (existing.some(t => t && t.name === item.name)) {
+        stats.skipped++;
+        return;
+      }
+      // 清洗后写入
+      const clean = {
+        name: item.name,
+        category: item.category || 'util',
+        tagline: item.tagline || item.name,
+        reason: item.reason || '',
+        tags: Array.isArray(item.tags) ? item.tags : [],
+        icon: item.icon || '📦',
+        links: []
+      };
+      existing.push(clean);
+      newItems.push(clean);
+      stats.added++;
+    });
+    const dump = yaml.dump(existing, {
+      lineWidth: -1,
+      noRefs: true,
+      sortKeys: false,
+      quotingType: '"'
+    });
+    const bytes = writeYmlWithHeader(
+      TOOLS_YML,
+      '# ============================================\n# 嵌入式工具列表 (Tools Registry)\n# 由 admin-server 自动写入,可手工调整\n# 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section\n# ============================================',
+      dump
+    );
+    res.json({
+      ok: true,
+      file: 'tools.yml',
+      count: existing.length,
+      bytes,
+      stats,
+      message: `已导入:新增 ${stats.added} 条,跳过 ${stats.skipped} 条 (重复) (共 ${existing.length} 条)`
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
 // 列出所有文章 (从 frontmatter 提取 title/date/tags)
 app.get('/api/posts', (_req, res) => {
   try {

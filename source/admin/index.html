@@ -430,6 +430,42 @@
       margin: 0 0.25rem;
     }
 
+    /* ===== AI Auto-fill Button ===== */
+    .field-row-inline {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .field-row-inline .input { flex: 1; }
+    .btn-ai {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex: 0;
+    }
+    .btn-ai:hover {
+      filter: brightness(1.15);
+      color: white;
+    }
+    .btn-extract {
+      background: linear-gradient(135deg, var(--warm), #c47a45);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex: 0;
+    }
+    .btn-extract:hover {
+      filter: brightness(1.15);
+      color: white;
+    }
+
     /* ===== Tool Link Row (stacked: 5 fields, roomy) ===== */
     .link-row-stacked {
       display: flex;
@@ -910,6 +946,7 @@
         <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
         <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
         <span class="actions-divider"></span>
+        <button class="btn btn-extract" id="btn-extract-from-articles" title="扫描文章正文表格,提取软件作为工具">📦 从文章提取</button>
         <a class="btn btn-link" href="/tools/" target="_blank" title="新窗口打开 /tools/ 公开页">👁 浏览 /tools/</a>
         <a class="btn btn-link" href="/" target="_blank" title="新窗口打开首页">🏠 首页</a>
         <span id="file-saved-indicator" class="file-saved-indicator"></span>
@@ -1041,7 +1078,10 @@
 
               <div class="field">
                 <label class="field-label" for="l-url">url <span class="req">*</span></label>
-                <input id="l-url" class="input" type="text" data-field="url" placeholder="https://...">
+                <div class="field-row-inline">
+                  <input id="l-url" class="input" type="text" data-field="url" placeholder="https://...">
+                  <button type="button" class="btn btn-ai" id="btn-ai-autofill" title="粘贴 URL 后点这个按钮,自动识别 type/提取码/label/key">✨ AI</button>
+                </div>
               </div>
 
               <div class="field" id="l-extract-wrap">
