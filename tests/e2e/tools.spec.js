@@ -21,7 +21,7 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
   test('Hero + 4 分类 chip 存在', async ({ page }) => {
     await page.goto('/tools/');
     await expect(page.locator('h1')).toBeVisible();
-    const chips = page.locator('.chip, [data-cat-filter]');
+    const chips = page.locator('.filter-chip');
     // 至少 5 个 chip（全部 + 4 分类）
     expect(await chips.count()).toBeGreaterThanOrEqual(5);
   });
