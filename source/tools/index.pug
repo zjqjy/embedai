@@ -86,9 +86,28 @@ html(lang="zh-CN")
         0%, 100% { box-shadow: 0 0 0 4px var(--accent-glow); }
         50% { box-shadow: 0 0 0 8px transparent; }
       }
-      .topbar a { color: var(--text-2); text-decoration: none; transition: color 0.2s; }
-      .topbar a:hover { color: var(--accent); }
-      .topbar-links { display: flex; gap: 1.5rem; }
+      .topbar a {
+        color: var(--text);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 0.32rem 0.7rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .topbar a:hover {
+        color: var(--accent);
+        background: var(--bg-soft);
+      }
+      .topbar a.active {
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-weight: 600;
+      }
+      .topbar-links { display: flex; gap: 0.5rem; align-items: center; }
 
       .hero {
         padding: 5rem 0 3rem;
@@ -667,9 +686,10 @@ html(lang="zh-CN")
             span.status-dot
             | 阿程的碎碎念 &nbsp;//&nbsp; tools
           .topbar-links
-            a(href="/" data-magnetic="0.25") /home
-            a(href="/about/" data-magnetic="0.25") /about
-            a(href="/tools/" data-magnetic="0.25") /tools
+            - var p = '/tools/'
+            a(href="/" class=(p === '/' ? 'active' : '') data-magnetic="0.25") /home
+            a(href="/about/" class=(p.indexOf('/about') === 0 ? 'active' : '') data-magnetic="0.25") /about
+            a(href="/tools/" class=(p.indexOf('/tools') === 0 ? 'active' : '') data-magnetic="0.25") /tools
             a(href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25") /bilibili ↗
 
       section.hero(data-reveal="up")
