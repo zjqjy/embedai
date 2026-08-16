@@ -38,7 +38,7 @@ EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）
 在 Claude Code 对话中输入以下命令：
 
 ```
-帮我安装 https://github.com/zjqjy/embedded-project-manager.git 的 skill
+帮我安装 {% link "github_embedded-project-manage" %} 的 skill
 ```
 
 > 注意：安装过程中需要一直同意请求，整个过程可能需要较长时间，并会进行文件扫描和下载。
@@ -136,6 +136,23 @@ EM-SKILL 整合了以下优秀开源工具：
 <img src="/images/claude-code-install/qq交流群号.jpg" width="300" alt="QQ交流群">
 
 > 💬 加入群聊，与志同道合的朋友一起交流学习！
+
+---
+
+## 支持一下
+
+笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。
+
+<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0 4px">
+  <div style="text-align:center">
+    <img src="/images/reward/alipay.jpg" width="130" alt="支付宝">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 支付宝</div>
+  </div>
+  <div style="text-align:center">
+    <img src="/images/reward/wechat.jpg" width="130" alt="微信">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 微信</div>
+  </div>
+</div>
 
 ---
 

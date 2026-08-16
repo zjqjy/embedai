@@ -1,25 +1,16 @@
 # ============================================
 # 嵌入式工具列表 (Tools Registry)
+# 由 admin-server 自动写入,可手工调整
 # ============================================
-# 每条工具数据:
-#   name:     显示名
-#   category: dev(软件开发) | debug(调试烧录) | ai(学习辅助) | util(实用工具)
-#   tagline:  一句话介绍
-#   reason:   推荐理由（口语化，对齐「阿程的碎碎念」品牌）
-#   tags:     二级标签（用于多 tag 过滤）
-#   icon:     emoji 图标
-#   links:    引用 links.yml 的 key（不要重复写 url）
-# ============================================
-
-# --- 🤖 学习辅助 ---
 - name: Claude Code
   category: ai
+  icon: 🤖
   tagline: CLI 里的 AI 编程助手
   reason: 嵌入式学习的好搭子，写驱动 / 调协议时问答比搜文档快
-  tags: [AI, CLI, Anthropic]
-  icon: 🤖
+  tags:
+    - AI
+    - CLI
+    - Anthropic
   links:
     - key: claude_oneclick
       type: 一键安装包
-    - key: claude_official
-      type: 官网

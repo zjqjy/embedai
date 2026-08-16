@@ -1,0 +1,13 @@
+# butterfly 主题覆盖配置
+# 此文件中的设置会覆盖 themes/butterfly/_config.yml 的默认值
+# hexo 启动时会自动合并到 theme.* 命名空间
+
+# 打赏配置 — 4 篇教程 + 以后所有新文章结尾默认带
+reward:
+  enable: true
+  text: 笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。
+  QR_code:
+    - img: /images/reward/alipay.jpg
+      text: 支付宝
+    - img: /images/reward/wechat.jpg
+      text: 微信

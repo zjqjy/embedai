@@ -1,8 +1,9 @@
-.post-reward
-  .reward-button
-    i.fas.fa-qrcode
-    = theme.reward.text || _p('donate')
+details.post-reward
+  summary.reward-button(aria-label='支持作者')
+    i.fas.fa-mug-hot
+    span.txt 支持一下
   .reward-main
+    p.reward-tip 如果觉得有帮助,可以请我喝杯咖啡 ☕
     ul.reward-all
       each item in theme.reward.QR_code
         - const clickTo = item.link || item.img

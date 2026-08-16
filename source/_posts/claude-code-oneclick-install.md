@@ -33,3 +33,20 @@ toc: true
 <img src="/images/claude-code-oneclick/qq交流群号.jpg" width="300" alt="QQ交流群">
 
 > 💬 加入群聊，与志同道合的朋友一起交流学习！
+
+---
+
+## 支持一下
+
+笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。
+
+<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0 4px">
+  <div style="text-align:center">
+    <img src="/images/reward/alipay.jpg" width="130" alt="支付宝">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 支付宝</div>
+  </div>
+  <div style="text-align:center">
+    <img src="/images/reward/wechat.jpg" width="130" alt="微信">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 微信</div>
+  </div>
+</div>

@@ -1,81 +1,118 @@
+// 浮窗式打赏 — 胶囊形 + accent 色 + 文字(显眼但不抢戏)
 .post-reward
-  position: relative
-  margin-top: 80px
-  width: 100%
-  text-align: center
-  pointer-events: none
+  position: fixed
+  right: 20px
+  bottom: 120px
+  z-index: 999
 
-  & > *
-    pointer-events: auto
+  & > summary
+    list-style: none
+    cursor: pointer
+    user-select: none
+
+    &::-webkit-details-marker
+      display: none
 
   .reward-button
-    display: inline-block
-    padding: 4px 24px
+    display: inline-flex
+    align-items: center
+    gap: 6px
+    padding: 10px 16px
+    height: 40px
+    border-radius: 20px
     background: var(--btn-bg)
     color: var(--btn-color)
+    font-weight: 700
+    font-size: 13.5px
     cursor: pointer
-    addBorderRadius()
-    @extend .btn-effects
-    @extend .btn-effects-large
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .14), 0 2px 6px rgba(0, 0, 0, .08)
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease
 
     i
-      margin-right: 5px
-      vertical-align: baseline
+      font-size: 16px
 
-  &:hover
-    .reward-button
+    .txt
+      letter-spacing: .02em
+
+    &:hover
+      transform: translateY(-2px) scale(1.04)
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .18), 0 3px 8px rgba(0, 0, 0, .10)
       background: var(--btn-hover-color)
 
-    & > .reward-main
-      display: block
+  &[open] .reward-button
+    background: var(--btn-hover-color)
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .12)
 
   .reward-main
     position: absolute
-    bottom: 50px
-    left: 0
-    z-index: 100
+    right: 0
+    bottom: calc(100% + 14px)
+    width: 280px
+    padding: 14px
+    background: var(--reward-pop)
+    border-radius: 12px
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .15), 0 4px 8px rgba(0, 0, 0, .08)
     display: none
-    padding: 0 0 15px
-    width: 100%
 
-    .reward-all
-      display: inline-block
-      margin: 0
-      padding: 20px 10px
-      background: var(--reward-pop)
-      addBorderRadius()
+  &[open] .reward-main
+    display: block
 
-      &:before
-        position: absolute
-        bottom: -10px
-        left: 0
-        width: 100%
-        height: 20px
-        content: ''
+  .reward-tip
+    font-size: 12.5px
+    color: $reward-pop-up-color
+    text-align: center
+    line-height: 1.6
+    margin: 0 0 10px
 
-      &:after
-        position: absolute
-        right: 0
-        bottom: 2px
-        left: 0
-        margin: 0 auto
-        width: 0
-        height: 0
-        border-top: 13px solid var(--reward-pop)
-        border-right: 13px solid transparent
-        border-left: 13px solid transparent
-        content: ''
+  .reward-all
+    display: flex
+    justify-content: center
+    gap: 8px
+    margin: 0
+    padding: 0
+    list-style: none
 
-      .reward-item
-        display: inline-block
-        padding: 0 8px
-        list-style-type: none
-        vertical-align: top
+    .reward-item
+      display: flex
+      flex-direction: column
+      align-items: center
+      gap: 4px
 
-        img
-          width: 130px
-          height: 130px
+      img
+        width: 116px
+        height: 116px
+        border-radius: 4px
 
-        .post-qr-code-desc
-          width: 130px
-          color: $reward-pop-up-color
+      .post-qr-code-desc
+        font-size: 11.5px
+        color: $reward-pop-up-color
+        font-weight: 600
+
+  &::after
+    content: ''
+    position: absolute
+    right: 24px
+    bottom: -6px
+    width: 12px
+    height: 12px
+    background: var(--reward-pop)
+    transform: rotate(45deg)
+    border-radius: 0 0 3px 0
+
+  @media (max-width: 640px)
+    right: 12px
+    bottom: 90px
+
+    .reward-button
+      padding: 8px 14px
+      font-size: 12.5px
+
+      .txt
+        display: none  // 移动端只显示图标
+
+    .reward-main
+      width: 240px
+
+      .reward-all .reward-item img
+        width: 96px
+        height: 96px

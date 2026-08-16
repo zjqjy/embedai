@@ -373,6 +373,23 @@ claude mcp add -s user MiniMax --env MINIMAX_API_KEY=api_key --env MINIMAX_API_H
 
 ---
 
+## 支持一下
+
+笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。
+
+<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0 4px">
+  <div style="text-align:center">
+    <img src="/images/reward/alipay.jpg" width="130" alt="支付宝">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 支付宝</div>
+  </div>
+  <div style="text-align:center">
+    <img src="/images/reward/wechat.jpg" width="130" alt="微信">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 微信</div>
+  </div>
+</div>
+
+---
+
 如果教程对你有帮助，欢迎去 B站 **一键三连** 支持一下！
 
 你们的支持是我更新下去的最大动力！
