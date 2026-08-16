@@ -690,6 +690,7 @@
     card.className = 'live-item live-item-link status-' + status + (isInline ? ' status-inline' : '');
     card.dataset.article = articleSlug;
     card.dataset.key = link.key;
+    const encodedUrl = encodeURIComponent(link.url || '');
     card.innerHTML = `
       <div class="live-item-row1">
         <span class="status-dot-inline status-${status}${isInline ? ' status-dot-inline-mark' : ''}" title="${isInline ? '内联(未注册到 links.yml)' : status}">${statusIcon}</span>
@@ -700,7 +701,9 @@
       <div class="live-item-hover">
         <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
         ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-        ${!isInline ? `<button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>` : '<span class="chip-mini chip-hint" title="内联 URL 无法直接编辑,改为 {% link %} 才能注册">未注册</span>'}
+        ${!isInline
+          ? `<button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>`
+          : `<button class="btn-icon btn-migrate-inline" data-article="${escapeHtml(articleSlug)}" data-url="${encodedUrl}" type="button" title="注册到 links.yml + 替换正文为 {% link %}">📝 注册</button>`}
       </div>
     `;
     card.addEventListener('click', (e) => {
@@ -708,6 +711,57 @@
       if (!isInline) editLink(articleSlug, link.key);
     });
     return card;
+  }
+
+  // ★ 把 inline URL 注册到 links.yml + 替换正文为 {% link key %}
+  async function migrateInlineLink(articleSlug, inlineUrl) {
+    // 自动建议 key:从 URL 提取有意义的部分
+    const suggestedKey = suggestKeyFromUrl(inlineUrl, articleSlug);
+    const userKey = prompt(
+      `注册 inline 链接\n\n文章: ${articleSlug}\nURL: ${inlineUrl.substring(0, 60)}...\n\n请输入 key（英文/数字/下划线）:`,
+      suggestedKey
+    );
+    if (!userKey) return;
+    if (!/^[a-zA-Z0-9_-]+$/.test(userKey)) {
+      toast('key 格式无效,只能英文/数字/下划线/连字符', 'error');
+      return;
+    }
+    const label = prompt('显示名(label):', suggestedKey.replace(/_/g, ' ')) || userKey;
+    const type = inlineUrl.includes('pan.baidu') ? 'baidu' :
+                 inlineUrl.includes('github') ? 'github' : 'official';
+    let extract_code = '';
+    const m = inlineUrl.match(/[?&]pwd=([a-zA-Z0-9]+)/);
+    if (m) extract_code = m[1];
+    try {
+      const resp = await fetch(`/api/posts/${encodeURIComponent(articleSlug)}/migrate-link`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          inlineUrl, key: userKey, label, type, extract_code
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || `HTTP ${resp.status}`);
+      toast(`✅ ${data.message}`, 'success', 5000);
+      // 重新加载数据
+      await loadLiveData();
+    } catch (e) {
+      toast('迁移失败:' + e.message, 'error');
+    }
+  }
+
+  function suggestKeyFromUrl(url, slug) {
+    // 从 URL 提取有意义部分
+    // 例: https://pan.baidu.com/s/1lxHV...?pwd=4tff → claude-code-install-guide_4tff
+    try {
+      const u = new URL(url);
+      const domain = u.hostname.replace(/^www\./, '').replace(/\.\w+$/, '');
+      const pathPart = u.pathname.split('/').filter(Boolean).pop() || '';
+      const clean = (domain + '_' + pathPart).replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase().substring(0, 30);
+      return clean || (slug + '_link');
+    } catch (e) {
+      return slug + '_link';
+    }
   }
 
   // 扫描文章正文,提取硬编码 URL(未走 {% link %} 的内联链接)
@@ -862,6 +916,14 @@
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           editLink(btn.dataset.article, btn.dataset.key);
+        });
+      });
+      // ★ 内联 URL 注册按钮
+      list.querySelectorAll('.btn-migrate-inline').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const url = decodeURIComponent(btn.dataset.url);
+          migrateInlineLink(btn.dataset.article, url);
         });
       });
     } else if (tab === 'articles') {

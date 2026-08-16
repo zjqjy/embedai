@@ -419,6 +419,99 @@ app.delete('/api/posts/:slug', (req, res) => {
   }
 });
 
+// 把文章正文里的 inline URL 替换为 {% link "key" %},同时在 links.yml 注册新条目
+// body: { inlineUrl, key, label, type, extract_code?, note? }
+app.post('/api/posts/:slug/migrate-link', (req, res) => {
+  try {
+    const slug = req.params.slug.replace(/[^a-zA-Z0-9_-]/g, '');
+    const filePath = path.join(POSTS_DIR, `${slug}.md`);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ ok: false, error: '文章不存在' });
+    }
+    const body = req.body || {};
+    const inlineUrl = body.inlineUrl;
+    const key = (body.key || '').trim();
+    const label = (body.label || key).trim();
+    const type = body.type || 'official';
+    const extract_code = body.extract_code || '';
+    const note = body.note || '';
+    if (!inlineUrl) return res.status(400).json({ ok: false, error: '缺少 inlineUrl' });
+    if (!/^[a-zA-Z0-9_-]+$/.test(key)) {
+      return res.status(400).json({ ok: false, error: 'key 只能包含英文/数字/下划线/连字符' });
+    }
+
+    // 1. 读 .md 正文,替换 inlineUrl 为 {% link key %}
+    let raw = fs.readFileSync(filePath, 'utf8');
+    const before = raw;
+    // 多种 URL 出现形式都替换:
+    //   <https://...>    → <{% link key %}>
+    //   https://...      → {% link key %}
+    //   [text](url)      → [text]({% link key %})
+    const escInlineUrl = inlineUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re1 = new RegExp('<' + escInlineUrl + '>', 'g');
+    raw = raw.replace(re1, `{% link "${key}" %}`);
+    const re2 = new RegExp('\\(' + escInlineUrl + '\\)', 'g');
+    raw = raw.replace(re2, `({% link "${key}" %})`); // 暂时保留括号避免破坏 markdown link 语法
+    // 简单 url 替换(无 <> 包裹的裸 url)
+    raw = raw.split(inlineUrl).join(`{% link "${key}" %}`);
+    // 上一步会把 markdown [text](url) 里的 url 也替换,但留下括号
+    // 把 ([text]({% link "key" %}) 这种格式回滚成 [text]({% link "key" %})
+    raw = raw.replace(/\(\[([^\]]+)\]\(\{% link "([^"]+)" %\}\)/g, '[$1]({% link "$2" %})');
+    if (raw === before) {
+      return res.status(400).json({ ok: false, error: '正文中未找到该 URL,无法替换' });
+    }
+    // 备份
+    fs.copyFileSync(filePath, filePath + '.bak');
+    fs.writeFileSync(filePath, raw, 'utf8');
+
+    // 2. 在 links.yml 注册新条目(若 key 不存在)
+    let links = {};
+    try {
+      const raw2 = fs.readFileSync(LINKS_YML, 'utf8');
+      links = yaml.load(raw2) || {};
+      if (typeof links !== 'object' || Array.isArray(links)) links = {};
+    } catch (e) { links = {}; }
+    if (!Array.isArray(links[slug])) links[slug] = [];
+    const idx = links[slug].findIndex(l => l && l.key === key);
+    const newEntry = {
+      key,
+      label,
+      url: inlineUrl,
+      type,
+      status: 'active',
+      added: new Date().toISOString().slice(0, 10)
+    };
+    if (extract_code) newEntry.extract_code = extract_code;
+    if (note) newEntry.note = note;
+    if (idx >= 0) {
+      // 已有同 key → 合并(保留原 note,更新 url 等)
+      links[slug][idx] = { ...links[slug][idx], ...newEntry };
+    } else {
+      links[slug].push(newEntry);
+    }
+    const dump = yaml.dump(links, {
+      lineWidth: -1,
+      noRefs: true,
+      sortKeys: false,
+      quotingType: '"'
+    });
+    const bytes = writeYmlWithHeader(
+      LINKS_YML,
+      '# ============================================\n# 链接中央注册表 (按文章嵌套)\n# 由 admin-server 自动写入,可手工调整\n# ============================================',
+      dump
+    );
+    res.json({
+      ok: true,
+      file: `${slug}.md`,
+      key,
+      bytes,
+      message: `已迁移:正文 URL → {% link "${key}" %},links.yml 注册成功`
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 // ---------- 启动 ----------
 app.listen(PORT, () => {
   console.log('\n========================================');
