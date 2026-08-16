@@ -8,6 +8,9 @@ tests/
     ├── _shared.js             # 共享工具(console 监听等)
     ├── home.spec.js           # 首页 (/)
     ├── about.spec.js          # 关于页 (/about/)
+    ├── tools.spec.js          # 工具页 (/tools/) ⭐ S6
+    ├── admin.spec.js          # 管理后台 (/admin/) ⭐ S6
+    ├── posts-links.spec.js    # 文章外链 helper 验证 ⭐ S6
     └── accessibility.spec.js  # 全站无障碍 / 视觉验收
 ```
 
@@ -27,6 +30,9 @@ tests/
 | 阅读进度 / 回到顶部 | `home.spec.js` |
 | 字符逐字入场 | `home.spec.js` |
 | 键盘可达 / focus | `home.spec.js` |
+| 工具页加载 + 筛选 + modal | `tools.spec.js` ⭐ |
+| Admin 双 tab + YAML 生成 + localStorage | `admin.spec.js` ⭐ |
+| 文章外链 helper 渲染 + 提取码 | `posts-links.spec.js` ⭐ |
 | 桌面 / 移动端不溢出 | `accessibility.spec.js` |
 | `prefers-reduced-motion` | `accessibility.spec.js` |
 | 视觉截图归档 | `accessibility.spec.js` |

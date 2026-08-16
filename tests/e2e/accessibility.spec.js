@@ -8,7 +8,9 @@ const { test, expect } = require('@playwright/test');
 
 const PAGES = [
   { name: 'home', path: '/' },
-  { name: 'about', path: '/about/' }
+  { name: 'about', path: '/about/' },
+  { name: 'tools', path: '/tools/' },
+  { name: 'admin', path: '/admin/' }
 ];
 
 for (const { name, path } of PAGES) {
