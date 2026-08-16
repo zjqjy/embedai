@@ -732,17 +732,18 @@
           card.className = 'live-item live-item-link status-' + status;
           card.dataset.article = articleSlug;
           card.dataset.key = link.key;
+          // 卡片只显示 2 项:name + url
+          // 状态/编辑按钮/类型/提取码 → hover 时显示
           card.innerHTML = `
             <div class="live-item-row1">
-              <span class="live-item-name" title="${escapeHtml(link.label || link.key)}">${escapeHtml(link.label || link.key)}</span>
               <span class="status-dot-inline status-${status}" title="${status}">${statusIcon}</span>
-              <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
+              <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
             </div>
             <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
-            <div class="live-item-meta">
+            <div class="live-item-hover">
               <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
               ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-              <span class="chip-mini chip-key">${escapeHtml(link.key)}</span>
+              <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
             </div>
           `;
           card.addEventListener('click', (e) => {
