@@ -555,7 +555,12 @@
       copyBtn.type = 'button';
       copyBtn.className = 'tool-modal-link-copy';
       copyBtn.textContent = '📋 复制';
-      copyBtn.addEventListener('click', function () { copyToClipboard(link.extract_code, copyBtn); });
+      copyBtn.addEventListener('click', function () {
+        const text = link.extract_code
+          ? `链接：${link.url}\n提取码：${link.extract_code}`
+          : link.url;
+        copyToClipboard(text, copyBtn);
+      });
       codeEl.appendChild(copyBtn);
       wrap.appendChild(codeEl);
     }

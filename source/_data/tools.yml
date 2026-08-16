@@ -11,42 +11,6 @@
 #   links:    引用 links.yml 的 key（不要重复写 url）
 # ============================================
 
-# --- 💻 软件开发 ---
-- name: STM32CubeIDE
-  category: dev
-  tagline: ST 官方 IDE，一站式 STM32 开发
-  reason: 写 STM32 不用折腾工具链，编译 + 调试 + 烧录全集成
-  tags: [STM32, IDE, ST]
-  icon: 💻
-  links: []
-
-- name: PlatformIO
-  category: dev
-  tagline: 跨平台嵌入式开发框架
-  reason: VSCode 里装个插件就能写 STM32/ESP32/Arduino，库管理省心
-  tags: [ESP32, Arduino, IDE, VSCode]
-  icon: 🔌
-  links: []
-
-# --- 🔌 调试烧录 ---
-- name: OpenOCD
-  category: debug
-  tagline: 开源调试烧录工具
-  reason: J-Link / ST-Link 都能驱动，写调试脚本和自动化测试必备
-  tags: [JTAG, SWD, 开源]
-  icon: 🔧
-  links:
-    - key: xpack_openocd
-      type: 发布页
-
-- name: VOFA+
-  category: debug
-  tagline: 串口波形可视化助手
-  reason: 调 PID 看实时曲线超方便，支持多种协议 + 数据导出
-  tags: [串口, 波形, 可视化]
-  icon: 📈
-  links: []
-
 # --- 🤖 学习辅助 ---
 - name: Claude Code
   category: ai
@@ -59,28 +23,3 @@
       type: 一键安装包
     - key: claude_official
       type: 官网
-
-- name: Cursor
-  category: ai
-  tagline: AI-first 代码编辑器
-  reason: 重度 AI 编程时比 VSCode 更顺手，嵌入式偶尔用它做探索式编码
-  tags: [AI, IDE]
-  icon: 🖱
-  links: []
-
-# --- 🛠 实用工具 ---
-- name: KiCad
-  category: util
-  tagline: 开源 EDA，PCB 设计瑞士军刀
-  reason: 画原理图 + PCB 一站式，3D 预览避免画错封装
-  tags: [PCB, EDA, 硬件]
-  icon: 🛠
-  links: []
-
-- name: PulseView
-  category: util
-  tagline: 逻辑分析仪上位机（sigrok）
-  reason: 几十块的逻辑分析仪 + 它 ≈ 千元示波器的体验
-  tags: [逻辑分析, 测试, 协议解码]
-  icon: 📊
-  links: []

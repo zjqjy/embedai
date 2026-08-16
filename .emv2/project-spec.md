@@ -150,6 +150,50 @@
 | S5-3 | ✅ 完成 | 文章二维码已生成 |
 | S5-4 | ✅ 完成 | 成功部署到 embedai.top |
 
+### S6: 嵌入式工具聚合 + 文章链接中央化（合并 S6+S7）
+- **状态**: 🚧 开发中
+- **讨论ID**: 20260816-embedded-tools
+- **讨论目录**: `.emv2/discussion/20260816-embedded-tools/`
+- **需求**: 工具聚合页（个人精选）+ 文章外链中央化管理（一键替换失效网盘）
+- **关键决策**: 详见 `.emv2/decisions.md` D-S6-1 ~ D-S6-11
+- **开发内容**:
+  1. S6-A: 双数据层 + 现有文章迁移 — `links.yml` + `tools.yml` + `_posts/*.md` 外链迁移
+  2. S6-B: 公开工具页 — `/tools/` + 卡片网格 + 筛选 + modal
+  3. S6-C: 文章 helper + _posts/*.md 全面迁移 — `{% link "key" %}` + 改造所有外链文章
+  4. S6-D: 统一 Admin `/admin/` — 双 tab（工具 / 链接）+ 实时 YAML + localStorage 草稿
+  5. S6-E: 集成 + 测试 + 部署 — 首页入口 + e2e + 部署
+- **验证方式**: 本地 `hexo server` + e2e 测试 + 部署到 embedai.top
+
+#### 子任务详情
+
+**S6-A: 双数据层 + 现有文章迁移** 🚧
+- **开发内容**:
+  - `source/_data/links.yml`：3-5 条链接（从现有文章 grep 出来）
+  - `source/_data/tools.yml`：8 条工具（每类 2 条），links 引用 link keys
+  - 迁移现有文章外链到 links.yml
+- **schema**:
+  - links: `{key, label, url, type, extract_code?, note?, added?}`
+  - tools: `{name, category, tagline, reason, tags[], icon, links[{key, type}]}`
+- **验证**: `hexo generate` 无报错 + 现有文章渲染**无视觉 regression**
+
+**S6-B: 公开工具页 + 卡片渲染** [ ]
+- **开发内容**: `source/tools/index.pug` + Hero + 卡片网格（复用 `.cat` 视觉）+ 导航 + 分类 chip + tag 过滤 + modal
+- **验证**: `/tools/` 渲染 8 卡 + 3D/涟漪 + 筛选 + modal 显示多链接 + 提取码
+
+**S6-C: 文章 helper + _posts/*.md 全面迁移** [ ]
+- **开发内容**:
+  - `themes/butterfly/scripts/link.js` 注册 `link(key, text)` helper
+  - 改造所有 `_posts/*.md`：硬编码外链 → `{% link "key" %}`
+- **验证**: helper 正确渲染 + 改 links.yml 一处 → rebuild → 全站同步
+
+**S6-D: 统一 Admin `/admin/`** [ ]
+- **开发内容**: 静态 HTML 编辑器（Tools + Links 双 tab + 实时 YAML + localStorage）
+- **验证**: 双 tab 切换 + form 填表 + 实时生成 + 草稿持久化 + 粘贴闭环
+
+**S6-E: 集成 + 测试 + 部署** [ ]
+- **开发内容**: 首页分类卡接管 + `tests/e2e/{tools,admin,posts-links}.spec.js` + 部署
+- **验证**: e2e 全绿 + embedai.top `/tools/` `/admin/` 在线 + **核心收益：改 links.yml 一个 url 全站同步**
+
 ## 人工验证记录（HVR）
 - [HVR-S1-1] 2026-03-31: 初始部署验证 - 结果：成功
 
@@ -165,6 +209,7 @@
 |------|--------|------|
 | 2026-03-31 | 20260331-homepage | 首页优化与导航门户设计 |
 | 2026-05-31 | 20260531-claude-oneclick | Claude Code 一键安装教程 |
+| 2026-08-16 | 20260816-embedded-tools | 嵌入式工具聚合页 + 管理界面 |
 
 ## 内容分类规划
 

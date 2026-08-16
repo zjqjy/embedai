@@ -11,11 +11,11 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     watcher.assertClean();
   });
 
-  test('渲染 8 张工具卡', async ({ page }) => {
+  test('渲染 1 张工具卡（Claude Code）', async ({ page }) => {
     await page.goto('/tools/');
     await page.waitForTimeout(800); // 等客户端解析 + 渲染
     const cards = page.locator('.cat');
-    await expect(cards).toHaveCount(8);
+    await expect(cards).toHaveCount(1);
   });
 
   test('Hero + 4 分类 chip 存在', async ({ page }) => {
