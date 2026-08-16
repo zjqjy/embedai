@@ -716,7 +716,7 @@ body::before {
 }</style></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; tools</span><div class="topbar-links"><a href="/" data-magnetic="0.25">/home</a><a href="/about/" data-magnetic="0.25">/about</a><a class="active" href="/tools/" data-magnetic="0.25">/tools</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25">/bilibili ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ live</span><span class="tag">~/阿程</span><span class="tools-count" id="hero-count">— —</span><span>· v1</span></div><h1 data-char-in>我的嵌入式工具箱</h1><p class="hero-sub">嵌入式学习过程中高频使用的工具，分类清晰，按需自取。</p></section><div class="filter-bar" data-reveal="fade"><!-- ★ 搜索框--><div class="filter-search"><input class="filter-search-input" id="filter-search" type="search" placeholder="搜索工具名/标签/描述... (按 / 快速聚焦)" autocomplete="off"><button class="filter-search-clear" id="filter-search-clear" type="button" hidden>✕</button><span class="filter-search-hint" id="filter-search-hint"></span></div><div class="filter-row"><button class="filter-chip is-active" data-cat="all" type="button">全部<span class="chip-count" id="chip-count-all">0</span></button><button class="filter-chip" data-cat="dev" type="button">💻 软件开发<span class="chip-count" id="chip-count-dev">0</span></button><button class="filter-chip" data-cat="debug" type="button">🔌 调试烧录<span class="chip-count" id="chip-count-debug">0</span></button><button class="filter-chip" data-cat="ai" type="button">🤖 学习辅助<span class="chip-count" id="chip-count-ai">0</span></button><button class="filter-chip" data-cat="util" type="button">🛠 实用工具<span class="chip-count" id="chip-count-util">0</span></button><button class="filter-clear" id="filter-clear" type="button" hidden>✕ 清空筛选</button></div><div class="filter-tags-active" id="filter-tags-active"></div></div><section class="tools-grid" id="tools-grid"><div class="tools-loading" id="tools-loading">// 加载中...</div></section><div class="tools-empty" id="tools-empty" hidden>没有匹配的工具 · 试试清空筛选</div><!-- 详情 Modal(共享一个,JS 填充)--><div class="tool-modal" id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true"><div class="tool-modal-backdrop" data-modal-close></div><div class="tool-modal-content"><button class="tool-modal-close" type="button" data-modal-close aria-label="关闭详情">×</button><div class="tool-modal-header"><div class="tool-modal-icon" id="modal-icon"></div><h2 class="tool-modal-title" id="modal-title"></h2><p class="tool-modal-tagline" id="modal-tagline"></p></div><div class="tool-modal-body"><div class="tool-modal-section"><div class="tool-modal-section-label">// 推荐理由</div><p class="tool-modal-reason" id="modal-reason"></p></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 标签</div><div class="tool-modal-tags" id="modal-tags"></div></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 下载 / 访问</div><div class="tool-modal-links" id="modal-links"><div class="tool-modal-no-links" id="modal-no-links" hidden>暂未提供外链,直接看官网或搜资料</div></div></div></div></div></div><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div><!-- 数据源(编译期嵌入 source/_data/*.yml)--><script id="tools-data-yaml" type="text/plain"># ============================================
 # 嵌入式工具列表 (Tools Registry)
 # 由 admin-server 自动写入,可手工调整
-# 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section
+# 工具的 links[] 包含完整数据(URL/提取码/类型)
 # ============================================
 - name: Claude Code
   category: ai
@@ -730,20 +730,6 @@ body::before {
   links:
     - key: claude_oneclick
       type: 一键安装包
-      url: https://pan.baidu.com/s/1r5ZxnsFQr8JlJfIQroHFeQ?pwd=n9hy
-      extract_code: " n9hy"
-- name: Stm32cubeMX
-  category: dev
-  tagline: 图形化配置stm32外设
-  reason: ""
-  tags:
-    - stm32
-  links:
-    - key: ""
-      type: 网盘
-      url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
-      extract_code: u59n
-      status: active
 - name: Git
   category: dev
   tagline: Git - dev
@@ -752,7 +738,14 @@ body::before {
     - 嵌入式
     - dev
   icon: 🔀
-  links: []
+  links:
+    - key: git
+      type: baidu
+      label: Git - dev
+      url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+      extract_code: bmed
+      status: active
+      added: "2026-08-16"
 - name: STM32CubeMX
   category: dev
   tagline: STM32CubeMX - dev
@@ -761,7 +754,14 @@ body::before {
     - 嵌入式
     - dev
   icon: 🔧
-  links: []
+  links:
+    - key: stm32cubemx
+      type: baidu
+      label: STM32CubeMX - dev
+      url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
+      extract_code: u59n
+      status: active
+      added: "2026-08-16"
 - name: Keil MDK5
   category: dev
   tagline: Keil MDK5 - dev
@@ -770,7 +770,14 @@ body::before {
     - 嵌入式
     - dev
   icon: ⚙️
-  links: []
+  links:
+    - key: keil_mdk5
+      type: baidu
+      label: Keil MDK5 - dev
+      url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+      extract_code: mtib
+      status: active
+      added: "2026-08-16"
 - name: ccswitch
   category: dev
   tagline: ccswitch - dev
@@ -779,7 +786,14 @@ body::before {
     - 嵌入式
     - dev
   icon: 📦
-  links: []
+  links:
+    - key: ccswitch
+      type: baidu
+      label: ccswitch - dev
+      url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+      extract_code: ccfz
+      status: active
+      added: "2026-08-16"
 - name: 嵌入式管理技能(EM-SKILL)
   category: ai
   tagline: 嵌入式管理技能(EM-SKILL) - ai
@@ -787,17 +801,17 @@ body::before {
   tags:
     - ai
   icon: 📦
-  links: []
-- name: ""
-  category: dev
-  tagline: ""
-  reason: ""
-  tags: []
-  links: []
+  links:
+    - key: em-skill
+      type: baidu
+      label: 嵌入式管理技能(EM-SKILL) - ai
+      url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+      extract_code: hwr6
+      status: active
+      added: "2026-08-16"
 </script><script id="links-data-yaml" type="text/plain"># ============================================
 # 链接中央注册表 (按文章嵌套)
-# 由 admin-server 自动写入,可手工调整
-# _shared:工具页用到的共享链接(由 admin 同步)
+# _shared section: 工具页用到的链接(由 admin 同步)
 # ============================================
 claude-code-install-guide:
   - key: claude_official
@@ -855,25 +869,40 @@ em-skill-install:
     type: github
     status: active
     added: 2026-05-01T00:00:00.000Z
-  - key: github_embedded-project-manage
-    label: github embedded-project-manage
-    url: https://github.com/zjqjy/embedded-project-manager.git
-    type: github
-    status: active
-    added: "2026-08-16"
-embedded-ai-dev-env:
-  - key: code_visualstudio_
-    label: code visualstudio
-    url: https://code.visualstudio.com/
-    type: official
-    status: active
-    added: "2026-08-16"
 _shared:
-  - key: claude_oneclick
-    label: ""
-    url: https://pan.baidu.com/s/1r5ZxnsFQr8JlJfIQroHFeQ?pwd=n9hy
-    type: 一键安装包
-    extract_code: " n9hy"
+  - key: git
+    type: baidu
+    label: Git - dev
+    url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+    extract_code: bmed
+    status: active
+    added: "2026-08-16"
+  - key: stm32cubemx
+    type: baidu
+    label: STM32CubeMX - dev
+    url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
+    extract_code: u59n
+    status: active
+    added: "2026-08-16"
+  - key: keil_mdk5
+    type: baidu
+    label: Keil MDK5 - dev
+    url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+    extract_code: mtib
+    status: active
+    added: "2026-08-16"
+  - key: ccswitch
+    type: baidu
+    label: ccswitch - dev
+    url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+    extract_code: ccfz
+    status: active
+    added: "2026-08-16"
+  - key: em-skill
+    type: baidu
+    label: 嵌入式管理技能(EM-SKILL) - ai
+    url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+    extract_code: hwr6
     status: active
     added: "2026-08-16"
 </script></div><script src="/js/site.js"></script><script src="/tools/tools.js"></script></body></html>
