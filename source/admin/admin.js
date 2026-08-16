@@ -648,6 +648,8 @@
       if (postsData.ok) {
         articlesList = postsData.data || [];
         updateArticleSlugDatalist();
+        // ★ 异步加载所有文章的内联 URL(正文里硬编码的 http://)
+        loadAllInlineLinks().then(() => renderLiveList());
       }
       if (empty) empty.hidden = true;
       renderLiveList();
@@ -674,6 +676,77 @@
     datalist.innerHTML = articlesList.map(p =>
       `<option value="${escapeHtml(p.slug)}">`
     ).join('');
+  }
+
+  // 缓存文章内联 URL 解析结果(从文章正文扫描的硬编码 URL)
+  let inlineLinksMap = {};
+
+  // 渲染单个 link card (links tab panel-live 用)
+  function renderLinkCard(link, articleSlug, isInline) {
+    isInline = isInline || link.inline || link.status === 'inline';
+    const status = link.status || 'active';
+    const statusIcon = isInline ? '📝' : (status === 'broken' ? '❌' : status === 'warning' ? '⚠️' : '✓');
+    const card = document.createElement('div');
+    card.className = 'live-item live-item-link status-' + status + (isInline ? ' status-inline' : '');
+    card.dataset.article = articleSlug;
+    card.dataset.key = link.key;
+    card.innerHTML = `
+      <div class="live-item-row1">
+        <span class="status-dot-inline status-${status}${isInline ? ' status-dot-inline-mark' : ''}" title="${isInline ? '内联(未注册到 links.yml)' : status}">${statusIcon}</span>
+        <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
+        ${isInline ? '<span class="badge-inline">内联</span>' : ''}
+      </div>
+      <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
+      <div class="live-item-hover">
+        <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
+        ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
+        ${!isInline ? `<button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>` : '<span class="chip-mini chip-hint" title="内联 URL 无法直接编辑,改为 {% link %} 才能注册">未注册</span>'}
+      </div>
+    `;
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('btn-edit-link') || e.target.classList.contains('btn-icon')) return;
+      if (!isInline) editLink(articleSlug, link.key);
+    });
+    return card;
+  }
+
+  // 扫描文章正文,提取硬编码 URL(未走 {% link %} 的内联链接)
+  async function loadInlineLinks(articleSlug) {
+    try {
+      const resp = await fetch(`/api/posts/${encodeURIComponent(articleSlug)}`);
+      const data = await resp.json();
+      if (!data.ok || !data.body) return [];
+      // 匹配 http(s):// 开头直到空白或 < > 结束
+      const urlRe = /https?:\/\/\S+?(?=[\s<>")\]]|$)/g;
+      const urls = [...new Set((data.body.match(urlRe) || []))];
+      return urls.map((url, idx) => ({
+        key: `inline_${idx + 1}`,
+        label: url.replace(/^https?:\/\//, '').substring(0, 30) + (url.length > 38 ? '…' : ''),
+        url: url,
+        type: url.includes('baidu') || url.includes('pan.baidu') ? 'baidu' :
+              url.includes('github') ? 'github' : 'official',
+        extract_code: extractBaiduCode(url) || '',
+        status: 'inline',
+        inline: true
+      }));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // 批量加载所有文章的内联 URL,缓存到 inlineLinksMap
+  async function loadAllInlineLinks() {
+    inlineLinksMap = {};
+    await Promise.all(articlesList.map(async (p) => {
+      inlineLinksMap[p.slug] = await loadInlineLinks(p.slug);
+    }));
+  }
+
+  // 从百度网盘 URL 提取码 (pwd=xxxx 或 ?pwd=xxxx 或末尾路径)
+  function extractBaiduCode(url) {
+    const m = url.match(/[?&]pwd=([a-zA-Z0-9]+)/);
+    if (m) return m[1];
+    return '';
   }
 
   function renderLiveList() {
@@ -733,9 +806,8 @@
         });
       });
     } else if (tab === 'links') {
-      // 链接列表 - 按文章分组(包括空文章,方便给新文章加链接)
+      // 链接列表 - 按文章分组(包括空文章,合并显示内联 URL)
       const articles = liveData.links || {};
-      // 合并已有链接的文章 + 所有 articlesList 中的文章(去重)
       const allArticleSlugs = [...new Set([
         ...Object.keys(articles),
         ...articlesList.map(p => p.slug)
@@ -748,51 +820,41 @@
 
       allArticleSlugs.forEach((articleSlug) => {
         const articleLinks = articles[articleSlug] || [];
+        const inlineLinks = inlineLinksMap[articleSlug] || [];
+        const totalCount = articleLinks.length + inlineLinks.length;
         const section = document.createElement('div');
         section.className = 'live-article-section';
         section.innerHTML = `
           <div class="live-article-head">
             <span class="article-icon">📄</span>
             <span class="article-slug">${escapeHtml(articleSlug)}</span>
-            <span class="article-count">${articleLinks.length} 链接</span>
+            <span class="article-count">${totalCount} 链接${inlineLinks.length ? ` (含 ${inlineLinks.length} 内联)` : ''}</span>
           </div>
         `;
         const grid = document.createElement('div');
         grid.className = 'live-list live-list-nested';
-        if (articleLinks.length === 0) {
-          // 空文章提示
+
+        // 渲染已注册的链接(links.yml 里的)
+        articleLinks.forEach((link) => {
+          if (!link || !link.key) return;
+          const card = renderLinkCard(link, articleSlug);
+          grid.appendChild(card);
+        });
+
+        // 渲染内联 URL(文章正文里硬编码的)
+        inlineLinks.forEach((link) => {
+          if (!link || !link.url) return;
+          const card = renderLinkCard(link, articleSlug, true);
+          grid.appendChild(card);
+        });
+
+        if (articleLinks.length === 0 && inlineLinks.length === 0) {
           const empty = document.createElement('div');
           empty.className = 'live-empty live-empty-inline';
           empty.innerHTML = `<p>暂无链接,点顶部「＋ 新增链接」添加 (article_slug 已预填为 <code>${escapeHtml(articleSlug)}</code>)</p>`;
           grid.appendChild(empty);
-        } else {
-          articleLinks.forEach((link) => {
-            if (!link || !link.key) return;
-            const status = link.status || 'active';
-            const statusIcon = status === 'broken' ? '❌' : status === 'warning' ? '⚠️' : '✓';
-            const card = document.createElement('div');
-            card.className = 'live-item live-item-link status-' + status;
-            card.dataset.article = articleSlug;
-            card.dataset.key = link.key;
-            card.innerHTML = `
-              <div class="live-item-row1">
-                <span class="status-dot-inline status-${status}" title="${status}">${statusIcon}</span>
-                <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
-              </div>
-              <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
-              <div class="live-item-hover">
-                <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
-                ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-                <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
-              </div>
-            `;
-            card.addEventListener('click', (e) => {
-              if (e.target.classList.contains('btn-edit-link') || e.target.classList.contains('btn-icon')) return;
-              editLink(articleSlug, link.key);
-            });
-            grid.appendChild(card);
-          });
         }
+
         section.appendChild(grid);
         list.appendChild(section);
       });
