@@ -8,6 +8,7 @@
     "deploy": "hexo deploy",
     "server": "hexo server",
     "preview": "http-server public -p 4321 -a 127.0.0.1 -c-1 --silent",
+    "admin": "node admin-server.js",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
@@ -18,6 +19,7 @@
     "version": "8.1.2"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "hexo": "^8.0.0",
     "hexo-deployer-git": "^4.0.0",
     "hexo-generator-archive": "^2.0.0",

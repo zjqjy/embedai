@@ -457,6 +457,58 @@
   }
 
   // -----------------------------------------------------------
+  // 保存到文件 (本地 admin-server 后端)
+  // -----------------------------------------------------------
+  async function saveToServer() {
+    const yamlText = $('#yaml-output').value.trim();
+    if (!yamlText) {
+      toast('无内容可保存', 'error');
+      return;
+    }
+    const tab = activeTab;
+    const endpoint = tab === 'tools' ? '/api/tools' : '/api/links';
+
+    const btn = $('#btn-save-server');
+    const oldText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ 保存中...';
+
+    try {
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/yaml' },
+        body: yamlText
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) {
+        throw new Error(data.error || `HTTP ${resp.status}`);
+      }
+      toast('✅ ' + data.message, 'success');
+
+      // 询问是否触发 rebuild
+      if (confirm('已写入文件。是否立即触发 hexo generate？（选「取消」可稍后手动 `npm run build`）')) {
+        btn.textContent = '⏳ rebuild...';
+        const r = await fetch('/api/rebuild', { method: 'POST' });
+        const rd = await r.json();
+        if (r.ok && rd.ok) {
+          toast('✅ rebuild 成功,刷新 /tools/ 查看效果', 'success');
+        } else {
+          toast('rebuild 失败：' + (rd.error || ''), 'error');
+        }
+      }
+    } catch (e) {
+      if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+        toast('❌ 后端未启动。请先运行 `npm run admin`', 'error');
+      } else {
+        toast('❌ 保存失败：' + e.message, 'error');
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  }
+
+  // -----------------------------------------------------------
   // 启动
   // -----------------------------------------------------------
   function init() {
@@ -473,6 +525,7 @@
     $('#btn-copy').addEventListener('click', copyYAML);
     $('#btn-download').addEventListener('click', downloadYAML);
     $('#btn-save').addEventListener('click', saveDraft);
+    $('#btn-save-server').addEventListener('click', saveToServer);
     $('#btn-clear').addEventListener('click', clearDraft);
   }
 

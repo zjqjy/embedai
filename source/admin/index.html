@@ -362,6 +362,17 @@
       border-color: transparent;
     }
     .btn-primary:hover { filter: brightness(1.05); color: white; }
+    .btn-save-server {
+      background: var(--bg-elev);
+      border-color: var(--warm);
+      color: var(--warm);
+      font-weight: 600;
+    }
+    .btn-save-server:hover {
+      background: var(--warm);
+      color: white;
+      border-color: var(--warm);
+    }
     .btn-danger:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
 
     /* ===== Toast ===== */
@@ -571,6 +582,7 @@
           <button class="btn btn-primary" id="btn-copy">📋 复制 YAML</button>
           <button class="btn" id="btn-download">💾 下载 .yml</button>
           <button class="btn" id="btn-save">💾 保存草稿</button>
+          <button class="btn btn-save-server" id="btn-save-server" title="需 npm run admin 启动本地后端">💾 保存到文件</button>
           <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
         </div>
       </section>
