@@ -11,11 +11,11 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     watcher.assertClean();
   });
 
-  test('渲染 1 张工具卡（Claude Code）', async ({ page }) => {
+  test('渲染 2 张工具卡（Claude Code + Stm32cubeMX）', async ({ page }) => {
     await page.goto('/tools/');
     await page.waitForTimeout(800); // 等客户端解析 + 渲染
     const cards = page.locator('.cat');
-    await expect(cards).toHaveCount(1);
+    await expect(cards).toHaveCount(2);
   });
 
   test('Hero + 4 分类 chip 存在', async ({ page }) => {
@@ -24,6 +24,25 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     const chips = page.locator('.filter-chip');
     // 至少 5 个 chip（全部 + 4 分类）
     expect(await chips.count()).toBeGreaterThanOrEqual(5);
+  });
+
+  test('搜索框 + 实时过滤', async ({ page }) => {
+    await page.goto('/tools/');
+    await page.waitForTimeout(800);
+    const search = page.locator('#filter-search');
+    await expect(search).toBeVisible();
+
+    // 输入 "Claude" 应该过滤到 Claude Code 卡片
+    await search.fill('Claude');
+    await page.waitForTimeout(200);
+    const visibleAfterSearch = await page.locator('.cat:not(.is-hidden)').count();
+    expect(visibleAfterSearch).toBe(1);
+
+    // 清空搜索应该恢复全部
+    await search.fill('');
+    await page.waitForTimeout(200);
+    const visibleAfterClear = await page.locator('.cat:not(.is-hidden)').count();
+    expect(visibleAfterClear).toBeGreaterThanOrEqual(2);
   });
 });
 

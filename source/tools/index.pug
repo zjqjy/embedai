@@ -176,6 +176,58 @@ html(lang="zh-CN")
         padding-left: 2rem;
         padding-right: 2rem;
       }
+      .filter-search {
+        position: relative;
+        margin-bottom: 0.7rem;
+      }
+      .filter-search-input {
+        width: 100%;
+        padding: 0.65rem 2.5rem 0.65rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--bg-elev);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--text);
+        outline: none;
+        transition: all 0.2s;
+      }
+      .filter-search-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+      .filter-search-input::placeholder {
+        color: var(--text-3);
+      }
+      .filter-search-clear {
+        position: absolute;
+        right: 0.7rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--bg-soft);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        width: 22px; height: 22px;
+        padding: 0;
+        cursor: pointer;
+        font-size: 0.75rem;
+        color: var(--text-3);
+        transition: all 0.15s;
+      }
+      .filter-search-clear:hover {
+        background: var(--text-2);
+        color: white;
+      }
+      .filter-search-hint {
+        position: absolute;
+        right: 0.7rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.7rem;
+        color: var(--text-3);
+        font-family: 'JetBrains Mono', monospace;
+        pointer-events: none;
+      }
       .filter-row {
         display: flex;
         gap: 0.5rem;
@@ -703,6 +755,11 @@ html(lang="zh-CN")
           | 嵌入式学习过程中高频使用的工具，分类清晰，按需自取。
 
       .filter-bar(data-reveal="fade")
+        // ★ 搜索框
+        .filter-search
+          input.filter-search-input#filter-search(type="search" placeholder="搜索工具名/标签/描述... (按 / 快速聚焦)" autocomplete="off")
+          button.filter-search-clear#filter-search-clear(type="button" hidden) ✕
+          span.filter-search-hint#filter-search-hint
         .filter-row
           button.filter-chip.is-active(data-cat="all" type="button")
             | 全部

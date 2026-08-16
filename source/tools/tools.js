@@ -308,6 +308,9 @@
       card.className = 'cat tool-card';
       card.dataset.cat = tool.category || '';
       card.dataset.tags = (tool.tags || []).join(',');
+      card.dataset.name = tool.name || '';
+      card.dataset.tagline = tool.tagline || '';
+      card.dataset.reason = tool.reason || '';
       card.dataset.toolIdx = String(idx);
       const catColor = CAT_COLORS[tool.category] || 'var(--accent)';
       card.style.setProperty('--cat-color', catColor);
@@ -353,7 +356,8 @@
   // -------- 4. 筛选状态 --------
   const state = {
     category: 'all',
-    activeTags: new Set()
+    activeTags: new Set(),
+    search: ''
   };
 
   let cards = [];
@@ -373,6 +377,7 @@
 
   function applyFilter() {
     let visible = 0;
+    const q = (state.search || '').toLowerCase().trim();
     cards.forEach(function (card) {
       const cat = card.dataset.cat;
       const tags = (card.dataset.tags || '').split(',').filter(Boolean);
@@ -381,16 +386,38 @@
       const matchTags = state.activeTags.size === 0 ||
         Array.from(state.activeTags).every(function (t) { return tags.indexOf(t) >= 0; });
 
-      const ok = matchCat && matchTags;
+      // ★ 搜索匹配:name + tagline + reason + 分类名 + 标签
+      let matchSearch = true;
+      if (q) {
+        const searchable = (
+          (card.dataset.name || '') + ' ' +
+          (card.dataset.tagline || '') + ' ' +
+          (card.dataset.reason || '') + ' ' +
+          (card.dataset.cat || '') + ' ' +
+          (card.dataset.tags || '')
+        ).toLowerCase();
+        matchSearch = searchable.indexOf(q) >= 0;
+      }
+
+      const ok = matchCat && matchTags && matchSearch;
       card.classList.toggle('is-hidden', !ok);
       if (ok) visible++;
     });
-    if (emptyState) emptyState.hidden = visible > 0;
+    if (emptyState) {
+      emptyState.hidden = visible > 0;
+      // 自定义无结果提示(区分搜索无果 vs 筛选无果)
+      const hint = emptyState.querySelector('.empty-hint');
+      if (hint) {
+        hint.textContent = q
+          ? `没有匹配「${q}」的工具,试试换个关键词`
+          : '没有匹配的工具 · 试试清空筛选';
+      }
+    }
 
     chips.forEach(function (chip) {
       chip.classList.toggle('is-active', chip.dataset.cat === state.category);
     });
-    if (clearBtn) clearBtn.hidden = state.activeTags.size === 0 && state.category === 'all';
+    if (clearBtn) clearBtn.hidden = state.activeTags.size === 0 && state.category === 'all' && !q;
     renderActiveTagsBox();
   }
 
@@ -441,6 +468,41 @@
       applyFilter();
     });
   });
+
+  // ★ 搜索框:实时过滤(name + tagline + reason + tags + category)
+  const searchInput = document.getElementById('filter-search');
+  const searchClear = document.getElementById('filter-search-clear');
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      state.search = searchInput.value;
+      if (searchClear) searchClear.hidden = !state.search;
+      applyFilter();
+    });
+    // / 快捷键聚焦搜索框(且不在输入框中时)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+      // Esc 清空搜索
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput.value = '';
+        state.search = '';
+        if (searchClear) searchClear.hidden = true;
+        applyFilter();
+      }
+    });
+  }
+  if (searchClear) {
+    searchClear.addEventListener('click', function () {
+      if (searchInput) searchInput.value = '';
+      state.search = '';
+      searchClear.hidden = true;
+      if (searchInput) searchInput.focus();
+      applyFilter();
+    });
+  }
 
   if (clearBtn) {
     clearBtn.addEventListener('click', function () {
