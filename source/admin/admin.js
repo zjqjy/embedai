@@ -740,6 +740,13 @@
           inlineUrl, key: userKey, label, type, extract_code
         })
       });
+      // ★ 检查响应类型,避免 HTML 错误页被当成 JSON 解析
+      const ct = resp.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        // 非 JSON 响应(404/500 HTML 错误页)
+        const text = await resp.text();
+        throw new Error(`HTTP ${resp.status} (非 JSON 响应,可能 admin-server 没重启或端点不存在)`);
+      }
       const data = await resp.json();
       if (!resp.ok || !data.ok) throw new Error(data.error || `HTTP ${resp.status}`);
       toast(`✅ ${data.message}`, 'success', 5000);
