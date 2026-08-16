@@ -1360,6 +1360,67 @@
     $('#btn-article-save')?.addEventListener('click', saveArticle);
     $('#btn-article-delete')?.addEventListener('click', deleteArticle);
     $('#btn-ai-autofill')?.addEventListener('click', () => autoFillFromUrl('links'));
+    $('#btn-extract-from-articles')?.addEventListener('click', showExtractFromArticles);
+  }
+
+  // ★ 从文章提取工具候选 → 弹窗让用户勾选导入
+  async function showExtractFromArticles() {
+    // 让用户选文章
+    if (articlesList.length === 0) {
+      toast('没有文章可提取,先去「📄 文章」tab 创建文章', 'error');
+      return;
+    }
+    const slug = prompt(
+      '从哪篇文章提取工具?\n\n文章列表:\n' +
+      articlesList.map((p, i) => `${i + 1}. ${p.slug} (${p.title || ''})`).join('\n') +
+      '\n\n输入文章 slug:'
+    );
+    if (!slug) return;
+
+    // 拉候选
+    let data;
+    try {
+      const resp = await fetch(`/api/tools/candidates?article=${encodeURIComponent(slug)}`);
+      data = await resp.json();
+      if (!data.ok) throw new Error(data.error);
+    } catch (e) {
+      toast('提取失败:' + e.message, 'error');
+      return;
+    }
+    const candidates = data.candidates || [];
+    if (candidates.length === 0) {
+      toast(`「${slug}」没有可提取的工具(table 格式: | # | 名称 | 链接 | ...)`, 'error');
+      return;
+    }
+
+    // 弹窗让用户勾选
+    const checked = candidates.filter(c => !c.exists); // 默认排除已存在的
+    const list = checked.map((c, i) =>
+      `[${i + 1}] ✓ ${c.name} (${c.category}) — ${c.tagline}`
+    ).join('\n');
+    const confirmImport = confirm(
+      `从「${slug}」提取到 ${checked.length} 个工具(共 ${candidates.length} 个,已存在的 ${candidates.length - checked.length} 个跳过):\n\n${list}\n\n点「确定」导入,「取消」跳过`
+    );
+    if (!confirmImport) return;
+
+    // 调用导入端点
+    try {
+      const resp = await fetch('/api/tools/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: checked })
+      });
+      const ct = resp.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+      const result = await resp.json();
+      if (!result.ok) throw new Error(result.error);
+      toast(`✅ ${result.message}`, 'success', 5000);
+      loadLiveData();
+    } catch (e) {
+      toast('导入失败:' + e.message, 'error');
+    }
   }
 
   if (document.readyState === 'loading') {
