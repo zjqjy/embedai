@@ -384,6 +384,23 @@
       margin-left: 0.5rem;
     }
     .panel-actions { display: flex; gap: 0.5rem; }
+
+    /* ===== Primary Actions (固定在 header 下) ===== */
+    .primary-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      align-items: center;
+    }
+    .primary-actions .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
     .file-saved-indicator {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
@@ -636,6 +653,16 @@
         <button class="tab-btn active" data-tab="tools" role="tab">📦 工具</button>
         <button class="tab-btn" data-tab="links" role="tab">🔗 链接</button>
       </nav>
+
+      <!-- ★ 主操作按钮：固定在 header 下方,永远可见 -->
+      <div class="primary-actions">
+        <button class="btn btn-primary" id="btn-save-server" title="需先运行 npm run admin 启动本地后端">💾 写入文件</button>
+        <button class="btn" id="btn-copy">📋 复制 YAML</button>
+        <button class="btn" id="btn-download">⬇ 下载 .yml</button>
+        <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
+        <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
+        <span id="file-saved-indicator" class="file-saved-indicator"></span>
+      </div>
     </header>
 
     <!-- ===== Live Data Panel ===== -->
@@ -663,7 +690,6 @@
       <section class="panel">
         <div class="panel-head">
           <span>// form</span>
-          <span id="file-saved-indicator" class="file-saved-indicator"></span>
         </div>
         <div class="panel-body">
 
@@ -798,13 +824,6 @@
           <span id="output-name" style="color: var(--text-3);">tools.yml</span>
         </div>
         <textarea id="yaml-output" class="output-area" readonly spellcheck="false"></textarea>
-        <div class="actions">
-          <button class="btn btn-primary" id="btn-save-server" title="需先运行 npm run admin 启动本地后端">💾 写入文件</button>
-          <button class="btn" id="btn-copy">📋 复制 YAML</button>
-          <button class="btn" id="btn-download">⬇ 下载 .yml</button>
-          <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
-          <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
-        </div>
       </section>
     </main>
 
