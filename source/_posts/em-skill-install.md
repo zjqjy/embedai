@@ -31,9 +31,7 @@ EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）
 
 如果网络访问 GitHub 不便，推荐使用 ccswitch 工具通过百度网盘下载：
 
-**百度网盘链接**: https://pan.baidu.com/s/1CAKBDsFgvXV4bzglO4Mh-g?pwd=ikzm
-
-**提取码**: `ikzm`
+{% link "em_skill_install" %}
 
 ### 方式二：Git 克隆
 
@@ -143,9 +141,9 @@ EM-SKILL 整合了以下优秀开源工具：
 
 ## 参考资源
 
-- [embed-ai-tool (LeoKemp223)](https://github.com/LeoKemp223/embed-ai-tool)
-- [xPack OpenOCD](https://github.com/xpack-dev-tools/openocd-xpack/releases)
-- [EM-SKILL 项目](https://github.com/zjqjy/embedded-project-manager)
+- {% link "embed_ai_tool" %}
+- {% link "xpack_openocd" %}
+- {% link "em_skill_repo" %}
 
 ---
 

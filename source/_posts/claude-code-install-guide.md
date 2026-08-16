@@ -16,7 +16,7 @@ toc: true
 
 **Claude Code 是什么？**
 
-Claude Code 是 [Anthropic](https://www.anthropic.com/) 推出的命令行工具，可以让你在终端中直接使用 Claude AI 进行编程辅助。它能帮你：
+Claude Code 是 {% link "claude_official" %} 推出的命令行工具，可以让你在终端中直接使用 Claude AI 进行编程辅助。它能帮你：
 
 - 阅读和理解代码
 - 自动编写和修改代码
@@ -42,9 +42,8 @@ Claude Code 是 [Anthropic](https://www.anthropic.com/) 推出的命令行工具
 2. **实用**：搭配 MiniMax Coding Plan，不按 token 计费，5 小时刷新窗口，个人开发完全够用
 
 > **百度网盘下载：**
-> - 链接：https://pan.baidu.com/s/1t9bIh6wN8UstfEyk8n7Kqw
-> - 提取码：v4nb
-> - 包名：install_cloud_code.zip
+{% link "claude_install_v4nb" %}
+> 包名：install_cloud_code.zip
 >
 > 网盘包含：ccwsitch、Claude Code、Git 三个安装包
 
@@ -176,7 +175,7 @@ ftype MSI.Package="C:\Windows\System32\msiexec.exe" /i "%1" %*
 
 在 MiniMax 官网订阅合适的 Token Plan
 
-👉 [点击此处注册并订阅](https://platform.minimaxi.com/subscribe/token-plan?code=CKMY9L4mM7&source=link)
+👉 {% link "minimax_token_plan" %}
 
 ---
 

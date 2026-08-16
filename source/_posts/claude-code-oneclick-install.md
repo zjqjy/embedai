@@ -22,9 +22,7 @@ toc: true
 
 
 
-**百度网盘链接**: [https://pan.baidu.com/s/1L2SvQYygjVW5ZajcGqK02Q](https://pan.baidu.com/s/1L2SvQYygjVW5ZajcGqK02Q)
-
-**提取码**: `86kq`
+{% link "claude_oneclick" %}
 
 > 💡 下载后解压，双击运行即可开始使用！
 
