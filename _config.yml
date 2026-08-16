@@ -104,6 +104,8 @@ skip_render:
   - "coming-soon/**/*"
   - "about/*"
   - "about/**/*"
+  - "admin/*"
+  - "admin/**/*"
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
