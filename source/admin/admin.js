@@ -109,13 +109,30 @@
         $$('.tab-pane').forEach((p) => p.classList.toggle('active', p.dataset.pane === target));
         renderOutput();
         updateOutputName();
-        renderLiveList(); // tab 切换时刷新当前数据列表
-        if (target === 'articles') {
-          // 文章 tab 切换时刷新列表
-          loadArticlesList();
-        }
+        // 切 tab 时刷新顶部列表 + 新增按钮文案
+        if (target === 'articles') loadArticlesList();
+        renderLiveList();
       });
     });
+  }
+
+  // 顶部 panel-live 的「＋ 新增」按钮:按 tab 分发
+  function newItem() {
+    if (activeTab === 'tools') {
+      state.tools = clone(emptyToolsForm);
+      editingKey = null;
+      syncFormToDOM();
+      renderOutput();
+      toast('＋ 新增工具模式（保存会写入新条目）');
+    } else if (activeTab === 'links') {
+      state.links = clone(emptyLinksForm);
+      editingKey = null;
+      syncFormToDOM();
+      renderOutput();
+      toast('＋ 新增链接模式（保存会写入新条目）');
+    } else if (activeTab === 'articles') {
+      newArticle();
+    }
   }
 
   function updateOutputName() {
@@ -648,12 +665,24 @@
 
   function renderLiveList() {
     const list = $('#live-list');
-    if (!list) return; // 顶部 panel-live 已删除
+    if (!list) return;
     list.innerHTML = '';
     const tab = activeTab;
+
+    // 更新 panel-live 标题 + 新增按钮文案
+    const tabName = $('#live-tab-name');
+    if (tabName) {
+      tabName.textContent = tab === 'tools' ? '工具列表' : tab === 'links' ? '链接列表（按文章）' : '文章列表';
+    }
+    const btnNew = $('#btn-new');
+    if (btnNew) {
+      btnNew.textContent = tab === 'tools' ? '＋ 新增工具' : tab === 'links' ? '＋ 新增链接' : '＋ 新建文章';
+    }
+
     if (tab === 'tools') {
+      // 工具列表
       if (liveData.tools.length === 0) {
-        list.innerHTML = '<div class="live-empty"><p>暂无工具,点「＋ 新增」添加</p></div>';
+        list.innerHTML = '<div class="live-empty"><p>暂无工具,点「＋ 新增工具」添加</p></div>';
         return;
       }
       liveData.tools.forEach((tool) => {
@@ -690,17 +719,16 @@
           editTool(btn.dataset.name);
         });
       });
-    } else {
-      // 链接 tab - 按文章分组渲染
+    } else if (tab === 'links') {
+      // 链接列表 - 按文章分组
       const articles = liveData.links || {};
       const articleSlugs = Object.keys(articles);
       if (articleSlugs.length === 0) {
-        list.innerHTML = '<div class="live-empty"><p>暂无链接,点「＋ 新增」添加</p></div>';
+        list.innerHTML = '<div class="live-empty"><p>暂无链接,点「＋ 新增链接」添加</p></div>';
         return;
       }
       articleSlugs.forEach((articleSlug) => {
         const articleLinks = articles[articleSlug] || [];
-        // 文章 section header
         const section = document.createElement('div');
         section.className = 'live-article-section';
         section.innerHTML = `
@@ -748,6 +776,27 @@
           e.stopPropagation();
           editLink(btn.dataset.article, btn.dataset.key);
         });
+      });
+    } else if (tab === 'articles') {
+      // 文章列表
+      if (articlesList.length === 0) {
+        list.innerHTML = '<div class="live-empty"><p>暂无文章,点「＋ 新建文章」开始</p></div>';
+        return;
+      }
+      articlesList.forEach((post) => {
+        const card = document.createElement('div');
+        card.className = 'article-item';
+        const tagsHtml = (post.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
+        card.innerHTML = `
+          <div class="article-item-head">
+            <span class="article-item-title">${escapeHtml(post.title || post.slug)}</span>
+          </div>
+          <div class="article-item-meta">${escapeHtml(post.slug)} · ${escapeHtml(post.date || '')}</div>
+          <div class="article-item-excerpt">${escapeHtml(post.excerpt || '')}</div>
+          <div class="article-item-tags">${tagsHtml}</div>
+        `;
+        card.addEventListener('click', () => loadArticleForEdit(post.slug));
+        list.appendChild(card);
       });
     }
   }
@@ -822,45 +871,26 @@
   const emptyArticle = { slug: '', title: '', date: todayISO(), tags: '', categories: '', description: '', content: '' };
 
   async function loadArticlesList() {
-    const listEl = $('#articles-list');
-    const sourceEl = $('#articles-source');
-    listEl.innerHTML = '<p class="hint">加载中...</p>';
     try {
       const resp = await fetch('/api/posts');
       const data = await resp.json();
       if (!data.ok) throw new Error(data.error);
       articlesList = data.data || [];
-      sourceEl.textContent = `${articlesList.length} 篇`;
-      renderArticlesList();
+      renderLiveList(); // 刷新顶部 panel-live 区
     } catch (e) {
-      listEl.innerHTML = `<p class="hint">❌ 加载失败：${escapeHtml(e.message)}<br>需要 <code>npm run admin</code></p>`;
-      sourceEl.textContent = '未连接';
+      const empty = $('#live-empty');
+      if (empty) {
+        empty.hidden = false;
+        empty.innerHTML = `<p>⚠️ 加载文章失败：${escapeHtml(e.message)}<br>需要 <code>npm run admin</code> 启动后端</p>`;
+      }
       if (!e.message.includes('Failed to fetch')) toast('加载失败：' + e.message, 'error');
     }
   }
 
   function renderArticlesList() {
-    const listEl = $('#articles-list');
-    listEl.innerHTML = '';
-    if (articlesList.length === 0) {
-      listEl.innerHTML = '<div class="empty">暂无文章,点「＋ 新建文章」开始</div>';
-      return;
-    }
-    articlesList.forEach((post) => {
-      const card = document.createElement('div');
-      card.className = 'article-item';
-      const tagsHtml = (post.tags || []).map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
-      card.innerHTML = `
-        <div class="article-item-head">
-          <span class="article-item-title">${escapeHtml(post.title || post.slug)}</span>
-        </div>
-        <div class="article-item-meta">${escapeHtml(post.slug)} · ${escapeHtml(post.date || '')}</div>
-        <div class="article-item-excerpt">${escapeHtml(post.excerpt || '')}</div>
-        <div class="article-item-tags">${tagsHtml}</div>
-      `;
-      card.addEventListener('click', () => loadArticleForEdit(post.slug));
-      listEl.appendChild(card);
-    });
+    // 文章列表已搬到顶部 panel-live 的 live-list 区(通过 renderLiveList 处理)
+    // 这个函数现在是个 stub,留作兼容
+    renderLiveList();
   }
 
   async function loadArticleForEdit(slug) {

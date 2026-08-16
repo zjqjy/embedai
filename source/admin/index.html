@@ -798,6 +798,25 @@
       </div>
     </header>
 
+    <!-- ===== Live Data Panel（按 tab 显示：工具列表/链接列表/文章列表）===== -->
+    <section class="panel panel-live" id="panel-live">
+      <div class="panel-head">
+        <span>// <span id="live-tab-name">当前数据</span></span>
+        <span class="panel-actions">
+          <button class="btn btn-small" id="btn-reload-live" type="button">🔄 刷新</button>
+          <button class="btn btn-small btn-primary" id="btn-new" type="button">＋ 新增</button>
+        </span>
+      </div>
+      <div class="panel-body">
+        <div class="live-empty" id="live-empty" hidden>
+          <p>⚠️ 未连接后端，请先运行 <code>npm run admin</code> 启动服务</p>
+        </div>
+        <div class="live-list" id="live-list">
+          <!-- JS 注入当前 tab 对应列表 -->
+        </div>
+      </div>
+    </section>
+
     <main class="panels">
       <!-- ===== Form Panel ===== -->
       <section class="panel">
@@ -929,17 +948,6 @@
 
           <!-- ===== Articles Tab ===== -->
           <div class="tab-pane" data-pane="articles">
-            <!-- 文章列表 -->
-            <div class="articles-toolbar">
-              <button class="btn btn-small btn-primary" id="btn-article-new" type="button">＋ 新建文章</button>
-              <button class="btn btn-small" id="btn-articles-reload" type="button">🔄 刷新列表</button>
-              <span id="articles-source" class="live-source"></span>
-            </div>
-            <div class="articles-list" id="articles-list">
-              <p class="hint">加载中...</p>
-            </div>
-            <hr class="section-divider">
-            <!-- 当前编辑表单 -->
             <div class="form-grid">
               <div class="field-row">
                 <div class="field">
