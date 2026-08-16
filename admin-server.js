@@ -470,7 +470,7 @@ function extractToolsFromMarkdown(md, slug) {
   return candidates;
 }
 
-// POST /api/tools/import - 批量导入工具候选
+// POST /api/tools/import - 批量导入工具候选(同时写入 tools.yml + links.yml _shared)
 app.post('/api/tools/import', (req, res) => {
   try {
     const incoming = req.body || {};
@@ -483,15 +483,41 @@ app.post('/api/tools/import', (req, res) => {
       existing = yaml.load(fs.readFileSync(TOOLS_YML, 'utf8')) || [];
       if (!Array.isArray(existing)) existing = [];
     } catch (e) { existing = []; }
+    // 读 links.yml _shared
+    let links = {};
+    try {
+      const raw = fs.readFileSync(LINKS_YML, 'utf8');
+      links = yaml.load(raw) || {};
+      if (typeof links !== 'object' || Array.isArray(links)) links = {};
+    } catch (e) { links = {}; }
+    if (!Array.isArray(links._shared)) links._shared = [];
+
     const stats = { added: 0, skipped: 0 };
-    const newItems = [];
+    const linkStats = { added: 0, skipped: 0 };
     items.forEach((item) => {
       if (!item || !item.name) { stats.skipped++; return; }
       if (existing.some(t => t && t.name === item.name)) {
         stats.skipped++;
         return;
       }
-      // 清洗后写入
+      // ★ 自动从 name 生成 link key(去空格/特殊字符)
+      const linkKey = (item.name || '')
+        .toLowerCase()
+        .replace(/[\s()（）·]/g, '_')
+        .replace(/[^a-zA-Z0-9_-]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_|_$/g, '')
+        .substring(0, 40) || 'link';
+      // 工具的 links[] 包含 URL 等完整数据
+      const linkEntry = item.url ? {
+        key: linkKey,
+        type: item.type || 'official',
+        label: item.tagline || item.name,
+        url: item.url,
+        extract_code: item.extract_code || '',
+        status: 'active',
+        added: item.added || new Date().toISOString().slice(0, 10)
+      } : null;
       const clean = {
         name: item.name,
         category: item.category || 'util',
@@ -499,30 +525,58 @@ app.post('/api/tools/import', (req, res) => {
         reason: item.reason || '',
         tags: Array.isArray(item.tags) ? item.tags : [],
         icon: item.icon || '📦',
-        links: []
+        links: linkEntry ? [linkEntry] : []
       };
       existing.push(clean);
-      newItems.push(clean);
       stats.added++;
+      // 同步到 links.yml _shared
+      if (linkEntry) {
+        const existingLinkIdx = links._shared.findIndex(l => l && l.key === linkKey);
+        if (existingLinkIdx >= 0) {
+          // 合并(保留原数据,更新 url)
+          links._shared[existingLinkIdx] = { ...links._shared[existingLinkIdx], ...linkEntry };
+          linkStats.skipped++;
+        } else {
+          links._shared.push(linkEntry);
+          linkStats.added++;
+        }
+      }
     });
-    const dump = yaml.dump(existing, {
+    // 写 tools.yml
+    const toolsDump = yaml.dump(existing, {
       lineWidth: -1,
       noRefs: true,
       sortKeys: false,
       quotingType: '"'
     });
-    const bytes = writeYmlWithHeader(
+    const toolsBytes = writeYmlWithHeader(
       TOOLS_YML,
-      '# ============================================\n# 嵌入式工具列表 (Tools Registry)\n# 由 admin-server 自动写入,可手工调整\n# 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section\n# ============================================',
-      dump
+      '# ============================================\n# 嵌入式工具列表 (Tools Registry)\n# 由 admin-server 自动写入,可手工调整\n# 工具的 links[] 包含完整数据(URL/提取码/类型)\n# ============================================',
+      toolsDump
     );
+    // 写 links.yml(只在有变更时)
+    let linksBytes = 0;
+    if (linkStats.added > 0 || linkStats.skipped > 0) {
+      const linksDump = yaml.dump(links, {
+        lineWidth: -1,
+        noRefs: true,
+        sortKeys: false,
+        quotingType: '"'
+      });
+      linksBytes = writeYmlWithHeader(
+        LINKS_YML,
+        '# ============================================\n# 链接中央注册表 (按文章嵌套)\n# _shared section: 工具页用到的链接(由 admin 同步)\n# ============================================',
+        linksDump
+      );
+    }
     res.json({
       ok: true,
       file: 'tools.yml',
       count: existing.length,
-      bytes,
+      bytes: toolsBytes,
       stats,
-      message: `已导入:新增 ${stats.added} 条,跳过 ${stats.skipped} 条 (重复) (共 ${existing.length} 条)`
+      linkStats,
+      message: `已导入:工具新增 ${stats.added} 条/跳过 ${stats.skipped} | 链接 _shared 新增 ${linkStats.added}/合并 ${linkStats.skipped}`
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });

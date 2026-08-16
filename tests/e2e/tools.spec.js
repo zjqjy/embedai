@@ -11,11 +11,11 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     watcher.assertClean();
   });
 
-  test('渲染 2 张工具卡（Claude Code + Stm32cubeMX）', async ({ page }) => {
+  test('渲染 1 张工具卡（Claude Code）', async ({ page }) => {
     await page.goto('/tools/');
     await page.waitForTimeout(800); // 等客户端解析 + 渲染
     const cards = page.locator('.cat');
-    await expect(cards).toHaveCount(2);
+    await expect(cards).toHaveCount(1);
   });
 
   test('Hero + 4 分类 chip 存在', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     await search.fill('');
     await page.waitForTimeout(200);
     const visibleAfterClear = await page.locator('.cat:not(.is-hidden)').count();
-    expect(visibleAfterClear).toBeGreaterThanOrEqual(2);
+    expect(visibleAfterClear).toBeGreaterThanOrEqual(1);
   });
 });
 
