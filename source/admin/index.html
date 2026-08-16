@@ -420,33 +420,33 @@
       margin: 0 0.25rem;
     }
 
-    /* ===== Tool Link Row (flat, like links form) ===== */
-    .link-row-flat {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1.2fr 2fr 0.6fr 0.7fr auto;
-      gap: 0.4rem;
-      align-items: center;
-      padding: 0.5rem 0.6rem;
+    /* ===== Tool Link Row (stacked: 5 fields, roomy) ===== */
+    .link-row-stacked {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.7rem 0.85rem;
       background: var(--bg-elev);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 0.4rem;
+      border-radius: 10px;
+      margin-bottom: 0.6rem;
     }
-    .link-row-flat .input { font-size: 0.78rem; padding: 0.4rem 0.5rem; }
-    .link-row-flat .input-wide { min-width: 0; }
-    .link-row-flat .input-small { min-width: 70px; }
-    .link-row-flat .select { font-size: 0.78rem; padding: 0.35rem 0.4rem; }
-    .link-row-flat .row-remove {
-      width: 28px; height: 28px;
+    .link-row-stacked .input { font-size: 0.85rem; padding: 0.5rem 0.65rem; }
+    .link-row-stack-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .link-row-stack-line .input-small { max-width: 140px; }
+    .link-row-stack-line .select { font-size: 0.85rem; padding: 0.45rem 0.5rem; }
+    .link-row-stack-line .row-remove {
+      width: 36px; height: 36px;
       padding: 0;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       line-height: 1;
     }
-    @media (max-width: 1100px) {
-      .link-row-flat {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-      }
+    @media (max-width: 700px) {
+      .link-row-stack-line { grid-template-columns: 1fr; }
     }
 
     /* ===== Articles Tab ===== */

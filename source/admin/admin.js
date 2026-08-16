@@ -155,63 +155,80 @@
   }
 
   function buildToolLinkRow(link, idx) {
-    // 和 links tab 一致：扁平布局，所有字段直接可见
+    // 简化:5 个字段,每个字段单独一行,不再挤 2 列
     const wrap = document.createElement('div');
-    wrap.className = 'link-row link-row-flat';
+    wrap.className = 'link-row link-row-stacked';
 
     const resolved = lookupLink(link.key);
 
-    const mkInput = (placeholder, value, onInput, className) => {
-      const el = document.createElement('input');
-      el.type = 'text';
-      el.className = 'input ' + (className || '');
-      el.placeholder = placeholder;
-      el.value = value || '';
-      el.addEventListener('input', () => onInput(el.value));
-      return el;
-    };
+    // row 1: key + type (主标识)
+    const row1 = document.createElement('div');
+    row1.className = 'link-row-stack-line';
 
-    const keyInput = mkInput('key (claude_oneclick)', link.key, (v) => {
-      state.tools.links[idx].key = v;
+    const keyInput = document.createElement('input');
+    keyInput.type = 'text';
+    keyInput.className = 'input';
+    keyInput.placeholder = 'key (claude_oneclick)';
+    keyInput.value = link.key || '';
+    keyInput.setAttribute('list', 'link-keys-datalist');
+    keyInput.addEventListener('input', () => {
+      state.tools.links[idx].key = keyInput.value;
       // key 改变时自动从 links.yml 拉数据填充
-      const r = lookupLink(v);
+      const r = lookupLink(keyInput.value);
       if (r) {
         state.tools.links[idx].url = r.url || '';
         state.tools.links[idx].extract_code = r.extract_code || '';
         state.tools.links[idx].status = r.status || 'active';
-        state.tools.links[idx].label = r.label || '';
-        state.tools.links[idx].type = state.tools.links[idx].type || '官网';
-        // 重新渲染本行让所有字段同步显示
+        state.tools.links[idx].type = state.tools.links[idx].type || r.type || '官网';
+        // 重新渲染让 url/code/status 显示新值
         renderToolLinks();
       }
       renderOutput();
       renderLiveList();
     });
-    keyInput.setAttribute('list', 'link-keys-datalist');
 
-    const typeInput = mkInput('type / 显示名', link.type, (v) => {
-      state.tools.links[idx].type = v;
+    const typeInput = document.createElement('input');
+    typeInput.type = 'text';
+    typeInput.className = 'input';
+    typeInput.placeholder = 'type (官网/网盘/GitHub)';
+    typeInput.value = link.type || '';
+    typeInput.addEventListener('input', () => {
+      state.tools.links[idx].type = typeInput.value;
       renderOutput();
       renderLiveList();
     });
 
-    const labelInput = mkInput('label (Claude 官网 等)', link.label || resolved?.label, (v) => {
-      state.tools.links[idx].label = v;
+    row1.appendChild(keyInput);
+    row1.appendChild(typeInput);
+    wrap.appendChild(row1);
+
+    // row 2: url (独占一行,大宽度)
+    const urlInput = document.createElement('input');
+    urlInput.type = 'text';
+    urlInput.className = 'input';
+    urlInput.placeholder = 'url (https://...)';
+    urlInput.value = link.url || resolved?.url || '';
+    urlInput.addEventListener('input', () => {
+      state.tools.links[idx].url = urlInput.value;
       renderOutput();
       renderLiveList();
     });
+    wrap.appendChild(urlInput);
 
-    const urlInput = mkInput('url (https://...)', link.url || resolved?.url, (v) => {
-      state.tools.links[idx].url = v;
+    // row 3: 提取码 + 状态 + 删除 (操作行)
+    const row3 = document.createElement('div');
+    row3.className = 'link-row-stack-line';
+
+    const codeInput = document.createElement('input');
+    codeInput.type = 'text';
+    codeInput.className = 'input input-small';
+    codeInput.placeholder = '提取码';
+    codeInput.value = link.extract_code || resolved?.extract_code || '';
+    codeInput.addEventListener('input', () => {
+      state.tools.links[idx].extract_code = codeInput.value;
       renderOutput();
       renderLiveList();
-    }, 'input-wide');
-
-    const codeInput = mkInput('提取码', link.extract_code || resolved?.extract_code, (v) => {
-      state.tools.links[idx].extract_code = v;
-      renderOutput();
-      renderLiveList();
-    }, 'input-small');
+    });
 
     const statusSelect = document.createElement('select');
     statusSelect.className = 'select';
@@ -238,14 +255,11 @@
       renderOutput();
     });
 
-    // 扁平布局:一行展示所有字段(和 links form 一样的视觉密度)
-    wrap.appendChild(keyInput);
-    wrap.appendChild(typeInput);
-    wrap.appendChild(labelInput);
-    wrap.appendChild(urlInput);
-    wrap.appendChild(codeInput);
-    wrap.appendChild(statusSelect);
-    wrap.appendChild(removeBtn);
+    row3.appendChild(codeInput);
+    row3.appendChild(statusSelect);
+    row3.appendChild(removeBtn);
+    wrap.appendChild(row3);
+
     return wrap;
   }
 
