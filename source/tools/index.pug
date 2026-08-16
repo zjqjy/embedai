@@ -538,7 +538,31 @@ html(lang="zh-CN")
       }
       .tool-modal-header {
         margin-bottom: 1.75rem;
-        padding-right: 2.5rem;
+        padding-right: 0;
+      }
+      .tool-modal-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .tool-modal-header-text { flex: 1; min-width: 0; }
+      .tool-modal-visit {
+        background: linear-gradient(135deg, var(--accent), #5b8a6e);
+        color: white;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: all 0.2s;
+        flex: 0;
+        align-self: center;
+      }
+      .tool-modal-visit:hover {
+        filter: brightness(1.1);
+        color: white;
+        transform: translateY(-1px);
       }
       .tool-modal-icon {
         display: inline-block;
@@ -795,8 +819,10 @@ html(lang="zh-CN")
             | ×
           .tool-modal-header
             .tool-modal-icon#modal-icon
-            h2.tool-modal-title#modal-title
-            p.tool-modal-tagline#modal-tagline
+            .tool-modal-header-text
+              h2.tool-modal-title#modal-title
+              p.tool-modal-tagline#modal-tagline
+            a.tool-modal-visit#modal-visit(href="#" target="_blank" rel="noopener" hidden) 🔗 打开主页
           .tool-modal-body
             .tool-modal-section
               .tool-modal-section-label // 推荐理由
@@ -822,4 +848,6 @@ html(lang="zh-CN")
         include ../_data/links.yml
 
     script(src="/js/site.js")
+    // ★ js-yaml 用于解析嵌套结构的 links.yml(自实现 parser 不支持嵌套数组)
+    script(src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js")
     script(src="/tools/tools.js")
