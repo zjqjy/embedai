@@ -2,8 +2,16 @@
 const { test, expect } = require('@playwright/test');
 const { attachConsoleWatcher } = require('./_shared');
 
+// mock /api/* 让 admin 在 preview server 下也能跑通（实际写入要 admin-server）
+const mockTools = { ok: true, data: [], raw: '' };
+const mockLinks = { ok: true, data: {}, raw: '' };
+
 test.describe('管理后台 /admin/ - 加载与基础结构 @smoke', () => {
   test('页面正常加载,无控制台错误', async ({ page }) => {
+    // mock admin-server 的 API endpoint（避免 preview server 返回 404）
+    await page.route('**/api/tools', route => route.fulfill({ json: mockTools }));
+    await page.route('**/api/links', route => route.fulfill({ json: mockLinks }));
+
     const watcher = attachConsoleWatcher(page);
     const resp = await page.goto('/admin/');
     expect(resp && resp.status()).toBeLessThan(400);

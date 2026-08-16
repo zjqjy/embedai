@@ -80,7 +80,6 @@
 
   const yamlOutput = $('#yaml-output');
   const outputName = $('#output-name');
-  const formStatus = $('#form-status');
   const toastEl = $('#toast');
 
   // -----------------------------------------------------------
@@ -342,15 +341,6 @@
   // -----------------------------------------------------------
   // localStorage 草稿
   // -----------------------------------------------------------
-  let saveStatusTimer = null;
-  function markSaved() {
-    if (saveStatusTimer) clearTimeout(saveStatusTimer);
-    formStatus.textContent = 'draft saved';
-    saveStatusTimer = setTimeout(() => {
-      formStatus.textContent = 'draft saved';
-    }, 1500);
-  }
-
   function saveDraft() {
     const payload = {
       form: clone(state[activeTab]),
@@ -360,8 +350,7 @@
     const key = activeTab === 'tools' ? STORAGE_KEY_TOOLS : STORAGE_KEY_LINKS;
     try {
       localStorage.setItem(key, JSON.stringify(payload));
-      markSaved();
-      toast('💾 草稿已保存到 localStorage');
+      toast('📝 草稿已暂存到 localStorage (不会写入文件,下次打开自动恢复)');
     } catch (e) {
       toast('保存失败：' + e.message, 'error');
     }
@@ -473,12 +462,13 @@
       return;
     }
     const tab = activeTab;
+    const file = tab === 'tools' ? 'tools.yml' : 'links.yml';
     const endpoint = tab === 'tools' ? '/api/tools' : '/api/links';
 
     const btn = $('#btn-save-server');
     const oldText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '⏳ 保存中...';
+    btn.textContent = '⏳ 写入中...';
 
     try {
       const resp = await fetch(endpoint, {
@@ -490,22 +480,13 @@
       if (!resp.ok || !data.ok) {
         throw new Error(data.error || `HTTP ${resp.status}`);
       }
-      toast('✅ ' + data.message, 'success');
+      // 文件已成功写入
+      const savedAt = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+      toast(`✅ ${file} 已写入 (${data.bytes} 字节 @ ${savedAt})`, 'success', 5000);
+      markFileSaved(file, savedAt, data.message);
       // 重新拉取 live data 刷新列表
       loadLiveData();
       editingKey = null;
-
-      // 询问是否触发 rebuild
-      if (confirm('已写入文件。是否立即触发 hexo generate？（选「取消」可稍后手动 `npm run build`）')) {
-        btn.textContent = '⏳ rebuild...';
-        const r = await fetch('/api/rebuild', { method: 'POST' });
-        const rd = await r.json();
-        if (r.ok && rd.ok) {
-          toast('✅ rebuild 成功,刷新 /tools/ 查看效果', 'success');
-        } else {
-          toast('rebuild 失败：' + (rd.error || ''), 'error');
-        }
-      }
     } catch (e) {
       if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
         toast('❌ 后端未启动。请先运行 `npm run admin`', 'error');
@@ -516,6 +497,20 @@
       btn.disabled = false;
       btn.textContent = oldText;
     }
+  }
+
+  // 文件保存状态指示
+  function markFileSaved(file, time, detail) {
+    const indicator = $('#file-saved-indicator');
+    if (!indicator) return;
+    indicator.classList.add('saved');
+    indicator.innerHTML = `✅ <code>${file}</code> 已保存 @ ${time}`;
+    if (detail) {
+      indicator.title = detail;
+    }
+    setTimeout(() => {
+      indicator.classList.remove('saved');
+    }, 8000);
   }
 
   // -----------------------------------------------------------
