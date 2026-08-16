@@ -628,24 +628,30 @@
   async function loadLiveData() {
     const empty = $('#live-empty');
     const list = $('#live-list');
-    // live-list 元素已在 v3 重构中移除（顶部 panel-live 删除）,安全跳过
     if (list) list.innerHTML = '<div class="live-empty"><p>加载中...</p></div>';
 
     try {
-      const [toolsResp, linksResp] = await Promise.all([
+      const [toolsResp, linksResp, postsResp] = await Promise.all([
         fetch('/api/tools'),
-        fetch('/api/links')
+        fetch('/api/links'),
+        fetch('/api/posts')
       ]);
       const toolsData = await toolsResp.json();
       const linksData = await linksResp.json();
+      const postsData = await postsResp.json();
       if (!toolsData.ok || !linksData.ok) {
         throw new Error(toolsData.error || linksData.error || '加载失败');
       }
       liveData.tools = toolsData.data || [];
       liveData.links = linksData.data || {};
+      // ★ 同步拉取文章列表 → links tab 能看到所有文章(含没链接的)
+      if (postsData.ok) {
+        articlesList = postsData.data || [];
+        updateArticleSlugDatalist();
+      }
       if (empty) empty.hidden = true;
       renderLiveList();
-      const articleCount = Object.keys(liveData.links).length;
+      const articleCount = articlesList.length || Object.keys(liveData.links).length;
       const linkCount = Object.values(liveData.links).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
       const src = $('#live-source');
       if (src) src.textContent = `${liveData.tools.length} 工具 / ${linkCount} 链接 / ${articleCount} 文章`;
@@ -659,6 +665,15 @@
         toast('加载失败：' + e.message, 'error');
       }
     }
+  }
+
+  // 把 articlesList 同步到 link form 的 article-slugs datalist(动态填充)
+  function updateArticleSlugDatalist() {
+    const datalist = $('#article-slugs-list');
+    if (!datalist) return;
+    datalist.innerHTML = articlesList.map(p =>
+      `<option value="${escapeHtml(p.slug)}">`
+    ).join('');
   }
 
   function renderLiveList() {
@@ -718,14 +733,20 @@
         });
       });
     } else if (tab === 'links') {
-      // 链接列表 - 按文章分组
+      // 链接列表 - 按文章分组(包括空文章,方便给新文章加链接)
       const articles = liveData.links || {};
-      const articleSlugs = Object.keys(articles);
-      if (articleSlugs.length === 0) {
-        list.innerHTML = '<div class="live-empty"><p>暂无链接,点「＋ 新增链接」添加</p></div>';
+      // 合并已有链接的文章 + 所有 articlesList 中的文章(去重)
+      const allArticleSlugs = [...new Set([
+        ...Object.keys(articles),
+        ...articlesList.map(p => p.slug)
+      ])];
+
+      if (allArticleSlugs.length === 0) {
+        list.innerHTML = '<div class="live-empty"><p>暂无文章 + 链接,先到「📄 文章」tab 创建文章</p></div>';
         return;
       }
-      articleSlugs.forEach((articleSlug) => {
+
+      allArticleSlugs.forEach((articleSlug) => {
         const articleLinks = articles[articleSlug] || [];
         const section = document.createElement('div');
         section.className = 'live-article-section';
@@ -738,34 +759,40 @@
         `;
         const grid = document.createElement('div');
         grid.className = 'live-list live-list-nested';
-        articleLinks.forEach((link) => {
-          if (!link || !link.key) return;
-          const status = link.status || 'active';
-          const statusIcon = status === 'broken' ? '❌' : status === 'warning' ? '⚠️' : '✓';
-          const card = document.createElement('div');
-          card.className = 'live-item live-item-link status-' + status;
-          card.dataset.article = articleSlug;
-          card.dataset.key = link.key;
-          // 卡片只显示 2 项:name + url
-          // 状态/编辑按钮/类型/提取码 → hover 时显示
-          card.innerHTML = `
-            <div class="live-item-row1">
-              <span class="status-dot-inline status-${status}" title="${status}">${statusIcon}</span>
-              <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
-            </div>
-            <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
-            <div class="live-item-hover">
-              <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
-              ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-              <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
-            </div>
-          `;
-          card.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-edit-link') || e.target.classList.contains('btn-icon')) return;
-            editLink(articleSlug, link.key);
+        if (articleLinks.length === 0) {
+          // 空文章提示
+          const empty = document.createElement('div');
+          empty.className = 'live-empty live-empty-inline';
+          empty.innerHTML = `<p>暂无链接,点顶部「＋ 新增链接」添加 (article_slug 已预填为 <code>${escapeHtml(articleSlug)}</code>)</p>`;
+          grid.appendChild(empty);
+        } else {
+          articleLinks.forEach((link) => {
+            if (!link || !link.key) return;
+            const status = link.status || 'active';
+            const statusIcon = status === 'broken' ? '❌' : status === 'warning' ? '⚠️' : '✓';
+            const card = document.createElement('div');
+            card.className = 'live-item live-item-link status-' + status;
+            card.dataset.article = articleSlug;
+            card.dataset.key = link.key;
+            card.innerHTML = `
+              <div class="live-item-row1">
+                <span class="status-dot-inline status-${status}" title="${status}">${statusIcon}</span>
+                <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
+              </div>
+              <div class="live-item-url" title="${escapeHtml(link.url || '')}">${escapeHtml(link.url || '(无 url)')}</div>
+              <div class="live-item-hover">
+                <span class="chip-mini">${escapeHtml(link.type || '?')}</span>
+                ${link.extract_code ? `<span class="chip-mini chip-code">码: ${escapeHtml(link.extract_code)}</span>` : ''}
+                <button class="btn-icon btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button" title="编辑">✏️</button>
+              </div>
+            `;
+            card.addEventListener('click', (e) => {
+              if (e.target.classList.contains('btn-edit-link') || e.target.classList.contains('btn-icon')) return;
+              editLink(articleSlug, link.key);
+            });
+            grid.appendChild(card);
           });
-          grid.appendChild(card);
-        });
+        }
         section.appendChild(grid);
         list.appendChild(section);
       });
