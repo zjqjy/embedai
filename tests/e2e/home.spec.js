@@ -24,10 +24,10 @@ test.describe('首页 - 加载与基础结构 @smoke', () => {
     await expect(page.locator('.section-head h2', { hasText: '关于' })).toBeVisible();
   });
 
-  test('3 张文章卡 + 2 张分类卡（AI 工具 + 更多占位）', async ({ page }) => {
+  test('4 张文章卡 + 2 张分类卡（AI 工具 + 嵌入式）', async ({ page }) => {
     await page.goto('/');
     const posts = page.locator('.post-card');
-    await expect(posts).toHaveCount(3);
+    await expect(posts).toHaveCount(4);
     const cats = page.locator('.cat');
     await expect(cats).toHaveCount(2);
   });

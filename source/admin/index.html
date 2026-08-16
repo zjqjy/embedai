@@ -401,6 +401,46 @@
       padding: 0.5rem 1rem;
       font-size: 0.85rem;
     }
+    .primary-actions .btn-link {
+      background: transparent;
+      border-color: transparent;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.5rem 0.7rem;
+    }
+    .primary-actions .btn-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .actions-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* ===== Tool Link Row (full edit) ===== */
+    .link-row-full {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0.5rem 0.75rem;
+      gap: 0.4rem;
+    }
+    .link-row-fields {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .link-row-fields .input { flex: 1; }
+    .link-row-fields .select { flex: 0.7; }
+    .link-row-fields .row-remove { flex: 0; }
+    .link-row-fields-secondary .input-small { flex: 0.4; min-width: 80px; }
+    .link-row-fields-secondary {
+      padding-left: 0.5rem;
+      border-left: 2px solid var(--border);
+    }
+    .link-row-fields-secondary .input { font-size: 0.8rem; padding: 0.4rem 0.5rem; }
     .file-saved-indicator {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
@@ -661,6 +701,9 @@
         <button class="btn" id="btn-download">⬇ 下载 .yml</button>
         <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
         <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
+        <span class="actions-divider"></span>
+        <a class="btn btn-link" href="/tools/" target="_blank" title="新窗口打开 /tools/ 公开页">👁 浏览 /tools/</a>
+        <a class="btn btn-link" href="/" target="_blank" title="新窗口打开首页">🏠 首页</a>
         <span id="file-saved-indicator" class="file-saved-indicator"></span>
       </div>
     </header>

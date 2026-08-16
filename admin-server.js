@@ -130,21 +130,83 @@ app.post('/api/tools', (req, res) => {
     });
     const bytes = writeYmlWithHeader(
       TOOLS_YML,
-      '# ============================================\n# 嵌入式工具列表 (Tools Registry)\n# 由 admin-server 自动写入,可手工调整\n# ============================================',
+      '# ============================================\n# 嵌入式工具列表 (Tools Registry)\n# 由 admin-server 自动写入,可手工调整\n# 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section\n# ============================================',
       dump
     );
+    // ★ 同步工具链接到 links.yml 的 _shared section(让 helper 和 /tools/ 页面共享数据)
+    const linkStats = syncLinksFromTools(existing);
     res.json({
       ok: true,
       file: 'tools.yml',
       count: existing.length,
       bytes,
       stats,
-      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${existing.length} 条)`
+      linkStats,
+      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${existing.length} 条) | links.yml 同步 ${linkStats.added}+${linkStats.updated}~`
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
 });
+
+// 从 tools 数据同步链接到 links.yml 的 _shared section
+function syncLinksFromTools(tools) {
+  // 读取现有 links.yml
+  let links = {};
+  try {
+    const raw = fs.readFileSync(LINKS_YML, 'utf8');
+    links = yaml.load(raw) || {};
+    if (typeof links !== 'object' || Array.isArray(links)) links = {};
+  } catch (e) { links = {}; }
+  if (!Array.isArray(links._shared)) links._shared = [];
+  const stats = { added: 0, updated: 0 };
+  tools.forEach((tool) => {
+    if (!tool || !Array.isArray(tool.links)) return;
+    tool.links.forEach((link) => {
+      if (!link || !link.key) return;
+      const idx = links._shared.findIndex(l => l && l.key === link.key);
+      // 组装完整 link 数据(从 tools 行内取,缺失字段从已有 links.yml 找)
+      const merged = {
+        key: link.key,
+        label: link.label || '',
+        url: link.url || '',
+        type: link.type || 'official',
+        extract_code: link.extract_code || '',
+        status: link.status || 'active',
+        added: link.added || new Date().toISOString().slice(0, 10)
+      };
+      if (idx >= 0) {
+        // 只在 tools 提供了完整数据时才覆盖,否则保留 links.yml 原有
+        const old = links._shared[idx];
+        links._shared[idx] = {
+          ...old,
+          ...merged,
+          url: link.url || old.url,
+          label: link.label || old.label
+        };
+        stats.updated++;
+      } else {
+        links._shared.push(merged);
+        stats.added++;
+      }
+    });
+  });
+  // 写回(只在有变更时写)
+  if (stats.added > 0 || stats.updated > 0) {
+    const dump = yaml.dump(links, {
+      lineWidth: -1,
+      noRefs: true,
+      sortKeys: false,
+      quotingType: '"'
+    });
+    writeYmlWithHeader(
+      LINKS_YML,
+      '# ============================================\n# 链接中央注册表 (按文章嵌套)\n# 由 admin-server 自动写入,可手工调整\n# _shared:工具页用到的共享链接(由 admin 同步)\n# ============================================',
+      dump
+    );
+  }
+  return stats;
+}
 
 app.post('/api/links', (req, res) => {
   try {

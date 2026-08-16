@@ -134,21 +134,35 @@
 
   function buildToolLinkRow(link, idx) {
     const wrap = document.createElement('div');
-    wrap.className = 'link-row';
+    wrap.className = 'link-row link-row-full';
 
-    // key select（带 data-list 联想 + 自由输入）
+    // 从 links.yml 查找完整数据(只读显示 + 可手动覆盖)
+    const resolved = lookupLink(link.key);
+
+    // row 1: key + type + status + 删除
+    const row1 = document.createElement('div');
+    row1.className = 'link-row-fields';
+
     const keyInput = document.createElement('input');
     keyInput.type = 'text';
     keyInput.className = 'input';
-    keyInput.placeholder = 'link key';
+    keyInput.placeholder = 'link key (例：claude_oneclick)';
     keyInput.value = link.key || '';
     keyInput.setAttribute('list', 'link-keys-datalist');
     keyInput.addEventListener('input', () => {
       state.tools.links[idx].key = keyInput.value;
+      // key 改变时,自动从 links.yml 拉数据填充
+      const r = lookupLink(keyInput.value);
+      if (r) {
+        state.tools.links[idx].url = r.url || '';
+        state.tools.links[idx].extract_code = r.extract_code || '';
+        state.tools.links[idx].status = r.status || 'active';
+        state.tools.links[idx].label = r.label || '';
+      }
+      renderToolLinks();
       renderOutput();
     });
 
-    // type text
     const typeInput = document.createElement('input');
     typeInput.type = 'text';
     typeInput.className = 'input';
@@ -159,7 +173,19 @@
       renderOutput();
     });
 
-    // 删除按钮
+    const statusSelect = document.createElement('select');
+    statusSelect.className = 'select';
+    statusSelect.innerHTML = `
+      <option value="active">✓ active</option>
+      <option value="warning">⚠ warning</option>
+      <option value="broken">❌ broken</option>
+    `;
+    statusSelect.value = link.status || resolved?.status || 'active';
+    statusSelect.addEventListener('change', () => {
+      state.tools.links[idx].status = statusSelect.value;
+      renderOutput();
+    });
+
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'row-remove';
@@ -171,15 +197,70 @@
       renderOutput();
     });
 
-    wrap.appendChild(keyInput);
-    wrap.appendChild(typeInput);
-    wrap.appendChild(removeBtn);
+    row1.appendChild(keyInput);
+    row1.appendChild(typeInput);
+    row1.appendChild(statusSelect);
+    row1.appendChild(removeBtn);
+    wrap.appendChild(row1);
+
+    // row 2: url + extract_code (展开编辑完整数据)
+    const row2 = document.createElement('div');
+    row2.className = 'link-row-fields link-row-fields-secondary';
+
+    const urlInput = document.createElement('input');
+    urlInput.type = 'text';
+    urlInput.className = 'input';
+    urlInput.placeholder = 'url (https://...)';
+    urlInput.value = link.url || resolved?.url || '';
+    urlInput.addEventListener('input', () => {
+      state.tools.links[idx].url = urlInput.value;
+      renderOutput();
+    });
+
+    const codeInput = document.createElement('input');
+    codeInput.type = 'text';
+    codeInput.className = 'input input-small';
+    codeInput.placeholder = '提取码';
+    codeInput.value = link.extract_code || resolved?.extract_code || '';
+    codeInput.addEventListener('input', () => {
+      state.tools.links[idx].extract_code = codeInput.value;
+      renderOutput();
+    });
+
+    const labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.className = 'input';
+    labelInput.placeholder = '显示标签 (Claude 官网 等)';
+    labelInput.value = link.label || resolved?.label || '';
+    labelInput.addEventListener('input', () => {
+      state.tools.links[idx].label = labelInput.value;
+      renderOutput();
+    });
+
+    row2.appendChild(labelInput);
+    row2.appendChild(urlInput);
+    row2.appendChild(codeInput);
+    wrap.appendChild(row2);
+
     return wrap;
+  }
+
+  // 跨文章查找 link (跟 helper 一样的逻辑)
+  function lookupLink(key) {
+    if (!key) return null;
+    for (const slug of Object.keys(liveData.links || {})) {
+      const arr = liveData.links[slug];
+      if (Array.isArray(arr)) {
+        const found = arr.find(l => l && l.key === key);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 
   function bindAddToolLink() {
     $('#t-add-link').addEventListener('click', () => {
-      state.tools.links.push({ key: '', type: '' });
+      state.tools.links.push({ key: '', type: '', status: 'active' });
       renderToolLinks();
       renderOutput();
     });
@@ -286,6 +367,7 @@
     const lines = [];
     lines.push('# ============================================');
     lines.push('# 工具条目（单条，可粘贴到 source/_data/tools.yml）');
+    lines.push('# 由 admin 生成;链接完整数据会同步到 source/_data/links.yml');
     lines.push('# ============================================ ');
     lines.push('- name: ' + yamlQuote(yamlEscape(t.name)));
     lines.push('  category: ' + yamlQuote(yamlEscape(t.category || 'dev')));
@@ -298,9 +380,13 @@
     if (t.links && t.links.length > 0) {
       lines.push('  links:');
       t.links.forEach((l) => {
-        if (!l.key && !l.type) return;
+        if (!l.key && !l.type && !l.url) return;
         lines.push('    - key: ' + yamlQuote(yamlEscape(l.key)));
-        lines.push('      type: ' + yamlQuote(yamlEscape(l.type)));
+        if (l.type) lines.push('      type: ' + yamlQuote(yamlEscape(l.type)));
+        if (l.label) lines.push('      label: ' + yamlQuote(yamlEscape(l.label)));
+        if (l.url) lines.push('      url: ' + yamlQuote(yamlEscape(l.url)));
+        if (l.extract_code) lines.push('      extract_code: ' + yamlQuote(yamlEscape(l.extract_code)));
+        if (l.status) lines.push('      status: ' + yamlQuote(yamlEscape(l.status)));
       });
     } else {
       lines.push('  links: []');
