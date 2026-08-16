@@ -183,6 +183,7 @@
       }
       renderToolLinks();
       renderOutput();
+      renderLiveList(); // ★ 同步顶部卡片
     });
 
     const typeInput = document.createElement('input');
@@ -193,6 +194,7 @@
     typeInput.addEventListener('input', () => {
       state.tools.links[idx].type = typeInput.value;
       renderOutput();
+      renderLiveList();
     });
 
     const statusSelect = document.createElement('select');
@@ -206,6 +208,7 @@
     statusSelect.addEventListener('change', () => {
       state.tools.links[idx].status = statusSelect.value;
       renderOutput();
+      renderLiveList();
     });
 
     const removeBtn = document.createElement('button');
@@ -237,6 +240,7 @@
     urlInput.addEventListener('input', () => {
       state.tools.links[idx].url = urlInput.value;
       renderOutput();
+      renderLiveList();
     });
 
     const codeInput = document.createElement('input');
@@ -247,6 +251,7 @@
     codeInput.addEventListener('input', () => {
       state.tools.links[idx].extract_code = codeInput.value;
       renderOutput();
+      renderLiveList();
     });
 
     const labelInput = document.createElement('input');
@@ -257,6 +262,7 @@
     labelInput.addEventListener('input', () => {
       state.tools.links[idx].label = labelInput.value;
       renderOutput();
+      renderLiveList();
     });
 
     row2.appendChild(labelInput);
@@ -315,10 +321,12 @@
       el.addEventListener('input', () => {
         state.tools[f] = el.value;
         renderOutput();
+        renderLiveList(); // ★ 同步顶部卡片
       });
       el.addEventListener('change', () => {
         state.tools[f] = el.value;
         renderOutput();
+        renderLiveList();
       });
     });
   }
