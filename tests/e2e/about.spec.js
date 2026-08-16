@@ -7,8 +7,8 @@ test.describe('About 页面 - 加载与基础结构 @smoke', () => {
     const watcher = attachConsoleWatcher(page);
     const resp = await page.goto('/about/');
     expect(resp && resp.status()).toBeLessThan(400);
-    await expect(page.locator('h1')).toContainText('About');
-    await expect(page.locator('h1 .accent')).toContainText('阿程');
+    await expect(page.locator('h1')).toContainText('碎碎念');
+    await expect(page.locator('h1 .accent')).toContainText('那个我');
     watcher.assertClean();
   });
 

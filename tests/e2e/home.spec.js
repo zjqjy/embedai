@@ -15,7 +15,7 @@ test.describe('首页 - 加载与基础结构 @smoke', () => {
   test('关键元素都存在', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(500);
-    await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.locator('.chip-title').first()).toBeVisible();
     await expect(page.locator('.topbar')).toBeVisible();
     await expect(page.locator('.status-dot')).toBeVisible();
     await expect(page.locator('.hero-cta')).toBeVisible();
@@ -24,12 +24,12 @@ test.describe('首页 - 加载与基础结构 @smoke', () => {
     await expect(page.locator('.section-head h2', { hasText: '关于' })).toBeVisible();
   });
 
-  test('3 张文章卡 + 5 张分类卡都渲染', async ({ page }) => {
+  test('3 张文章卡 + 2 张分类卡（AI 工具 + 更多占位）', async ({ page }) => {
     await page.goto('/');
     const posts = page.locator('.post-card');
     await expect(posts).toHaveCount(3);
     const cats = page.locator('.cat');
-    await expect(cats).toHaveCount(5);
+    await expect(cats).toHaveCount(2);
   });
 
   test('4 张统计卡', async ({ page }) => {

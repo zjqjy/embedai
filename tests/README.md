@@ -8,7 +8,6 @@ tests/
     ├── _shared.js             # 共享工具(console 监听等)
     ├── home.spec.js           # 首页 (/)
     ├── about.spec.js          # 关于页 (/about/)
-    ├── coming-soon.spec.js    # 敬请期待 (/coming-soon/)
     └── accessibility.spec.js  # 全站无障碍 / 视觉验收
 ```
 
@@ -21,14 +20,12 @@ tests/
 | 滚动揭示 `data-reveal` | `home.spec.js` 滚动揭示 |
 | 3D 倾斜 `data-tilt` | `home.spec.js` / `about.spec.js` |
 | 磁吸按钮 `data-magnetic` | `home.spec.js` |
-| 点击涟漪 `data-ripple` | `home.spec.js` / `about.spec.js` / `coming-soon.spec.js` |
+| 点击涟漪 `data-ripple` | `home.spec.js` / `about.spec.js` |
 | 数字计数 `data-count-up` | `home.spec.js` / `about.spec.js` |
 | 打字机 `data-typewriter` | `home.spec.js` |
 | 视差 `data-parallax` | `home.spec.js` |
 | 阅读进度 / 回到顶部 | `home.spec.js` |
-| 进度条入场 | `coming-soon.spec.js` |
-| 加 buff 按钮 | `coming-soon.spec.js` |
-| Konami 彩蛋 | `coming-soon.spec.js` |
+| 字符逐字入场 | `home.spec.js` |
 | 键盘可达 / focus | `home.spec.js` |
 | 桌面 / 移动端不溢出 | `accessibility.spec.js` |
 | `prefers-reduced-motion` | `accessibility.spec.js` |

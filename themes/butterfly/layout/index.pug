@@ -436,8 +436,21 @@ html(lang="zh-CN")
       /* 分类卡 */
       .categories {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
+      }
+      .cat.muted {
+        opacity: 0.78;
+        cursor: default;
+      }
+      .cat.muted:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: var(--border);
+      }
+      .cat.muted:hover .cat-arrow {
+        color: var(--text-3);
+        transform: none;
       }
       .cat {
         background: var(--bg-elev);
@@ -620,7 +633,6 @@ html(lang="zh-CN")
         .stats { grid-template-columns: 1fr 1fr; }
         .posts { grid-template-columns: 1fr; }
         .post-card.featured { grid-row: auto; }
-        .categories { grid-template-columns: repeat(2, 1fr); }
         .about { grid-template-columns: 1fr; }
         .hero { padding: 4rem 0 3rem; }
         .hero h1.glass-title { font-size: clamp(1.8rem, 6vw, 2.8rem); padding: 0.5rem 1.4rem; }
@@ -632,7 +644,6 @@ html(lang="zh-CN")
         html, body { overflow-x: hidden; }
         .container { padding: 0 1.25rem; }
         .stats { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-        .categories { grid-template-columns: 1fr; }
         .stat { padding: 1.1rem; }
         .stat .value { font-size: 1.6rem; }
         .topbar-inner { font-size: 0.65rem; gap: 0.5rem; }
@@ -678,7 +689,7 @@ html(lang="zh-CN")
         .stat(data-tilt data-tilt-max="5" data-tilt-scale="1.02")
           .label focus
           .value
-            span.count-up(data-count-up="3" data-count-suffix=" / 5") 0
+            span.count-up(data-count-up="1" data-count-suffix=" / 1") 0
           .meta 分类已开放
         .stat(data-tilt data-tilt-max="5" data-tilt-scale="1.02")
           .label articles
@@ -728,43 +739,16 @@ html(lang="zh-CN")
             .cat-desc Claude Code 等 AI 工具使用技巧
             .cat-foot
               span.live active
-              span 1 篇
-          a.cat(href="/coming-soon/" style="--cat-color: #c5b8e0;" data-tilt data-tilt-max="6" data-tilt-scale="1.02" data-ripple)
+              span 3 篇
+          a.cat.muted(href="javascript:void(0)" onclick="return false;" style="--cat-color: var(--bg-soft);" data-tilt data-tilt-max="6" data-tilt-scale="1.02" data-ripple)
             span.cat-num 02
-            span.cat-arrow →
-            .cat-icon PROMPT
-            h3 提示词工程
-            .cat-desc 高效提示词编写方法论
+            span.cat-arrow +
+            .cat-icon MORE
+            h3 更多分类
+            .cat-desc 提示词 · 嵌入式 · 开源项目 · 复刻 —— 慢慢写
             .cat-foot
               span.soon coming
-              span 即将上线
-          a.cat(href="/coming-soon/" style="--cat-color: var(--accent-soft);" data-tilt data-tilt-max="6" data-tilt-scale="1.02" data-ripple)
-            span.cat-num 03
-            span.cat-arrow →
-            .cat-icon MCU
-            h3 嵌入式
-            .cat-desc STM32 / ESP32 / RTOS
-            .cat-foot
-              span.soon coming
-              span 即将上线
-          a.cat(href="/coming-soon/" style="--cat-color: var(--warm-soft);" data-tilt data-tilt-max="6" data-tilt-scale="1.02" data-ripple)
-            span.cat-num 04
-            span.cat-arrow →
-            .cat-icon PROJ
-            h3 开源项目
-            .cat-desc 个人与社区精选项目
-            .cat-foot
-              span.soon coming
-              span 即将上线
-          a.cat(href="/coming-soon/" style="--cat-color: #f7d4c4;" data-tilt data-tilt-max="6" data-tilt-scale="1.02" data-ripple)
-            span.cat-num 05
-            span.cat-arrow →
-            .cat-icon REPL
-            h3 开源复刻
-            .cat-desc 优秀项目的复刻与改进
-            .cat-foot
-              span.soon coming
-              span 即将上线
+              span 打个招呼催更
       section.section(data-reveal="up")
         .section-head
           h2 关于我
