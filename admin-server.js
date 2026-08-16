@@ -328,6 +328,43 @@ app.post('/api/rebuild', (_req, res) => {
   });
 });
 
+// ---------- POST: 一键部署 (generate + deploy) ----------
+app.post('/api/deploy', (_req, res) => {
+  console.log('  → 触发一键部署 (generate + deploy)...');
+  // 1. 先生成
+  exec('npx hexo clean && npx hexo generate', { cwd: ROOT, timeout: 120000 }, (genErr, genStdout, genStderr) => {
+    if (genErr) {
+      console.error('  ✗ generate 失败:', genStderr);
+      return res.status(500).json({
+        ok: false,
+        stage: 'generate',
+        error: 'hexo generate 失败',
+        detail: genStderr
+      });
+    }
+    console.log('  ✓ generate 成功,开始 deploy...');
+    // 2. 再部署
+    exec('npx hexo deploy', { cwd: ROOT, timeout: 120000 }, (depErr, depStdout, depStderr) => {
+      if (depErr) {
+        console.error('  ✗ deploy 失败:', depStderr);
+        return res.status(500).json({
+          ok: false,
+          stage: 'deploy',
+          error: 'hexo deploy 失败(可能是 GitHub 网络问题)',
+          detail: depStderr || depErr.message
+        });
+      }
+      console.log('  ✓ deploy 成功');
+      res.json({
+        ok: true,
+        message: '部署成功!embedai.top 应该 1-2 分钟内更新',
+        generateOutput: (genStdout || '').split('\n').slice(-3).join('\n'),
+        deployOutput: (depStdout || '').split('\n').slice(-5).join('\n')
+      });
+    });
+  });
+});
+
 // ---------- 文章管理 ----------
 // 列出所有文章 (从 frontmatter 提取 title/date/tags)
 app.get('/api/posts', (_req, res) => {

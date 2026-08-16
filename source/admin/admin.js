@@ -593,11 +593,49 @@
       // 重新拉取 live data 刷新列表
       loadLiveData();
       editingKey = null;
+
+      // ★ 保存成功后问是否 rebuild + deploy
+      if (confirm(`✅ ${file} 已保存!\n\n是否立刻 rebuild + 部署到 embedai.top?\n\n(选「取消」可稍后用顶部「🚀 一键部署」按钮)`)) {
+        await runDeploy();
+      }
     } catch (e) {
       if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
         toast('❌ 后端未启动。请先运行 `npm run admin`', 'error');
       } else {
         toast('❌ 保存失败：' + e.message, 'error');
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  }
+
+  // ★ 一键部署(generate + deploy)
+  async function runDeploy() {
+    const btn = $('#btn-deploy');
+    if (!btn) return;
+    const oldText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ 部署中...';
+    toast('🚀 开始部署(generate + deploy)...', 'info', 3000);
+    try {
+      const resp = await fetch('/api/deploy', { method: 'POST' });
+      const ct = resp.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        throw new Error(`HTTP ${resp.status} (后端未启动或端点不存在)`);
+      }
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) {
+        throw new Error(`${data.error || '部署失败'}\n${data.detail || ''}`);
+      }
+      toast(`🎉 ${data.message}`, 'success', 8000);
+    } catch (e) {
+      if (e.message.includes('Failed to fetch')) {
+        toast('❌ 后端未启动。请先运行 `npm run admin`', 'error');
+      } else if (e.message.includes('GitHub 网络问题') || e.message.includes('Empty reply')) {
+        toast('❌ ' + e.message + '\n💡 可手动跑 `npx hexo deploy` 或重试', 'error', 8000);
+      } else {
+        toast('❌ 部署失败:' + e.message, 'error', 8000);
       }
     } finally {
       btn.disabled = false;
@@ -1198,6 +1236,7 @@
     $('#btn-download').addEventListener('click', downloadYAML);
     $('#btn-save').addEventListener('click', saveDraft);
     $('#btn-save-server').addEventListener('click', saveToServer);
+    $('#btn-deploy')?.addEventListener('click', runDeploy);
     $('#btn-clear').addEventListener('click', clearDraft);
     $('#btn-reload-live')?.addEventListener('click', loadLiveData);
     $('#btn-new')?.addEventListener('click', newItem);
