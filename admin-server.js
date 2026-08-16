@@ -152,22 +152,34 @@ app.post('/api/links', (req, res) => {
     if (!yamlText.trim()) {
       return res.status(400).json({ ok: false, error: 'YAML 内容为空' });
     }
-    const newItems = yaml.load(yamlText);
-    if (!newItems || typeof newItems !== 'object' || Array.isArray(newItems)) {
-      return res.status(400).json({ ok: false, error: 'links 数据必须是对象' });
+    const newData = yaml.load(yamlText);
+    if (!newData || typeof newData !== 'object' || Array.isArray(newData)) {
+      return res.status(400).json({ ok: false, error: 'links 数据必须是对象 (按文章嵌套)' });
     }
-    // merge 模式:按 key 匹配
+    // 读取现有嵌套结构
     let existing = {};
     try {
       const raw = fs.readFileSync(LINKS_YML, 'utf8');
       existing = yaml.load(raw) || {};
       if (typeof existing !== 'object' || Array.isArray(existing)) existing = {};
     } catch (e) { existing = {}; }
-    const stats = { added: 0, updated: 0 };
-    Object.entries(newItems).forEach(([key, value]) => {
-      if (existing[key]) stats.updated++;
-      else stats.added++;
-      existing[key] = value;
+    // merge 模式:按 article_slug + key 复合键
+    const stats = { added: 0, updated: 0, articles: 0 };
+    Object.entries(newData).forEach(([articleSlug, articleLinks]) => {
+      if (!Array.isArray(articleLinks)) return;
+      stats.articles++;
+      if (!Array.isArray(existing[articleSlug])) existing[articleSlug] = [];
+      articleLinks.forEach((newLink) => {
+        if (!newLink || !newLink.key) return;
+        const idx = existing[articleSlug].findIndex((l) => l && l.key === newLink.key);
+        if (idx >= 0) {
+          existing[articleSlug][idx] = newLink;
+          stats.updated++;
+        } else {
+          existing[articleSlug].push(newLink);
+          stats.added++;
+        }
+      });
     });
     const dump = yaml.dump(existing, {
       lineWidth: -1,
@@ -175,18 +187,19 @@ app.post('/api/links', (req, res) => {
       sortKeys: false,
       quotingType: '"'
     });
+    const totalLinks = Object.values(existing).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
     const bytes = writeYmlWithHeader(
       LINKS_YML,
-      '# ============================================\n# 链接中央注册表 (Link Registry)\n# 由 admin-server 自动写入,可手工调整\n# ============================================',
+      '# ============================================\n# 链接中央注册表 (按文章嵌套)\n# 由 admin-server 自动写入,可手工调整\n# ============================================',
       dump
     );
     res.json({
       ok: true,
       file: 'links.yml',
-      count: Object.keys(existing).length,
+      count: totalLinks,
       bytes,
       stats,
-      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${Object.keys(existing).length} 条)`
+      message: `已 merge: 新增 ${stats.added} 条,更新 ${stats.updated} 条 (共 ${totalLinks} 条,跨 ${stats.articles} 文章)`
     });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });

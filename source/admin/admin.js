@@ -46,12 +46,14 @@
   };
 
   const emptyLinksForm = {
+    article_slug: '',
     key: '',
     label: '',
     url: '',
     type: 'baidu',
     extract_code: '',
     note: '',
+    status: 'active',
     added: todayISO()
   };
 
@@ -223,7 +225,7 @@
   // Links 表单字段绑定
   // -----------------------------------------------------------
   function bindLinksFields() {
-    const fields = ['key', 'label', 'url', 'type', 'extract_code', 'note', 'added'];
+    const fields = ['article_slug', 'key', 'label', 'url', 'type', 'extract_code', 'note', 'status', 'added'];
     fields.forEach((f) => {
       const el = document.querySelector(`[data-pane="links"] [data-field="${f}"]`);
       if (!el) return;
@@ -311,20 +313,24 @@
     const l = state.links;
     const lines = [];
     lines.push('# ============================================');
-    lines.push('# 链接条目（单条，可粘贴到 source/_data/links.yml）');
+    lines.push('# 链接条目（按文章嵌套）');
+    lines.push('# 由 admin 自动生成,可粘贴到 source/_data/links.yml');
     lines.push('# ============================================ ');
+    const articleSlug = l.article_slug || 'my-article-slug';
     const key = l.key || 'my_link_key';
-    lines.push(yamlQuote(key) + ':');
-    lines.push('  label: ' + yamlQuote(yamlEscape(l.label)));
-    lines.push('  url: ' + yamlQuote(yamlEscape(l.url)));
-    lines.push('  type: ' + yamlQuote(yamlEscape(l.type || 'official')));
+    lines.push(yamlQuote(articleSlug) + ':');
+    lines.push('  - key: ' + yamlQuote(key));
+    lines.push('    label: ' + yamlQuote(yamlEscape(l.label)));
+    lines.push('    url: ' + yamlQuote(yamlEscape(l.url)));
+    lines.push('    type: ' + yamlQuote(yamlEscape(l.type || 'official')));
     if (l.type === 'baidu' && l.extract_code) {
-      lines.push('  extract_code: ' + yamlQuote(yamlEscape(l.extract_code)));
+      lines.push('    extract_code: ' + yamlQuote(yamlEscape(l.extract_code)));
     }
+    lines.push('    status: ' + yamlQuote(l.status || 'active'));
     if (l.note) {
-      lines.push('  note: ' + yamlQuote(yamlEscape(l.note)));
+      lines.push('    note: ' + yamlQuote(yamlEscape(l.note)));
     }
-    lines.push('  added: ' + yamlQuote(yamlEscape(l.added || todayISO())));
+    lines.push('    added: ' + yamlQuote(yamlEscape(l.added || todayISO())));
     return lines.join('\n');
   }
 
@@ -404,7 +410,7 @@
     renderToolLinks();
 
     // links
-    const linksFields = ['key', 'label', 'url', 'type', 'extract_code', 'note', 'added'];
+    const linksFields = ['article_slug', 'key', 'label', 'url', 'type', 'extract_code', 'note', 'status', 'added'];
     linksFields.forEach((f) => {
       const el = document.querySelector(`[data-pane="links"] [data-field="${f}"]`);
       if (el) el.value = state.links[f] || '';
@@ -537,8 +543,10 @@
       liveData.links = linksData.data || {};
       empty.hidden = true;
       renderLiveList();
-      $('#live-source').textContent = `${liveData.tools.length} 工具 / ${Object.keys(liveData.links).length} 链接`;
-      toast(`✅ 已加载 ${liveData.tools.length} 工具 + ${Object.keys(liveData.links).length} 链接`);
+      const articleCount = Object.keys(liveData.links).length;
+      const linkCount = Object.values(liveData.links).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
+      $('#live-source').textContent = `${liveData.tools.length} 工具 / ${linkCount} 链接 / ${articleCount} 文章`;
+      toast(`✅ 已加载 ${liveData.tools.length} 工具 + ${linkCount} 链接 (跨 ${articleCount} 文章)`);
     } catch (e) {
       empty.hidden = false;
       list.innerHTML = '';
@@ -593,39 +601,62 @@
         });
       });
     } else {
-      const keys = Object.keys(liveData.links);
-      if (keys.length === 0) {
+      // 链接 tab - 按文章分组渲染
+      const articles = liveData.links || {};
+      const articleSlugs = Object.keys(articles);
+      if (articleSlugs.length === 0) {
         list.innerHTML = '<div class="live-empty"><p>暂无链接,点「＋ 新增」添加</p></div>';
         return;
       }
-      keys.forEach((key) => {
-        const link = liveData.links[key];
-        const card = document.createElement('div');
-        card.className = 'live-item';
-        card.dataset.key = key;
-        card.innerHTML = `
-          <div class="live-item-head">
-            <span class="live-item-name">${escapeHtml(link.label || key)}</span>
-          </div>
-          <div class="live-item-tagline">${escapeHtml(link.url || '')}</div>
-          <div class="live-item-meta">
-            <span class="chip">${escapeHtml(link.type || '?')}</span>
-            ${link.extract_code ? `<span class="chip">码: ${escapeHtml(link.extract_code)}</span>` : ''}
-          </div>
-          <div class="live-item-actions">
-            <button class="btn btn-small btn-edit-link" data-key="${escapeHtml(key)}" type="button">✏️ 编辑</button>
+      articleSlugs.forEach((articleSlug) => {
+        const articleLinks = articles[articleSlug] || [];
+        // 文章 section header
+        const section = document.createElement('div');
+        section.className = 'live-article-section';
+        section.innerHTML = `
+          <div class="live-article-head">
+            <span class="article-icon">📄</span>
+            <span class="article-slug">${escapeHtml(articleSlug)}</span>
+            <span class="article-count">${articleLinks.length} 链接</span>
           </div>
         `;
-        card.addEventListener('click', (e) => {
-          if (e.target.classList.contains('btn-edit-link')) return;
-          editLink(key);
+        const grid = document.createElement('div');
+        grid.className = 'live-list live-list-nested';
+        articleLinks.forEach((link) => {
+          if (!link || !link.key) return;
+          const status = link.status || 'active';
+          const statusIcon = status === 'broken' ? '❌' : status === 'warning' ? '⚠️' : '✓';
+          const card = document.createElement('div');
+          card.className = 'live-item live-item-link status-' + status;
+          card.dataset.article = articleSlug;
+          card.dataset.key = link.key;
+          card.innerHTML = `
+            <div class="live-item-head">
+              <span class="live-item-name">${escapeHtml(link.label || link.key)}</span>
+              <span class="status-badge status-${status}">${statusIcon} ${status}</span>
+            </div>
+            <div class="live-item-tagline">${escapeHtml(link.url || '')}</div>
+            <div class="live-item-meta">
+              <span class="chip">${escapeHtml(link.type || '?')}</span>
+              ${link.extract_code ? `<span class="chip">码: ${escapeHtml(link.extract_code)}</span>` : ''}
+            </div>
+            <div class="live-item-actions">
+              <button class="btn btn-small btn-edit-link" data-article="${escapeHtml(articleSlug)}" data-key="${escapeHtml(link.key)}" type="button">✏️ 编辑</button>
+            </div>
+          `;
+          card.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-edit-link')) return;
+            editLink(articleSlug, link.key);
+          });
+          grid.appendChild(card);
         });
-        list.appendChild(card);
+        section.appendChild(grid);
+        list.appendChild(section);
       });
       list.querySelectorAll('.btn-edit-link').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          editLink(btn.dataset.key);
+          editLink(btn.dataset.article, btn.dataset.key);
         });
       });
     }
@@ -651,23 +682,27 @@
     document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function editLink(key) {
-    const link = liveData.links[key];
+  function editLink(articleSlug, key) {
+    const articleLinks = liveData.links[articleSlug];
+    if (!articleLinks) return;
+    const link = articleLinks.find(l => l && l.key === key);
     if (!link) return;
     state.links = {
+      article_slug: articleSlug,
       key: key,
       label: link.label || '',
       url: link.url || '',
       type: link.type || 'official',
       extract_code: link.extract_code || '',
       note: link.note || '',
+      status: link.status || 'active',
       added: (link.added || '').slice(0, 10)
     };
-    editingKey = key;
+    editingKey = `${articleSlug}:${key}`;
     syncFormToDOM();
     renderOutput();
     updateOutputName();
-    toast(`✏️ 编辑: ${key}（保存后会更新现有条目）`);
+    toast(`✏️ 编辑: ${articleSlug} / ${key}`);
     document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
   }
 
