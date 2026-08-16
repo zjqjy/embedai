@@ -809,6 +809,120 @@
     }
   }
 
+  // ★ 智能 URL 解析器 —— 粘贴 URL 自动填 type/extract_code/label/key
+  function parseLinkUrl(url) {
+    if (!url || !url.trim()) return null;
+    const result = { type: 'official', extract_code: '', label: '', key: '' };
+    try {
+      const u = new URL(url.trim());
+      const host = u.hostname.toLowerCase().replace(/^www\./, '');
+      const path = u.pathname;
+
+      // 1. type 自动识别
+      if (host.includes('baidu.com') || host.includes('pan.baidu')) {
+        result.type = 'baidu';
+        // 提取码:?pwd=xxxx 或路径里的 -xxxx
+        const m = url.match(/[?&]pwd=([a-zA-Z0-9]+)/);
+        if (m) result.extract_code = m[1];
+      } else if (host.includes('github.com')) {
+        result.type = 'github';
+      } else if (host.includes('gitee.com')) {
+        result.type = 'github'; // gitee 也归为代码托管
+      } else if (path.match(/\.(md|pdf|zip|exe|dmg|pkg|deb|apk)$/i)) {
+        result.type = 'doc';
+      } else if (host.includes('youtube.com') || host.includes('bilibili.com')) {
+        result.type = 'doc';
+      } else {
+        result.type = 'official';
+      }
+
+      // 2. extract_code (baidu 专属,再次尝试从路径提取)
+      if (!result.extract_code && result.type === 'baidu') {
+        const pathMatch = path.match(/-(?:[a-zA-Z0-9]{4})$/);
+        if (pathMatch) result.extract_code = pathMatch[0].slice(1);
+      }
+
+      // 3. label 自动建议
+      // 规则:域名 + 路径最后一段(去 hash/扩展名)
+      const pathParts = path.split('/').filter(Boolean);
+      let labelHint = '';
+      if (pathParts.length > 0) {
+        // 取最后一段有意义的部分
+        const last = pathParts[pathParts.length - 1];
+        labelHint = last.replace(/\.\w+$/, '').replace(/[-_]/g, ' ').substring(0, 25);
+      }
+      if (!labelHint || labelHint.length < 2) {
+        labelHint = host.split('.')[0]; // 例:github
+      }
+      // 域名映射友好名
+      const friendlyHosts = {
+        'github': 'GitHub',
+        'gitee': 'Gitee',
+        'pan.baidu': '百度网盘',
+        'anthropic': 'Anthropic 官网',
+        'openai': 'OpenAI 官网',
+        'youtube': 'YouTube',
+        'bilibili': 'B站'
+      };
+      const cleanHost = host.split('.')[0];
+      if (friendlyHosts[cleanHost] && !labelHint) {
+        result.label = friendlyHosts[cleanHost];
+      } else {
+        result.label = labelHint.charAt(0).toUpperCase() + labelHint.slice(1);
+      }
+
+      // 4. key 自动建议:域名+路径slug
+      const keySlug = (cleanHost + (pathParts.length > 0 ? '_' + pathParts[pathParts.length - 1] : ''))
+        .replace(/\.\w+$/, '')
+        .replace(/[^a-zA-Z0-9_-]/g, '_')
+        .toLowerCase()
+        .substring(0, 30);
+      result.key = keySlug || (cleanHost + '_link');
+    } catch (e) {
+      // 不是合法 URL,只返回基础猜测
+      result.label = url.substring(0, 30);
+    }
+    return result;
+  }
+
+  // ★ AI 自动识别按钮 —— 填到其他字段
+  function autoFillFromUrl(prefix) {
+    const urlEl = $(`[data-pane="${prefix}"] #l-url`) || $(`${prefix === 'links' ? '[data-pane="links"]' : ''} #l-url`);
+    if (!urlEl) {
+      // 工具 tab 的 url 输入框在 buildToolLinkRow 里,需要找到当前编辑的 link
+      // 这里简化:对 links tab 起作用
+      toast('当前 tab 没有 URL 字段(links tab 才支持 AI 识别)', 'error');
+      return;
+    }
+    const url = urlEl.value.trim();
+    if (!url) {
+      toast('请先填写 URL', 'error');
+      return;
+    }
+    const parsed = parseLinkUrl(url);
+    if (!parsed) return;
+
+    // 填充其他字段(只在用户没填或默认时覆盖)
+    const fields = {
+      'l-type': parsed.type,
+      'l-extract': parsed.extract_code,
+      'l-label': parsed.label,
+      'l-key': parsed.key
+    };
+    let filled = [];
+    Object.entries(fields).forEach(([id, value]) => {
+      const el = $('#' + id);
+      if (!el || !value) return;
+      el.value = value;
+      // 触发 input 事件以同步 state
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      filled.push(id.replace('l-', ''));
+    });
+    renderOutput();
+    renderLiveList();
+    toast(`✨ AI 已自动填:${filled.join(', ')}`, 'success', 3000);
+  }
+
   // 扫描文章正文,提取硬编码 URL(未走 {% link %} 的内联链接)
   async function loadInlineLinks(articleSlug) {
     try {
@@ -1245,6 +1359,7 @@
     $('#btn-article-cancel')?.addEventListener('click', cancelArticleEdit);
     $('#btn-article-save')?.addEventListener('click', saveArticle);
     $('#btn-article-delete')?.addEventListener('click', deleteArticle);
+    $('#btn-ai-autofill')?.addEventListener('click', () => autoFillFromUrl('links'));
   }
 
   if (document.readyState === 'loading') {

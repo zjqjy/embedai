@@ -430,6 +430,28 @@
       margin: 0 0.25rem;
     }
 
+    /* ===== AI Auto-fill Button ===== */
+    .field-row-inline {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .field-row-inline .input { flex: 1; }
+    .btn-ai {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex: 0;
+    }
+    .btn-ai:hover {
+      filter: brightness(1.15);
+      color: white;
+    }
+
     /* ===== Tool Link Row (stacked: 5 fields, roomy) ===== */
     .link-row-stacked {
       display: flex;
@@ -1041,7 +1063,10 @@
 
               <div class="field">
                 <label class="field-label" for="l-url">url <span class="req">*</span></label>
-                <input id="l-url" class="input" type="text" data-field="url" placeholder="https://...">
+                <div class="field-row-inline">
+                  <input id="l-url" class="input" type="text" data-field="url" placeholder="https://...">
+                  <button type="button" class="btn btn-ai" id="btn-ai-autofill" title="粘贴 URL 后点这个按钮,自动识别 type/提取码/label/key">✨ AI</button>
+                </div>
               </div>
 
               <div class="field" id="l-extract-wrap">

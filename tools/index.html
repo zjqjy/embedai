@@ -160,6 +160,58 @@ body::before {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+.filter-search {
+  position: relative;
+  margin-bottom: 0.7rem;
+}
+.filter-search-input {
+  width: 100%;
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+}
+.filter-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.filter-search-input::placeholder {
+  color: var(--text-3);
+}
+.filter-search-clear {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  width: 22px; height: 22px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  transition: all 0.15s;
+}
+.filter-search-clear:hover {
+  background: var(--text-2);
+  color: white;
+}
+.filter-search-hint {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+}
 .filter-row {
   display: flex;
   gap: 0.5rem;
@@ -661,7 +713,7 @@ body::before {
   .tool-modal { padding: 1rem; }
   .tool-modal-content { padding: 1.75rem; border-radius: 18px; }
   .tool-modal-title { font-size: 1.35rem; }
-}</style></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; tools</span><div class="topbar-links"><a href="/" data-magnetic="0.25">/home</a><a href="/about/" data-magnetic="0.25">/about</a><a class="active" href="/tools/" data-magnetic="0.25">/tools</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25">/bilibili ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ live</span><span class="tag">~/阿程</span><span class="tools-count" id="hero-count">— —</span><span>· v1</span></div><h1 data-char-in>我的嵌入式工具箱</h1><p class="hero-sub">嵌入式学习过程中高频使用的工具，分类清晰，按需自取。</p></section><div class="filter-bar" data-reveal="fade"><div class="filter-row"><button class="filter-chip is-active" data-cat="all" type="button">全部<span class="chip-count" id="chip-count-all">0</span></button><button class="filter-chip" data-cat="dev" type="button">💻 软件开发<span class="chip-count" id="chip-count-dev">0</span></button><button class="filter-chip" data-cat="debug" type="button">🔌 调试烧录<span class="chip-count" id="chip-count-debug">0</span></button><button class="filter-chip" data-cat="ai" type="button">🤖 学习辅助<span class="chip-count" id="chip-count-ai">0</span></button><button class="filter-chip" data-cat="util" type="button">🛠 实用工具<span class="chip-count" id="chip-count-util">0</span></button><button class="filter-clear" id="filter-clear" type="button" hidden>✕ 清空筛选</button></div><div class="filter-tags-active" id="filter-tags-active"></div></div><section class="tools-grid" id="tools-grid"><div class="tools-loading" id="tools-loading">// 加载中...</div></section><div class="tools-empty" id="tools-empty" hidden>没有匹配的工具 · 试试清空筛选</div><!-- 详情 Modal(共享一个,JS 填充)--><div class="tool-modal" id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true"><div class="tool-modal-backdrop" data-modal-close></div><div class="tool-modal-content"><button class="tool-modal-close" type="button" data-modal-close aria-label="关闭详情">×</button><div class="tool-modal-header"><div class="tool-modal-icon" id="modal-icon"></div><h2 class="tool-modal-title" id="modal-title"></h2><p class="tool-modal-tagline" id="modal-tagline"></p></div><div class="tool-modal-body"><div class="tool-modal-section"><div class="tool-modal-section-label">// 推荐理由</div><p class="tool-modal-reason" id="modal-reason"></p></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 标签</div><div class="tool-modal-tags" id="modal-tags"></div></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 下载 / 访问</div><div class="tool-modal-links" id="modal-links"><div class="tool-modal-no-links" id="modal-no-links" hidden>暂未提供外链,直接看官网或搜资料</div></div></div></div></div></div><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div><!-- 数据源(编译期嵌入 source/_data/*.yml)--><script id="tools-data-yaml" type="text/plain"># ============================================
+}</style></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; tools</span><div class="topbar-links"><a href="/" data-magnetic="0.25">/home</a><a href="/about/" data-magnetic="0.25">/about</a><a class="active" href="/tools/" data-magnetic="0.25">/tools</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25">/bilibili ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ live</span><span class="tag">~/阿程</span><span class="tools-count" id="hero-count">— —</span><span>· v1</span></div><h1 data-char-in>我的嵌入式工具箱</h1><p class="hero-sub">嵌入式学习过程中高频使用的工具，分类清晰，按需自取。</p></section><div class="filter-bar" data-reveal="fade"><!-- ★ 搜索框--><div class="filter-search"><input class="filter-search-input" id="filter-search" type="search" placeholder="搜索工具名/标签/描述... (按 / 快速聚焦)" autocomplete="off"><button class="filter-search-clear" id="filter-search-clear" type="button" hidden>✕</button><span class="filter-search-hint" id="filter-search-hint"></span></div><div class="filter-row"><button class="filter-chip is-active" data-cat="all" type="button">全部<span class="chip-count" id="chip-count-all">0</span></button><button class="filter-chip" data-cat="dev" type="button">💻 软件开发<span class="chip-count" id="chip-count-dev">0</span></button><button class="filter-chip" data-cat="debug" type="button">🔌 调试烧录<span class="chip-count" id="chip-count-debug">0</span></button><button class="filter-chip" data-cat="ai" type="button">🤖 学习辅助<span class="chip-count" id="chip-count-ai">0</span></button><button class="filter-chip" data-cat="util" type="button">🛠 实用工具<span class="chip-count" id="chip-count-util">0</span></button><button class="filter-clear" id="filter-clear" type="button" hidden>✕ 清空筛选</button></div><div class="filter-tags-active" id="filter-tags-active"></div></div><section class="tools-grid" id="tools-grid"><div class="tools-loading" id="tools-loading">// 加载中...</div></section><div class="tools-empty" id="tools-empty" hidden>没有匹配的工具 · 试试清空筛选</div><!-- 详情 Modal(共享一个,JS 填充)--><div class="tool-modal" id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true"><div class="tool-modal-backdrop" data-modal-close></div><div class="tool-modal-content"><button class="tool-modal-close" type="button" data-modal-close aria-label="关闭详情">×</button><div class="tool-modal-header"><div class="tool-modal-icon" id="modal-icon"></div><h2 class="tool-modal-title" id="modal-title"></h2><p class="tool-modal-tagline" id="modal-tagline"></p></div><div class="tool-modal-body"><div class="tool-modal-section"><div class="tool-modal-section-label">// 推荐理由</div><p class="tool-modal-reason" id="modal-reason"></p></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 标签</div><div class="tool-modal-tags" id="modal-tags"></div></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 下载 / 访问</div><div class="tool-modal-links" id="modal-links"><div class="tool-modal-no-links" id="modal-no-links" hidden>暂未提供外链,直接看官网或搜资料</div></div></div></div></div></div><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div><!-- 数据源(编译期嵌入 source/_data/*.yml)--><script id="tools-data-yaml" type="text/plain"># ============================================
 # 嵌入式工具列表 (Tools Registry)
 # 由 admin-server 自动写入,可手工调整
 # 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section
