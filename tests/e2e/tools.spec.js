@@ -11,11 +11,11 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     watcher.assertClean();
   });
 
-  test('渲染 6 张工具卡（从文章提取的 + Claude Code）', async ({ page }) => {
+  test('渲染 7 张工具卡（从文章提取的 + Claude Code + VSCode）', async ({ page }) => {
     await page.goto('/tools/');
     await page.waitForTimeout(800); // 等客户端解析 + 渲染
     const cards = page.locator('.cat');
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(7);
   });
 
   test('Hero + 4 分类 chip 存在', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     await search.fill('');
     await page.waitForTimeout(200);
     const visibleAfterClear = await page.locator('.cat:not(.is-hidden)').count();
-    expect(visibleAfterClear).toBeGreaterThanOrEqual(6);
+    expect(visibleAfterClear).toBeGreaterThanOrEqual(7);
   });
 
   test('点击工具 → modal 显示「🔗 打开主页」+ URL 清理 pwd', async ({ page }) => {
