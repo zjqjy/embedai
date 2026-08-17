@@ -33,6 +33,35 @@
   const modalLinks = document.getElementById('modal-links');
   const modalVisit = document.getElementById('modal-visit');
 
+  // ★「🔗 打开主页」点击时,自动把首个 link 的 extract_code 复制到剪贴板
+  // 百度网盘不支持 URL 带 pwd 自动填,用户需要切标签页后粘贴
+  if (modalVisit) {
+    modalVisit.addEventListener('click', function (e) {
+      // 当前 modal 的第一个 link(从 data 属性读)
+      const firstCode = modalVisit.dataset.extractCode;
+      if (firstCode && firstCode.trim()) {
+        // 复制提取码到剪贴板(异步,不等结果)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(firstCode).catch(() => {});
+        } else {
+          // fallback
+          const ta = document.createElement('textarea');
+          ta.value = firstCode;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (er) {}
+          document.body.removeChild(ta);
+        }
+        // 显示轻提示(toast 已在 modal 顶部 → 不需额外 toast)
+        const originalText = modalVisit.textContent;
+        modalVisit.textContent = '✅ 已打开 + 码已复制';
+        setTimeout(function () { modalVisit.textContent = originalText; }, 2500);
+      }
+    });
+  }
+
   // 清除 URL 中的 ?pwd=xxx(让 extract_code 单独显示)
   function cleanUrl(url) {
     if (!url) return '';
@@ -583,9 +612,11 @@
     } else {
       modalNoLinks.hidden = true;
       // ★ 顶部「🔗 打开主页」按钮 = 第一个 link 的 URL
-      const firstUrl = cleanUrl(tool.linksResolved[0].url);
+      const firstLink = tool.linksResolved[0];
+      const firstUrl = cleanUrl(firstLink.url);
       if (firstUrl) {
         modalVisit.href = firstUrl;
+        modalVisit.dataset.extractCode = firstLink.extract_code || '';
         modalVisit.hidden = false;
       } else {
         modalVisit.hidden = true;
