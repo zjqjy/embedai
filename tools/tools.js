@@ -31,6 +31,13 @@
   const modalReason = document.getElementById('modal-reason');
   const modalTags = document.getElementById('modal-tags');
   const modalLinks = document.getElementById('modal-links');
+  const modalVisit = document.getElementById('modal-visit');
+
+  // 清除 URL 中的 ?pwd=xxx(让 extract_code 单独显示)
+  function cleanUrl(url) {
+    if (!url) return '';
+    return url.replace(/[?&]pwd=[a-zA-Z0-9]+/i, '').replace(/[?&]$/, '');
+  }
   const modalNoLinks = document.getElementById('modal-no-links');
   const chipCounts = {
     all: document.getElementById('chip-count-all'),
@@ -267,8 +274,14 @@
 
   let tools, links;
   try {
-    tools = parseYAML(toolsYamlEl.textContent || '');
-    links = parseYAML(linksYamlEl.textContent || '');
+    // 用 js-yaml 解析(支持嵌套结构)
+    if (typeof jsyaml !== 'undefined') {
+      tools = jsyaml.load(toolsYamlEl.textContent || '') || [];
+      links = jsyaml.load(linksYamlEl.textContent || '') || {};
+    } else {
+      tools = parseYAML(toolsYamlEl.textContent || '');
+      links = parseYAML(linksYamlEl.textContent || '');
+    }
   } catch (e) {
     console.error('[tools] YAML 解析失败', e);
     if (loadingEl) loadingEl.textContent = '// 数据解析失败';
@@ -279,9 +292,23 @@
   if (!links || typeof links !== 'object') links = {};
 
   // 合并 link 元数据到 tool.linksResolved
+  // links.yml 是按文章嵌套的(article_slug → [links]),所以需要跨文章查找
+  function findLinkInNested(key) {
+    for (const articleSlug in links) {
+      const arr = links[articleSlug];
+      if (Array.isArray(arr)) {
+        const found = arr.find(function (l) { return l && l.key === key; });
+        if (found) return found;
+      }
+    }
+    return null;
+  }
   tools.forEach(function (t) {
     t.linksResolved = (t.links || []).map(function (entry) {
-      const meta = links[entry.key] || {};
+      // 工具的 link 形如 { key: 'claude_oneclick', type: '一键安装包' }
+      // 从 links.yml 跨文章查找完整 url / extract_code / status
+      const meta = findLinkInNested(entry.key) || {};
+      // 合并:meta 优先(完整数据),entry 兜底(只有 key/type)
       return Object.assign({}, entry, meta);
     });
   });
@@ -328,7 +355,8 @@
 
       card.innerHTML =
         '<span class="cat-num">' + pad2(idx + 1) + '</span>' +
-        '<span class="cat-arrow">→</span>' +
+        // ★ 用 ↗ 表示「点击访问」更直白
+        '<span class="cat-arrow" title="点击查看详情">↗</span>' +
         '<div class="cat-icon">' + escapeHtml(tool.icon || '') + '</div>' +
         '<h3>' + escapeHtml(tool.name || '') + '</h3>' +
         '<div class="cat-desc">' + escapeHtml(tool.tagline || '') + '</div>' +
@@ -551,8 +579,17 @@
     modalLinks.innerHTML = '';
     if (!tool.linksResolved.length) {
       modalNoLinks.hidden = false;
+      modalVisit.hidden = true;
     } else {
       modalNoLinks.hidden = true;
+      // ★ 顶部「🔗 打开主页」按钮 = 第一个 link 的 URL
+      const firstUrl = cleanUrl(tool.linksResolved[0].url);
+      if (firstUrl) {
+        modalVisit.href = firstUrl;
+        modalVisit.hidden = false;
+      } else {
+        modalVisit.hidden = true;
+      }
       tool.linksResolved.forEach(function (link) {
         modalLinks.appendChild(buildLinkItem(link));
       });
@@ -595,10 +632,11 @@
     if (link.url) {
       const urlEl = document.createElement('a');
       urlEl.className = 'tool-modal-link-url';
-      urlEl.href = link.url;
+      urlEl.href = link.url; // 跳转用完整 URL(带 pwd)
       urlEl.target = '_blank';
       urlEl.rel = 'noopener noreferrer';
-      urlEl.textContent = link.url;
+      // ★ 显示用 clean URL(去掉 ?pwd=xxx,提取码单独显示)
+      urlEl.textContent = cleanUrl(link.url);
       wrap.appendChild(urlEl);
     }
 
