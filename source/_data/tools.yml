@@ -1,6 +1,7 @@
 # ============================================
 # 嵌入式工具列表 (Tools Registry)
 # 由 admin-server 自动写入,可手工调整
+# 工具的 links[] 包含完整数据(URL/提取码/类型)
 # ============================================
 - name: Claude Code
   category: ai
@@ -14,3 +15,94 @@
   links:
     - key: claude_oneclick
       type: 一键安装包
+- name: Git
+  category: dev
+  tagline: Git - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: 🔀
+  links:
+    - key: git
+      type: baidu
+      label: Git - dev
+      url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+      extract_code: bmed
+      status: active
+      added: "2026-08-16"
+- name: STM32CubeMX
+  category: dev
+  icon: 🔧
+  tagline: STM32CubeMX - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  links:
+    - key: stm32cubemx
+      type: baidu
+- name: Keil MDK5
+  category: dev
+  tagline: Keil MDK5 - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: ⚙️
+  links:
+    - key: keil_mdk5
+      type: baidu
+      label: Keil MDK5 - dev
+      url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+      extract_code: mtib
+      status: active
+      added: "2026-08-16"
+- name: ccswitch
+  category: dev
+  tagline: ccswitch - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: 📦
+  links:
+    - key: ccswitch
+      type: baidu
+      label: ccswitch - dev
+      url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+      extract_code: ccfz
+      status: active
+      added: "2026-08-16"
+- name: 嵌入式管理技能(EM-SKILL)
+  category: ai
+  tagline: 嵌入式管理技能(EM-SKILL) - ai
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - ai
+  icon: 📦
+  links:
+    - key: em-skill
+      type: baidu
+      label: 嵌入式管理技能(EM-SKILL) - ai
+      url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+      extract_code: hwr6
+      status: active
+      added: "2026-08-16"
+- name: VSCode
+  category: dev
+  tagline: 嵌入式开发主编辑器,编辑体验 + 扩展生态 + AI 插件
+  reason: ""
+  tags:
+    - 编辑器
+    - 嵌入式
+    - IDE
+  icon: 💻
+  links:
+    - key: vscode
+      type: official
+      label: 嵌入式开发主编辑器,编辑体验 + 扩展生态 + AI 插件
+      url: https://code.visualstudio.com/
+      extract_code: ""
+      status: active
+      added: "2026-08-17"

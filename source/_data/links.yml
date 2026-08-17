@@ -1,29 +1,10 @@
-# ============================================
-# 链接中央注册表 (按文章嵌套)
-# ============================================
-# 结构：每篇文章一个 section，下面是该文章用到的链接数组
-# helper {% link "key" %} 跨文章查找，找到第一个匹配即用
-# 改一处全站更新（工具页 + 所有文章）
-#
-# 字段说明:
-#   key:           英文短标识，文章用 {% link "key" %} 引用
-#   label:         显示名（按钮/链接文本）
-#   url:           实际地址
-#   type:          分类（baidu/official/github/script/signup/doc）
-#   extract_code?: 提取码（仅 type=baidu）
-#   note?:         备注（添加日期/失效警告/替代关系）
-#   status:        active(正常) / warning(警告,可能过期) / broken(失效)
-#   added:         添加日期（YYYY-MM-DD）
-# ============================================
-
-# --- Claude Code 安装教程 (2026-04-02) ---
 claude-code-install-guide:
   - key: claude_official
     label: Claude 官网
     url: https://www.anthropic.com/
     type: official
     status: active
-    added: 2026-04-02
+    added: 2026-04-02T00:00:00.000Z
   - key: claude_install_v4nb
     label: Claude Code 安装包（旧版,需手动配环境）
     url: https://pan.baidu.com/s/1t9bIh6wN8UstfEyk8n7Kqw
@@ -31,15 +12,13 @@ claude-code-install-guide:
     note: 已被一键包（claude_oneclick）替代，保留作历史备份
     type: baidu
     status: warning
-    added: 2026-04-02
+    added: 2026-04-02T00:00:00.000Z
   - key: minimax_token_plan
     label: MiniMax Token Plan 订阅
     url: https://platform.minimaxi.com/subscribe/token-plan?code=CKMY9L4mM7&source=link
     type: signup
     status: active
-    added: 2026-04-02
-
-# --- Claude Code 一键安装包 (2026-05-31) ---
+    added: 2026-04-02T00:00:00.000Z
 claude-code-oneclick-install:
   - key: claude_oneclick
     label: Claude Code 一键安装包
@@ -48,9 +27,7 @@ claude-code-oneclick-install:
     note: 含 ccswitch + Claude Code + Git，解压即用
     type: baidu
     status: active
-    added: 2026-05-31
-
-# --- EM-SKILL 安装教程 (2026-05-01) ---
+    added: 2026-05-31T00:00:00.000Z
 em-skill-install:
   - key: em_skill_install
     label: EM-SKILL 安装包（百度网盘）
@@ -58,22 +35,71 @@ em-skill-install:
     extract_code: ikzm
     type: baidu
     status: active
-    added: 2026-05-01
+    added: 2026-05-01T00:00:00.000Z
   - key: embed_ai_tool
     label: embed-ai-tool (LeoKemp223)
     url: https://github.com/LeoKemp223/embed-ai-tool
     type: github
     status: active
-    added: 2026-05-01
+    added: 2026-05-01T00:00:00.000Z
   - key: xpack_openocd
     label: xPack OpenOCD 发布页
     url: https://github.com/xpack-dev-tools/openocd-xpack/releases
     type: github
     status: active
-    added: 2026-05-01
+    added: 2026-05-01T00:00:00.000Z
   - key: em_skill_repo
     label: EM-SKILL GitHub 项目页
     url: https://github.com/zjqjy/embedded-project-manager
     type: github
     status: active
-    added: 2026-05-01
+    added: 2026-05-01T00:00:00.000Z
+_shared:
+  - key: code_visualstudio_
+    label: VSCode
+    url: https://code.visualstudio.com/
+    type: official
+    status: active
+    note: 嵌入式开发主编辑器
+    added: 2026-08-17T00:00:00.000Z
+  - key: git
+    type: baidu
+    label: Git - dev
+    url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+    extract_code: bmed
+    status: active
+    added: "2026-08-16"
+  - key: stm32cubemx
+    type: baidu
+    label: STM32CubeMX - dev
+    url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
+    extract_code: ""
+    status: active
+    added: "2026-08-16"
+  - key: keil_mdk5
+    type: baidu
+    label: Keil MDK5 - dev
+    url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+    extract_code: mtib
+    status: active
+    added: "2026-08-16"
+  - key: ccswitch
+    type: baidu
+    label: ccswitch - dev
+    url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+    extract_code: ccfz
+    status: active
+    added: "2026-08-16"
+  - key: em-skill
+    type: baidu
+    label: 嵌入式管理技能(EM-SKILL) - ai
+    url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+    extract_code: hwr6
+    status: active
+    added: "2026-08-16"
+  - key: vscode
+    label: VSCode
+    url: https://code.visualstudio.com/
+    type: official
+    status: active
+    added: "2026-08-17"
