@@ -99,7 +99,6 @@ include:
 exclude:
 ignore:
 skip_render:
-  - "index_page.html"
   - "coming-soon/*"
   - "coming-soon/**/*"
   - "about/*"
