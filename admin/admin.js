@@ -136,7 +136,13 @@
   }
 
   function updateOutputName() {
-    outputName.textContent = activeTab === 'tools' ? 'tools.yml' : 'links.yml';
+    if (activeTab === 'tools') {
+      outputName.textContent = 'tools.yml';
+    } else if (activeTab === 'links') {
+      outputName.textContent = 'links.yml';
+    } else {
+      outputName.textContent = editingArticleSlug ? editingArticleSlug + '.md' : '(文章直接保存,不走 YAML)';
+    }
   }
 
   // -----------------------------------------------------------
@@ -180,8 +186,11 @@
         state.tools.links[idx].extract_code = r.extract_code || '';
         state.tools.links[idx].status = r.status || 'active';
         state.tools.links[idx].type = state.tools.links[idx].type || r.type || '官网';
-        // 重新渲染让 url/code/status 显示新值
-        renderToolLinks();
+        // 只更新当前行的字段值,不要整列表重渲染(否则输入框被销毁、焦点丢失)
+        urlInput.value = state.tools.links[idx].url;
+        codeInput.value = state.tools.links[idx].extract_code;
+        statusSelect.value = state.tools.links[idx].status;
+        if (!typeInput.value) typeInput.value = state.tools.links[idx].type;
       }
       renderOutput();
       renderLiveList();
@@ -562,6 +571,12 @@
   // 保存到文件 (本地 admin-server 后端)
   // -----------------------------------------------------------
   async function saveToServer() {
+    // 文章 tab 的保存走专用接口(下方文章表单的「保存文章」按钮),
+    // 这里的 YAML 输出不是 links/tools 数据,直接写会污染 links.yml
+    if (activeTab === 'articles') {
+      toast('文章请在下方表单点「保存文章」,此按钮只写 tools.yml / links.yml', 'error');
+      return;
+    }
     const yamlText = $('#yaml-output').value.trim();
     if (!yamlText) {
       toast('无内容可保存', 'error');
@@ -1153,14 +1168,8 @@
     document.querySelector('.panels')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function newItem() {
-    editingKey = null;
-    state[activeTab] = clone(activeTab === 'tools' ? emptyToolsForm : emptyLinksForm);
-    syncFormToDOM();
-    renderOutput();
-    updateOutputName();
-    toast('＋ 新增模式（保存会追加新条目）');
-  }
+  // 注意: newItem 只在文件上方定义一次(按 tab 分发,含 articles 分支)。
+  // 此处曾有重复定义覆盖前者,导致「＋ 新建文章」时表单残留上一篇内容 —— 已删除。
 
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, (c) => ({

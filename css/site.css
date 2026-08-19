@@ -1,13 +1,11 @@
 /* ============================================================
  * EmbedAI 站点共享交互样式
- * - 自定义光标
- * - 磁吸过渡
- * - 3D 倾斜 perspective
+ * - 自定义光标(实色,不做 difference 反色)
+ * - 磁吸 / 3D 倾斜(JS 逐帧驱动,CSS 不加 transform transition)
  * - 滚动揭示
  * - 涟漪点击
- * - 页面入场
  * - 进度条 / 回到顶部
- * - 通用 :root 变量
+ * 配色一律走各页面 :root 的 --accent,不在此处硬编码。
  * ============================================================ */
 
 /* -------- 自定义光标 -------- */
@@ -21,27 +19,27 @@
   border-radius: 50%;
   transform: translate3d(-50%, -50%, 0);
   will-change: transform;
-  mix-blend-mode: difference;
 }
 
 .cursor-dot {
   width: 6px;
   height: 6px;
-  background: #fff;
-  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+  background: var(--accent, #6b9e83);
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
 .cursor-ring {
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--accent, #6b9e83);
+  opacity: 0.55;
   transition: width 0.25s ease, height 0.25s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
 
 .cursor-ring.is-hover {
-  width: 56px;
-  height: 56px;
-  border-color: rgba(165, 180, 252, 0.95);
+  width: 44px;
+  height: 44px;
+  opacity: 0.9;
 }
 
 .cursor-dot.is-hover {
@@ -62,22 +60,20 @@ body.cursor-hidden .cursor-ring {
   }
 }
 
-/* -------- 磁吸按钮 -------- */
+/* -------- 磁吸 / 倾斜: transform 由 JS 逐帧驱动,
+   CSS 不再加 transform transition(避免双重平滑拖尾) -------- */
 [data-magnetic] {
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
-}
-
-/* -------- 3D 倾斜 -------- */
-.tilt-stage {
-  perspective: 1000px;
 }
 
 [data-tilt] {
   transform-style: preserve-3d;
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
   will-change: transform;
+}
+
+.tilt-stage {
+  perspective: 1000px;
 }
 
 [data-tilt] .tilt-inner {
@@ -113,7 +109,8 @@ body.cursor-hidden .cursor-ring {
 [data-reveal-delay="6"] { transition-delay: 0.36s; }
 
 /* -------- 点击涟漪 -------- */
-.ripple-host {
+.ripple-host,
+[data-ripple] {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -144,7 +141,7 @@ body.cursor-hidden .cursor-ring {
   left: 0;
   height: 2px;
   width: 0;
-  background: linear-gradient(90deg, #667eea, #a5b4fc, #f093fb);
+  background: var(--accent, #6b9e83);
   z-index: 9998;
   transition: width 0.05s linear;
   pointer-events: none;
@@ -157,9 +154,9 @@ body.cursor-hidden .cursor-ring {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(26, 26, 31, 0.85);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--text, #1a1a1f);
+  color: var(--bg, #faf9f6);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,8 +166,7 @@ body.cursor-hidden .cursor-ring {
   transform: translateY(8px);
   transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
   z-index: 9997;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(26, 26, 31, 0.18);
 }
 
 .to-top.is-visible {
@@ -179,22 +175,13 @@ body.cursor-hidden .cursor-ring {
 }
 
 .to-top:hover {
-  background: #667eea;
+  background: var(--accent, #6b9e83);
+  color: #fff;
 }
 
 .to-top:focus-visible {
-  outline: 2px solid #a5b4fc;
+  outline: 2px solid var(--accent, #6b9e83);
   outline-offset: 2px;
-}
-
-/* -------- 页面入场 -------- */
-body {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-body.is-ready {
-  opacity: 1;
 }
 
 /* -------- 装饰小图标入场 -------- */
@@ -207,7 +194,7 @@ body.is-ready {
   to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-/* 角色字符逐字入场 */
+/* 字符逐字入场 */
 [data-char] {
   display: inline-block;
   opacity: 0;
@@ -249,8 +236,6 @@ body.is-ready {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-
-  body { opacity: 1; }
 
   [data-reveal] {
     opacity: 1;
