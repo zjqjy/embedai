@@ -110,7 +110,7 @@ html(lang="zh-CN")
       .topbar-links { display: flex; gap: 0.5rem; align-items: center; }
 
       .hero {
-        padding: 5rem 0 3rem;
+        padding: 3.5rem 0 2rem;
         position: relative;
         text-align: center;
       }
@@ -145,10 +145,15 @@ html(lang="zh-CN")
         letter-spacing: -0.02em;
         line-height: 1.1;
         margin-bottom: 1rem;
+        color: var(--text);
+      }
+      /* data-char-in 会把每个字包成 span,父级 background-clip:text 对子元素失效,
+         渐变必须落在每个字符 span 上,否则文字是透明的 */
+      .hero h1 [data-char] {
         background: linear-gradient(135deg,
           var(--text) 0%,
-          var(--warm) 55%,
-          var(--warm-soft) 100%);
+          var(--text) 60%,
+          var(--accent) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -176,9 +181,15 @@ html(lang="zh-CN")
         padding-left: 2rem;
         padding-right: 2rem;
       }
+      .filter-bar-inner {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
       .filter-search {
         position: relative;
-        margin-bottom: 0.7rem;
+        flex: 0 1 340px;
+        min-width: 200px;
       }
       .filter-search-input {
         width: 100%;
@@ -228,13 +239,24 @@ html(lang="zh-CN")
         font-family: 'JetBrains Mono', monospace;
         pointer-events: none;
       }
-      .filter-row {
+      /* 分类 chip 行:单行横向滚动,分类再多也不换行撑高 sticky 栏 */
+      .filter-chips {
         display: flex;
         gap: 0.5rem;
-        flex-wrap: wrap;
         align-items: center;
+        flex: 1;
+        min-width: 0;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 0.15rem 0;
+        -webkit-mask-image: linear-gradient(90deg, #000 94%, transparent);
+        mask-image: linear-gradient(90deg, #000 94%, transparent);
       }
+      .filter-chips::-webkit-scrollbar { display: none; }
       .filter-chip {
+        flex-shrink: 0;
         font-family: 'DM Sans', 'PingFang SC', sans-serif;
         font-size: 0.85rem;
         color: var(--text-2);
@@ -257,6 +279,16 @@ html(lang="zh-CN")
         color: #fff;
         border-color: var(--text);
       }
+      .filter-chip .chip-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+      }
+      .filter-chip.is-active .chip-tag {
+        color: rgba(255, 255, 255, 0.75);
+      }
       .filter-chip .chip-count {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.68rem;
@@ -269,7 +301,7 @@ html(lang="zh-CN")
         color: var(--text-3);
       }
       .filter-clear {
-        margin-left: auto;
+        flex-shrink: 0;
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.75rem;
         color: var(--text-3);
@@ -331,20 +363,13 @@ html(lang="zh-CN")
         min-height: 220px;
         position: relative;
         overflow: hidden;
-        transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease,
+        transition: opacity 0.35s ease, filter 0.35s ease,
                     box-shadow 0.2s ease, border-color 0.2s ease;
-        transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
         transform-style: preserve-3d;
       }
-      .tool-card[data-cat="dev"] { background: linear-gradient(135deg, #ffffff 0%, rgba(168,200,224,0.18) 100%); }
-      .tool-card[data-cat="debug"] { background: linear-gradient(135deg, #ffffff 0%, rgba(200,168,224,0.20) 100%); }
-      .tool-card[data-cat="ai"] { background: linear-gradient(135deg, #ffffff 0%, rgba(216,230,221,0.45) 100%); }
-      .tool-card[data-cat="util"] { background: linear-gradient(135deg, #ffffff 0%, rgba(247,227,208,0.40) 100%); }
+      /* 筛选不匹配直接移除出布局,不占屏幕(工具多了筛选才真正减负) */
       .tool-card.is-hidden {
-        opacity: 0.18;
-        pointer-events: none;
-        filter: grayscale(0.6);
-        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(0.97) !important;
+        display: none;
       }
       .tool-card::after {
         content: '';
@@ -411,9 +436,9 @@ html(lang="zh-CN")
       .tool-card .tool-cat-pill {
         font-family: 'JetBrains Mono', monospace;
         font-size: 0.65rem;
-        background: var(--bg-elev);
-        border: 1px solid var(--border);
-        color: var(--text-3);
+        background: var(--accent-soft);
+        border: 1px solid transparent;
+        color: #4a7a64;
         padding: 0.15rem 0.5rem;
         border-radius: 999px;
       }
@@ -479,11 +504,13 @@ html(lang="zh-CN")
         justify-content: center;
         padding: 2rem;
         opacity: 0;
+        visibility: hidden;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
       }
       .tool-modal.is-open {
         opacity: 1;
+        visibility: visible;
         pointer-events: auto;
       }
       .tool-modal-backdrop {
@@ -740,8 +767,11 @@ html(lang="zh-CN")
       .footer .build { display: flex; gap: 1.5rem; }
 
       @media (max-width: 900px) {
-        .hero { padding: 3.5rem 0 2rem; }
+        .hero { padding: 3rem 0 1.75rem; }
         .filter-bar { padding-left: 1.5rem; padding-right: 1.5rem; margin: 0 -1.5rem 1.5rem; }
+        /* 窄屏搜索独占一行,chip 行在下方横滚 */
+        .filter-bar-inner { flex-wrap: wrap; }
+        .filter-search { flex: 1 1 100%; }
       }
       @media (max-width: 480px) {
         html, body { overflow-x: hidden; }
@@ -763,10 +793,10 @@ html(lang="zh-CN")
             | 阿程的碎碎念 &nbsp;//&nbsp; tools
           .topbar-links
             - var p = '/tools/'
-            a(href="/" class=(p === '/' ? 'active' : '') data-magnetic="0.25") /home
-            a(href="/about/" class=(p.indexOf('/about') === 0 ? 'active' : '') data-magnetic="0.25") /about
-            a(href="/tools/" class=(p.indexOf('/tools') === 0 ? 'active' : '') data-magnetic="0.25") /tools
-            a(href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25") /bilibili ↗
+            a(href="/" class=(p === '/' ? 'active' : '')) 首页
+            a(href="/about/" class=(p.indexOf('/about') === 0 ? 'active' : '')) 关于
+            a(href="/tools/" class=(p.indexOf('/tools') === 0 ? 'active' : '')) 工具箱
+            a(href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener") B 站 ↗
 
       section.hero(data-reveal="up")
         .hero-meta
@@ -779,27 +809,13 @@ html(lang="zh-CN")
           | 嵌入式学习过程中高频使用的工具，分类清晰，按需自取。
 
       .filter-bar(data-reveal="fade")
-        // ★ 搜索框
-        .filter-search
-          input.filter-search-input#filter-search(type="search" placeholder="搜索工具名/标签/描述... (按 / 快速聚焦)" autocomplete="off")
-          button.filter-search-clear#filter-search-clear(type="button" hidden) ✕
-          span.filter-search-hint#filter-search-hint
-        .filter-row
-          button.filter-chip.is-active(data-cat="all" type="button")
-            | 全部
-            span.chip-count#chip-count-all 0
-          button.filter-chip(data-cat="dev" type="button")
-            | 💻 软件开发
-            span.chip-count#chip-count-dev 0
-          button.filter-chip(data-cat="debug" type="button")
-            | 🔌 调试烧录
-            span.chip-count#chip-count-debug 0
-          button.filter-chip(data-cat="ai" type="button")
-            | 🤖 学习辅助
-            span.chip-count#chip-count-ai 0
-          button.filter-chip(data-cat="util" type="button")
-            | 🛠 实用工具
-            span.chip-count#chip-count-util 0
+        .filter-bar-inner
+          .filter-search
+            input.filter-search-input#filter-search(type="search" placeholder="搜索工具名 / 标签 / 描述…" autocomplete="off")
+            button.filter-search-clear#filter-search-clear(type="button" hidden) ✕
+            span.filter-search-hint#filter-search-hint
+          //- 分类 chip 由 tools.js 按数据动态渲染:tools.yml 新增分类会自动出现
+          .filter-chips#filter-chips
           button.filter-clear#filter-clear(type="button" hidden)
             | ✕ 清空筛选
         .filter-tags-active#filter-tags-active
@@ -822,7 +838,7 @@ html(lang="zh-CN")
             .tool-modal-header-text
               h2.tool-modal-title#modal-title
               p.tool-modal-tagline#modal-tagline
-            a.tool-modal-visit#modal-visit(href="#" target="_blank" rel="noopener" hidden) 🔗 打开主页
+            a.tool-modal-visit#modal-visit(href="#" target="_blank" rel="noopener" hidden) 跳转 ↗
           .tool-modal-body
             .tool-modal-section
               .tool-modal-section-label // 推荐理由
@@ -833,7 +849,8 @@ html(lang="zh-CN")
             .tool-modal-section
               .tool-modal-section-label // 下载 / 访问
               .tool-modal-links#modal-links
-                .tool-modal-no-links#modal-no-links(hidden) 暂未提供外链,直接看官网或搜资料
+              //- 占位提示必须是 #modal-links 的同级:openModal 会 innerHTML 清空 links,子元素会被永久移除
+              .tool-modal-no-links#modal-no-links(hidden) 暂未提供外链,直接看官网或搜资料
 
       .footer
         span © 2026 阿程 · embedai.top

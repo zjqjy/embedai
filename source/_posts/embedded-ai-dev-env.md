@@ -74,11 +74,9 @@ L4  编译交付   MDK5 Keil
 
 ## 本期资料
 
-> ⚠ 预览稿提示:8 个占位符待替换,编辑时全局搜索 `TODO-DL`。
-
 | # | 名称 | 链接 |
 |---|------|------|
-| 1 | VSCode | <https://code.visualstudio.com/> <!-- TODO-DL-02 --> |
+| 1 | VSCode | {% link "code_visualstudio_" %} <!-- TODO-DL-02 --> |
 | 2 | Claude Code | <https://pan.baidu.com/s/1lxHPVq5PomOaPuRURq5hUQ?pwd=4tff> <!-- TODO-DL-03 --> |
 | 3 | Git | <https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed> <!-- TODO-DL-04 --> |
 | 4 | STM32CubeMX | <https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n> <!-- TODO-DL-05 --> |
@@ -113,4 +111,4 @@ L4  编译交付   MDK5 Keil
 
 * * *
 
-这里是 **阿晨的碎碎念**,我们下期再见。
+这里是 **阿程的碎碎念**,我们下期再见。

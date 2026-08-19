@@ -1,0 +1,33 @@
+/* ============================================================
+ * 文章页卡片覆盖(Butterfly 主题)
+ * 上一篇/下一篇(#pagination.pagination-post)和推荐文章(.relatedPosts)
+ * 共用 .pagination-related:主题默认是纯黑底($dark-black)+ 主题色
+ * 半透明罩 + 白字,跟全站的浅色卡片语言冲突。
+ * 这里只改「无封面」的卡(div.cover = 默认色块);
+ * 有封面图的卡(img.cover)保持主题原样。
+ * 深色模式下维持主题原配色,不覆盖。
+ * ============================================================ */
+
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) {
+  background: #ffffff;
+  border: 1px solid rgba(26, 26, 31, 0.08);
+}
+
+/* 盖住行内 style="background: var(--default-bg-color)",换成站点浅绿渐变 */
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) > div.cover {
+  background: linear-gradient(135deg, #d8e6dd 0%, #ffffff 75%) !important;
+  opacity: 1;
+}
+
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) .info .info-1,
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) .info .info-2 {
+  color: #1a1a1f;
+}
+
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) .info .info-1 .info-item-1 {
+  color: rgba(26, 26, 31, 0.48);
+}
+
+html:not([data-theme='dark']) .pagination-related:has(> div.cover) .info .info-1 .info-item-2 {
+  color: #1a1a1f;
+}

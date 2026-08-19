@@ -20,7 +20,7 @@
   const grid = document.getElementById('tools-grid');
   const loadingEl = document.getElementById('tools-loading');
   const emptyState = document.getElementById('tools-empty');
-  const chips = document.querySelectorAll('.filter-chip');
+  const chipsBox = document.getElementById('filter-chips');
   const clearBtn = document.getElementById('filter-clear');
   const activeTagsBox = document.getElementById('filter-tags-active');
   const heroCount = document.getElementById('hero-count');
@@ -33,8 +33,8 @@
   const modalLinks = document.getElementById('modal-links');
   const modalVisit = document.getElementById('modal-visit');
 
-  // ★「🔗 打开主页」点击时,自动把首个 link 的 extract_code 复制到剪贴板
-  // 百度网盘不支持 URL 带 pwd 自动填,用户需要切标签页后粘贴
+  // ★「打开主页 ↗」点击时,把首个 link 的 extract_code 复制到剪贴板兜底
+  // (URL 里已带 ?pwd= 可自动填写,剪贴板是双保险)
   if (modalVisit) {
     modalVisit.addEventListener('click', function (e) {
       // 当前 modal 的第一个 link(从 data 属性读)
@@ -63,18 +63,31 @@
   }
 
   // 清除 URL 中的 ?pwd=xxx(让 extract_code 单独显示)
+  // 用 URL API 处理,pwd 不在末尾时也能得到合法 URL
   function cleanUrl(url) {
     if (!url) return '';
-    return url.replace(/[?&]pwd=[a-zA-Z0-9]+/i, '').replace(/[?&]$/, '');
+    try {
+      const u = new URL(url);
+      u.searchParams.delete('pwd');
+      return u.toString();
+    } catch (err) {
+      return url.replace(/[?&]pwd=[a-zA-Z0-9]+/i, '').replace(/[?&]$/, '');
+    }
+  }
+
+  // 百度网盘链接 + 提取码 → 拼接 ?pwd= 实现打开自动填写
+  // (links.yml 里提取码存在 extract_code 字段,URL 本身不一定带)
+  function urlWithPwd(url, code) {
+    if (!url || !code || !/pan\.baidu\.com/.test(url)) return url || '';
+    try {
+      const u = new URL(url);
+      if (!u.searchParams.get('pwd')) u.searchParams.set('pwd', String(code).trim());
+      return u.toString();
+    } catch (err) {
+      return url;
+    }
   }
   const modalNoLinks = document.getElementById('modal-no-links');
-  const chipCounts = {
-    all: document.getElementById('chip-count-all'),
-    dev: document.getElementById('chip-count-dev'),
-    debug: document.getElementById('chip-count-debug'),
-    ai: document.getElementById('chip-count-ai'),
-    util: document.getElementById('chip-count-util')
-  };
 
   if (!grid || !modal) return;
 
@@ -420,16 +433,56 @@
   let cards = [];
   let lastFocused = null;
 
+  // -------- 分类 chip:由数据驱动,tools.yml 新增 category 会自动出现 --------
+  function catList() {
+    const seen = [];
+    tools.forEach(function (t) {
+      if (t.category && seen.indexOf(t.category) < 0) seen.push(t.category);
+    });
+    return seen;
+  }
+
+  function renderChips() {
+    if (!chipsBox) return;
+    chipsBox.innerHTML = '';
+    const defs = [{ key: 'all', tag: '', label: '全部' }].concat(
+      catList().map(function (c) {
+        return { key: c, tag: c.toUpperCase(), label: CAT_LABELS[c] || c };
+      })
+    );
+    defs.forEach(function (d) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-chip' + (d.key === state.category ? ' is-active' : '');
+      btn.dataset.cat = d.key;
+      if (d.tag) {
+        const tag = document.createElement('span');
+        tag.className = 'chip-tag';
+        tag.textContent = d.tag;
+        btn.appendChild(tag);
+      }
+      btn.appendChild(document.createTextNode(d.label));
+      const count = document.createElement('span');
+      count.className = 'chip-count';
+      count.textContent = '0';
+      btn.appendChild(count);
+      chipsBox.appendChild(btn);
+    });
+  }
+
   function updateChipCounts() {
-    const counts = { all: tools.length, dev: 0, debug: 0, ai: 0, util: 0 };
+    const counts = { all: tools.length };
     tools.forEach(function (t) {
       const c = t.category;
-      if (counts[c] !== undefined) counts[c]++;
+      if (c) counts[c] = (counts[c] || 0) + 1;
     });
-    Object.keys(chipCounts).forEach(function (k) {
-      if (chipCounts[k]) chipCounts[k].textContent = counts[k];
-    });
-    if (heroCount) heroCount.textContent = tools.length + ' 个工具 · 4 个分类';
+    if (chipsBox) {
+      chipsBox.querySelectorAll('.filter-chip').forEach(function (chip) {
+        const span = chip.querySelector('.chip-count');
+        if (span) span.textContent = counts[chip.dataset.cat] || 0;
+      });
+    }
+    if (heroCount) heroCount.textContent = tools.length + ' 个工具 · ' + catList().length + ' 个分类';
   }
 
   function applyFilter() {
@@ -471,10 +524,21 @@
       }
     }
 
-    chips.forEach(function (chip) {
-      chip.classList.toggle('is-active', chip.dataset.cat === state.category);
-    });
+    if (chipsBox) {
+      chipsBox.querySelectorAll('.filter-chip').forEach(function (chip) {
+        chip.classList.toggle('is-active', chip.dataset.cat === state.category);
+      });
+    }
     if (clearBtn) clearBtn.hidden = state.activeTags.size === 0 && state.category === 'all' && !q;
+    // 搜索框右侧:筛选生效时显示 可见/总数,否则提示 / 快捷键(与清空按钮互斥,按钮优先)
+    if (searchHint) {
+      const filtering = state.category !== 'all' || state.activeTags.size > 0 || q;
+      if (searchClear && !searchClear.hidden) {
+        searchHint.textContent = '';
+      } else {
+        searchHint.textContent = filtering ? visible + ' / ' + cards.length : '/';
+      }
+    }
     renderActiveTagsBox();
   }
 
@@ -519,16 +583,19 @@
     });
   }
 
-  chips.forEach(function (chip) {
-    chip.addEventListener('click', function () {
+  if (chipsBox) {
+    chipsBox.addEventListener('click', function (e) {
+      const chip = e.target.closest('.filter-chip');
+      if (!chip) return;
       state.category = chip.dataset.cat || 'all';
       applyFilter();
     });
-  });
+  }
 
   // ★ 搜索框:实时过滤(name + tagline + reason + tags + category)
   const searchInput = document.getElementById('filter-search');
   const searchClear = document.getElementById('filter-search-clear');
+  const searchHint = document.getElementById('filter-search-hint');
   if (searchInput) {
     searchInput.addEventListener('input', function () {
       state.search = searchInput.value;
@@ -611,9 +678,9 @@
       modalVisit.hidden = true;
     } else {
       modalNoLinks.hidden = true;
-      // ★ 顶部「🔗 打开主页」按钮 = 第一个 link 的 URL
+      // ★ 顶部「跳转 ↗」按钮 = 第一个 link 的 URL,网盘链接自动拼 ?pwd=
       const firstLink = tool.linksResolved[0];
-      const firstUrl = cleanUrl(firstLink.url);
+      const firstUrl = urlWithPwd(firstLink.url, firstLink.extract_code);
       if (firstUrl) {
         modalVisit.href = firstUrl;
         modalVisit.dataset.extractCode = firstLink.extract_code || '';
@@ -663,7 +730,7 @@
     if (link.url) {
       const urlEl = document.createElement('a');
       urlEl.className = 'tool-modal-link-url';
-      urlEl.href = link.url; // 跳转用完整 URL(带 pwd)
+      urlEl.href = urlWithPwd(link.url, link.extract_code); // 跳转 URL:网盘自动拼 ?pwd=
       urlEl.target = '_blank';
       urlEl.rel = 'noopener noreferrer';
       // ★ 显示用 clean URL(去掉 ?pwd=xxx,提取码单独显示)
@@ -766,51 +833,16 @@
     }
   });
 
-  // -------- 7. 自定义 3D 倾斜(site.js 不会自动接管动态生成的元素) --------
+  // -------- 7. 3D 倾斜 --------
+  // 统一委托给 site.js 的 initTilt(幂等,靠 data-tilt-bound 去重),
+  // 不再自实现 —— 之前两套并存会对同一卡片双重绑定、双 rAF 写同一 transform。
   function attachTilt() {
-    if (prefersReducedMotion) return;
-    const els = grid.querySelectorAll('[data-tilt]');
-    els.forEach(function (el) {
-      const max = parseFloat(el.dataset.tiltMax || '8');
-      const scale = parseFloat(el.dataset.tiltScale || '1.02');
-      let rect = null;
-      let rafId = null;
-      let tx = 0, ty = 0, cx = 0, cy = 0;
-
-      function refresh() { rect = el.getBoundingClientRect(); }
-      function schedule() {
-        if (rafId) return;
-        rafId = requestAnimationFrame(tick);
-      }
-      function tick() {
-        rafId = null;
-        cx += (tx - cx) * 0.18;
-        cy += (ty - cy) * 0.18;
-        const active = Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05;
-        const rest = tx === 0 && ty === 0;
-        const s = rest ? 1 : scale;
-        el.style.transform =
-          'perspective(1000px) rotateX(' + cx.toFixed(2) + 'deg) rotateY(' +
-          cy.toFixed(2) + 'deg) scale(' + s + ')';
-        if (active) schedule();
-        else if (rest) el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-      }
-
-      el.addEventListener('mouseenter', refresh);
-      el.addEventListener('mousemove', function (e) {
-        if (!rect) refresh();
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-        tx = (py - 0.5) * -max * 2;
-        ty = (px - 0.5) * max * 2;
-        schedule();
-      });
-      el.addEventListener('mouseleave', function () {
-        tx = 0; ty = 0; schedule(); rect = null;
-      });
-    });
+    if (window.EmbedSite && window.EmbedSite.initTilt) {
+      window.EmbedSite.initTilt(grid);
+    }
   }
 
   // -------- 启动 --------
+  renderChips();
   renderCards();
 })();

@@ -1,3 +1,7 @@
+# ============================================
+# 链接中央注册表 (按文章嵌套)
+# 由 admin-server 自动写入,可手工调整
+# ============================================
 claude-code-install-guide:
   - key: claude_official
     label: Claude 官网
@@ -53,7 +57,7 @@ em-skill-install:
     url: https://github.com/zjqjy/embedded-project-manager
     type: github
     status: active
-    added: 2026-05-01T00:00:00.000Z
+    added: "2026-05-01"
 _shared:
   - key: code_visualstudio_
     label: VSCode

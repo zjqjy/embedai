@@ -11,3 +11,8 @@ reward:
       text: 支付宝
     - img: /images/reward/wechat.jpg
       text: 微信
+
+# 注入自定义覆盖样式(文章页 prev/next + 推荐文章浅色化)
+inject:
+  head:
+    - <link rel="stylesheet" href="/css/post-override.css">

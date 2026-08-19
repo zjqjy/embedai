@@ -35,10 +35,10 @@ EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）
 
 ### 方式二：Git 克隆
 
-在 Claude Code 对话中输入以下命令：
+先把 EM-SKILL 仓库地址 {% link "em_skill_repo" %} 复制下来,然后在 Claude Code 对话中输入以下命令（把 `<URL>` 替换成上面的链接）：
 
 ```
-帮我安装 {% link "github_embedded-project-manage" %} 的 skill
+帮我安装 <URL> 的 skill
 ```
 
 > 注意：安装过程中需要一直同意请求，整个过程可能需要较长时间，并会进行文件扫描和下载。

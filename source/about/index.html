@@ -101,6 +101,11 @@
       margin-bottom: 1.5rem;
     }
     h1 .accent {
+      color: var(--accent);
+    }
+    /* data-char-in 会把每个字包成 span,父级 background-clip:text 对子元素失效,
+       渐变必须落在每个字符 span 上,否则文字是透明的 */
+    h1 .accent [data-char] {
       background: linear-gradient(135deg, var(--accent), var(--warm));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -267,9 +272,10 @@
       <div class="topbar-inner">
         <span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; about</span>
         <div class="topbar-links">
-          <a href="/" data-magnetic="0.25">/home</a>
-          <a href="/about/" data-magnetic="0.25">/about</a>
-          <a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener" data-magnetic="0.25">/bilibili ↗</a>
+          <a href="/">首页</a>
+          <a href="/tools/">工具箱</a>
+          <a href="/about/">关于</a>
+          <a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener">B 站 ↗</a>
         </div>
       </div>
     </div>
@@ -327,19 +333,19 @@
           <div class="bars" data-skills>
             <div class="bar" data-reveal="up" data-reveal-delay="1">
               <div class="bar-label"><span>C / 嵌入式</span><span>日更级</span></div>
-              <div class="bar-track"><div class="bar-fill" style="width: 92%;"></div></div>
+              <div class="bar-track"><div class="bar-fill" data-w="92%"></div></div>
             </div>
             <div class="bar" data-reveal="up" data-reveal-delay="2">
               <div class="bar-label"><span>RTOS / Linux</span><span>干活够用</span></div>
-              <div class="bar-track"><div class="bar-fill" style="width: 70%;"></div></div>
+              <div class="bar-track"><div class="bar-fill" data-w="70%"></div></div>
             </div>
             <div class="bar" data-reveal="up" data-reveal-delay="3">
               <div class="bar-label"><span>AI / 提示词</span><span>日更级</span></div>
-              <div class="bar-track"><div class="bar-fill" style="width: 90%;"></div></div>
+              <div class="bar-track"><div class="bar-fill" data-w="90%"></div></div>
             </div>
             <div class="bar" data-reveal="up" data-reveal-delay="4">
               <div class="bar-label"><span>Web / 前端</span><span>在学</span></div>
-              <div class="bar-track"><div class="bar-fill" style="width: 55%;"></div></div>
+              <div class="bar-track"><div class="bar-fill" data-w="55%"></div></div>
             </div>
           </div>
         </div>
@@ -354,25 +360,30 @@
 
   <script src="/js/site.js"></script>
   <script>
-    // 进度条: 可见时把 width 同步到元素 inline style 上,触发 CSS transition
+    // 技能条: 进入视口后把 data-w 写到 inline width,触发 CSS transition 的生长动画
     (function () {
-      const skills = document.querySelector('[data-skills]');
-      if (!skills || !('IntersectionObserver' in window)) {
-        document.querySelectorAll('.bar').forEach((b) => b.classList.add('is-revealed'));
+      function grow(bar) {
+        const fill = bar.querySelector('.bar-fill');
+        if (fill && fill.dataset.w) fill.style.width = fill.dataset.w;
+        bar.classList.add('is-revealed');
+      }
+      const bars = document.querySelectorAll('.bar');
+      if (!('IntersectionObserver' in window)) {
+        bars.forEach(grow);
         return;
       }
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add('is-revealed');
+              grow(entry.target);
               io.unobserve(entry.target);
             }
           });
         },
         { threshold: 0.4 }
       );
-      document.querySelectorAll('.bar').forEach((b) => io.observe(b));
+      bars.forEach((b) => io.observe(b));
     })();
   </script>
 </body>
