@@ -16,8 +16,8 @@ test.describe('About 页面 - 加载与基础结构 @smoke', () => {
     await page.goto('/about/');
     await expect(page.locator('.topbar')).toBeVisible();
     await expect(page.locator('.status-dot')).toBeVisible();
-    await expect(page.locator('.topbar-links a', { hasText: '/home' })).toBeVisible();
-    await expect(page.locator('.topbar-links a', { hasText: '/about' })).toBeVisible();
+    await expect(page.locator('.topbar-links a', { hasText: '首页' })).toBeVisible();
+    await expect(page.locator('.topbar-links a', { hasText: '关于' })).toBeVisible();
   });
 
   test('stack 列表 6 行', async ({ page }) => {

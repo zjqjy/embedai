@@ -18,12 +18,13 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     await expect(cards).toHaveCount(7);
   });
 
-  test('Hero + 4 分类 chip 存在', async ({ page }) => {
+  test('Hero + 分类 chip 数据驱动(全部 + 实际存在的分类)', async ({ page }) => {
     await page.goto('/tools/');
     await expect(page.locator('h1')).toBeVisible();
     const chips = page.locator('.filter-chip');
-    // 至少 5 个 chip（全部 + 4 分类）
-    expect(await chips.count()).toBeGreaterThanOrEqual(5);
+    // chip 由 tools.yml 实际分类动态渲染,空分类不再占位
+    // 当前数据: 全部 + dev + ai = 3
+    expect(await chips.count()).toBeGreaterThanOrEqual(3);
   });
 
   test('搜索框 + 实时过滤', async ({ page }) => {
@@ -45,7 +46,7 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     expect(visibleAfterClear).toBeGreaterThanOrEqual(7);
   });
 
-  test('点击工具 → modal 显示「🔗 打开主页」+ URL 清理 pwd', async ({ page }) => {
+  test('点击工具 → modal 显示「打开主页」+ URL 带 pwd 自动填提取码', async ({ page }) => {
     await page.goto('/tools/');
     await page.waitForTimeout(800);
     // 点击第一张卡(Claude Code)
@@ -54,9 +55,10 @@ test.describe('工具页 /tools/ - 加载与基础结构 @smoke', () => {
     // modal 打开
     const visitBtn = page.locator('#modal-visit');
     await expect(visitBtn).toBeVisible();
-    // href 应是 https://pan.baidu.com/s/...(没有 ?pwd=mtib)
+    // 百度网盘链接保留 ?pwd=xxx,打开时自动填写提取码(剪贴板复制是兜底)
     const href = await visitBtn.getAttribute('href');
-    expect(href).not.toContain('pwd=');
+    expect(href).toContain('pan.baidu.com');
+    expect(href).toContain('pwd=');
   });
 });
 
@@ -93,7 +95,8 @@ test.describe('工具页 /tools/ - 交互行为', () => {
     await page.locator('.cat').first().click();
     await page.waitForTimeout(400);
     await page.keyboard.press('Escape');
-    await page.waitForTimeout(400);
+    // modal 的 visibility 过渡 0.3s,录制视频时机器慢会拖长,留足余量
+    await page.waitForTimeout(700);
     const modal = page.locator('[role="dialog"], .modal').first();
     // modal 应该不可见或已从 DOM 移除
     const visible = await modal.isVisible().catch(() => false);

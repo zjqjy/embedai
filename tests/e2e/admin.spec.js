@@ -78,8 +78,8 @@ test.describe('管理后台 /admin/ - localStorage 草稿', () => {
     const firstInput = page.locator('input').first();
     await firstInput.fill('draft_test_value');
 
-    // 点保存草稿按钮（如果存在）
-    const saveBtn = page.locator('button').filter({ hasText: /保存草稿/ }).first();
+    // 点保存草稿按钮(按钮文案是「暂存 (本地)」)
+    const saveBtn = page.locator('button').filter({ hasText: /暂存/ }).first();
     if ((await saveBtn.count()) > 0) {
       await saveBtn.click();
       await page.waitForTimeout(200);

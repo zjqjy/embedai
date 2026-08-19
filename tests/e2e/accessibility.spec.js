@@ -41,8 +41,9 @@ for (const { name, path } of PAGES) {
       });
       await page.goto(path);
       await page.waitForLoadState('networkidle').catch(() => {});
-      // 过滤掉 cross-origin 的字体请求
-      const real = failed.filter((u) => !/fonts\.(gstatic|googleapis)\.com/.test(u));
+      // 过滤掉 cross-origin 的字体请求;
+      // /api/* 只在 admin-server(:3000) 下存在,静态预览(:4321) 下 404 是预期行为
+      const real = failed.filter((u) => !/fonts\.(gstatic|googleapis)\.com/.test(u) && !u.includes('/api/'));
       expect(real, 'failed resources: ' + real.join(', ')).toEqual([]);
     });
 

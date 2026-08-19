@@ -24,12 +24,13 @@ test.describe('首页 - 加载与基础结构 @smoke', () => {
     await expect(page.locator('.section-head h2', { hasText: '关于' })).toBeVisible();
   });
 
-  test('4 张文章卡 + 2 张分类卡（AI 工具 + 嵌入式）', async ({ page }) => {
+  test('4 张文章卡 + 分类卡数据驱动(2 个分类 + 工具箱)', async ({ page }) => {
     await page.goto('/');
     const posts = page.locator('.post-card');
     await expect(posts).toHaveCount(4);
+    // 分类卡 = site.categories(ai-tools + 嵌入式) + 固定工具箱卡
     const cats = page.locator('.cat');
-    await expect(cats).toHaveCount(2);
+    await expect(cats).toHaveCount(3);
   });
 
   test('4 张统计卡', async ({ page }) => {
@@ -106,10 +107,11 @@ test.describe('首页 - 交互行为', () => {
     await counts.first().scrollIntoViewIfNeeded();
     await page.waitForTimeout(1700);
     const values = await counts.allTextContents();
-    // focus 3 / 5, articles 3+
-    const all = values.join(' ');
-    expect(all).toMatch(/3/);
-    expect(all).toMatch(/\+/);
+    // 数据驱动: articles / categories 均为 >=1 的整数
+    expect(values.length).toBeGreaterThanOrEqual(2);
+    for (const v of values) {
+      expect(parseInt(v, 10)).toBeGreaterThanOrEqual(1);
+    }
   });
 
   test('点击涟漪:点击卡片后 .ripple 子元素存在', async ({ page }) => {

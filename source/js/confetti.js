@@ -5,7 +5,8 @@
  * ============================================================ */
 (function () {
   'use strict';
-  const colors = ['#667eea', '#a5b4fc', '#f093fb', '#f5576c', '#6b9e83', '#e8a87c', '#f4c6a8'];
+  // 站点调色板(不用系统外的紫粉)
+  const colors = ['#6b9e83', '#d8e6dd', '#e8a87c', '#f4c6a8', '#a8c8e0', '#1a1a1f'];
 
   function burst(x, y, count) {
     count = count || 60;
@@ -57,5 +58,22 @@
   window.addEventListener('confetti', (e) => {
     const d = (e && e.detail) || {};
     burst(d.x || window.innerWidth / 2, d.y || window.innerHeight / 2, d.count || 60);
+  });
+
+  // -------- Konami 彩蛋: ↑↑↓↓←→←→ B A --------
+  const SEQ = [
+    'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+    'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+    'b', 'a'
+  ];
+  let pos = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    pos = k === SEQ[pos] ? pos + 1 : k === SEQ[0] ? 1 : 0;
+    if (pos === SEQ.length) {
+      pos = 0;
+      burst(window.innerWidth / 2, window.innerHeight / 3, 140);
+    }
   });
 })();

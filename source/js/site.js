@@ -4,12 +4,15 @@
  * 启用: 任何引入此脚本的页面都会获得下列能力(失败安全)
  *   - data-reveal        滚动揭示
  *   - data-tilt          3D 倾斜
- *   - data-magnetic      磁吸
+ *   - data-magnetic      磁吸(仅限低频 CTA,勿用于导航)
  *   - data-ripple        涟漪点击
  *   - data-count-up      数字滚动
  *   - data-typewriter    打字机
+ *   - data-char-in       逐字入场
+ *   - data-parallax      视差
  *   - [data-to-top]      回到顶部
  *   - .reading-progress  阅读进度条
+ * 通过 window.EmbedSite.initTilt(root) 可对动态插入的元素补绑倾斜。
  * ============================================================ */
 (function () {
   'use strict';
@@ -17,7 +20,7 @@
   // -------- 减少动效偏好 --------
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // -------- 工具: 节流 --------
+  // -------- 工具: rAF 节流 --------
   function rafThrottle(fn) {
     let ticking = false;
     return function (arg) {
@@ -55,12 +58,13 @@
     els.forEach((el) => io.observe(el));
   }
 
-  // -------- 2. 3D 倾斜 --------
-  function initTilt() {
-    const els = document.querySelectorAll('[data-tilt]');
-    if (!els.length || prefersReducedMotion) return;
+  // -------- 2. 3D 倾斜(幂等,可重复调用覆盖动态元素) --------
+  function initTilt(root) {
+    if (prefersReducedMotion) return;
+    const els = (root || document).querySelectorAll('[data-tilt]:not([data-tilt-bound])');
 
     els.forEach((el) => {
+      el.dataset.tiltBound = '1';
       const max = parseFloat(el.dataset.tiltMax || '8');
       const scale = parseFloat(el.dataset.tiltScale || '1.02');
       let rect = null;
@@ -117,7 +121,7 @@
         if (isActive) {
           schedule();
         } else if (isRest) {
-          el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+          el.style.transform = '';
         }
       }
 
@@ -204,7 +208,6 @@
         r.style.width = r.style.height = size + 'px';
         r.style.left = e.clientX - rect.left + 'px';
         r.style.top = e.clientY - rect.top + 'px';
-        // 让涟漪颜色与按钮主色协调
         const color = host.dataset.rippleColor;
         if (color) {
           r.style.background = color;
@@ -273,9 +276,20 @@
     els.forEach((el) => {
       const items = (el.dataset.typewriter || '').split('|').filter(Boolean);
       if (!items.length) return;
+
+      // 显式持有文本节点,不依赖 firstChild(可能是元素节点)
+      const textNode = document.createTextNode('');
       const cursor = document.createElement('span');
       cursor.className = 'typed-cursor';
+      el.textContent = '';
+      el.appendChild(textNode);
       el.appendChild(cursor);
+
+      if (prefersReducedMotion) {
+        textNode.nodeValue = items[0];
+        cursor.remove();
+        return;
+      }
 
       let index = 0;
       let charIndex = 0;
@@ -288,7 +302,7 @@
         const word = items[index % items.length];
         if (!deleting) {
           charIndex++;
-          el.firstChild.nodeValue = word.slice(0, charIndex);
+          textNode.nodeValue = word.slice(0, charIndex);
           if (charIndex === word.length) {
             deleting = true;
             setTimeout(loop, holdMs);
@@ -297,7 +311,7 @@
           setTimeout(loop, typeMs);
         } else {
           charIndex--;
-          el.firstChild.nodeValue = word.slice(0, charIndex);
+          textNode.nodeValue = word.slice(0, charIndex);
           if (charIndex === 0) {
             deleting = false;
             index++;
@@ -308,14 +322,6 @@
         }
       }
 
-      if (prefersReducedMotion) {
-        el.firstChild.nodeValue = items[0];
-        cursor.remove();
-        return;
-      }
-
-      // 用一个文本节点保存当前显示
-      el.insertBefore(document.createTextNode(''), cursor);
       setTimeout(loop, 400);
     });
   }
@@ -329,6 +335,9 @@
     dot.className = 'cursor-dot';
     const ring = document.createElement('div');
     ring.className = 'cursor-ring';
+    // 首次移动前不显示,避免开场停在屏幕中央
+    dot.style.opacity = '0';
+    ring.style.opacity = '0';
     document.body.appendChild(dot);
     document.body.appendChild(ring);
 
@@ -338,17 +347,26 @@
     let dotY = mouseY;
     let ringX = mouseX;
     let ringY = mouseY;
+    let shown = false;
 
     function onMove(e) {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      if (!shown) {
+        shown = true;
+        dotX = ringX = mouseX;
+        dotY = ringY = mouseY;
+        dot.style.opacity = '';
+        ring.style.opacity = '';
+      }
     }
 
     function tick() {
       dotX += (mouseX - dotX) * 0.6;
       dotY += (mouseY - dotY) * 0.6;
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
+      // 环跟随加快,减少拖尾错位感
+      ringX += (mouseX - ringX) * 0.32;
+      ringY += (mouseY - ringY) * 0.32;
       dot.style.transform = 'translate3d(' + dotX + 'px,' + dotY + 'px,0) translate(-50%,-50%)';
       ring.style.transform = 'translate3d(' + ringX + 'px,' + ringY + 'px,0) translate(-50%,-50%)';
       requestAnimationFrame(tick);
@@ -385,7 +403,7 @@
 
   // -------- 8. 进度条 + 回到顶部 --------
   function initProgressAndTop() {
-    // 进度条
+    // 进度条(仅长页面有意义,短页滚动区间小也照常工作)
     let bar = document.querySelector('.reading-progress');
     if (!bar) {
       bar = document.createElement('div');
@@ -426,7 +444,7 @@
     onScroll();
   }
 
-  // -------- 9. 视差(光斑 / 背景) --------
+  // -------- 9. 视差 --------
   function initParallax() {
     const els = document.querySelectorAll('[data-parallax]');
     if (!els.length || prefersReducedMotion) return;
@@ -448,7 +466,12 @@
       if (!a) return;
       const href = a.getAttribute('href');
       if (!href || href === '#') return;
-      const target = document.querySelector(href);
+      let target;
+      try {
+        target = document.querySelector(href);
+      } catch (err) {
+        return; // id 含特殊字符时选择器会抛错,交给浏览器默认行为
+      }
       if (!target) return;
       e.preventDefault();
       target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
@@ -459,11 +482,8 @@
   function initCharIn() {
     const els = document.querySelectorAll('[data-char-in]');
     if (!els.length) return;
-    if (prefersReducedMotion) {
-      els.forEach((el) => {
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      });
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('is-chars-in'));
       return;
     }
     const io = new IntersectionObserver(
@@ -476,10 +496,11 @@
           [...text].forEach((ch, i) => {
             const span = document.createElement('span');
             span.setAttribute('data-char', '');
-            span.textContent = ch === ' ' ? ' ' : ch;
+            span.textContent = ch === ' ' ? ' ' : ch;
             span.style.animationDelay = i * 0.035 + 's';
             el.appendChild(span);
           });
+          el.classList.add('is-chars-in');
           io.unobserve(el);
         });
       },
@@ -491,7 +512,7 @@
   // -------- 启动 --------
   function init() {
     initReveal();
-    initTilt();
+    initTilt(document);
     initMagnetic();
     initRipple();
     initCountUp();
@@ -501,9 +522,10 @@
     initParallax();
     initSmoothAnchors();
     initCharIn();
-    // 标记 body 就绪,触发入场
-    requestAnimationFrame(() => document.body.classList.add('is-ready'));
   }
+
+  // 暴露给动态渲染的页面(tools 页筛选重渲染后补绑倾斜)
+  window.EmbedSite = { initTilt: initTilt };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

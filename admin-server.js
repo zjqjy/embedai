@@ -29,28 +29,25 @@ const TOOLS_YML = path.join(DATA_DIR, 'tools.yml');
 const LINKS_YML = path.join(DATA_DIR, 'links.yml');
 const POSTS_DIR = path.join(ROOT, 'source/_posts');
 
-// 简单的 frontmatter 解析(只支持标准 YAML 风格,不依赖库)
+// frontmatter 解析:直接用 js-yaml(已引入),支持块式列表(tags:\n  - a)等完整 YAML 语法
 function parseFrontmatter(raw) {
   if (!raw.startsWith('---')) return { data: {}, body: raw };
   const end = raw.indexOf('\n---', 3);
   if (end < 0) return { data: {}, body: raw };
   const fmBlock = raw.substring(4, end); // 去掉前导 ---\n
-  const body = raw.substring(end + 4).replace(/^\n/, '');
-  // 极简 YAML 解析: 只支持 key: value 和 key: [a, b] 列表
-  const data = {};
-  fmBlock.split(/\r?\n/).forEach((line) => {
-    const m = line.match(/^(\w[\w-]*)\s*:\s*(.*)$/);
-    if (!m) return;
-    const key = m[1];
-    let val = m[2].trim();
-    if (val.startsWith('[') && val.endsWith(']')) {
-      val = val.slice(1, -1).split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
-    } else if (val.startsWith('"') && val.endsWith('"')) {
-      val = val.slice(1, -1);
-    } else if (val.startsWith("'") && val.endsWith("'")) {
-      val = val.slice(1, -1);
+  const body = raw.substring(end + 4).replace(/^[\r\n]+/, '');
+  let data = {};
+  try {
+    data = yaml.load(fmBlock) || {};
+  } catch (e) {
+    // 解析失败时退回空 frontmatter,不阻断文章读取
+    data = {};
+  }
+  // js-yaml 会把未加引号的日期解析成 Date 对象,统一转回 YYYY-MM-DD 字符串
+  Object.keys(data).forEach((k) => {
+    if (data[k] instanceof Date) {
+      data[k] = data[k].toISOString().slice(0, 10);
     }
-    data[key] = val;
   });
   return { data, body };
 }
