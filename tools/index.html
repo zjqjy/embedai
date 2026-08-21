@@ -770,7 +770,7 @@ body::before {
 }</style></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; tools</span><div class="topbar-links"><a href="/">首页</a><a href="/about/">关于</a><a class="active" href="/tools/">工具箱</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener">B 站 ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ live</span><span class="tag">~/阿程</span><span class="tools-count" id="hero-count">— —</span><span>· v1</span></div><h1 data-char-in>我的嵌入式工具箱</h1><p class="hero-sub">嵌入式学习过程中高频使用的工具，分类清晰，按需自取。</p></section><div class="filter-bar" data-reveal="fade"><div class="filter-bar-inner"><div class="filter-search"><input class="filter-search-input" id="filter-search" type="search" placeholder="搜索工具名 / 标签 / 描述…" autocomplete="off"><button class="filter-search-clear" id="filter-search-clear" type="button" hidden>✕</button><span class="filter-search-hint" id="filter-search-hint"></span></div><div class="filter-chips" id="filter-chips"></div><button class="filter-clear" id="filter-clear" type="button" hidden>✕ 清空筛选</button></div><div class="filter-tags-active" id="filter-tags-active"></div></div><section class="tools-grid" id="tools-grid"><div class="tools-loading" id="tools-loading">// 加载中...</div></section><div class="tools-empty" id="tools-empty" hidden>没有匹配的工具 · 试试清空筛选</div><!-- 详情 Modal(共享一个,JS 填充)--><div class="tool-modal" id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true"><div class="tool-modal-backdrop" data-modal-close></div><div class="tool-modal-content"><button class="tool-modal-close" type="button" data-modal-close aria-label="关闭详情">×</button><div class="tool-modal-header"><div class="tool-modal-icon" id="modal-icon"></div><div class="tool-modal-header-text"><h2 class="tool-modal-title" id="modal-title"></h2><p class="tool-modal-tagline" id="modal-tagline"></p></div><a class="tool-modal-visit" id="modal-visit" href="#" target="_blank" rel="noopener" hidden>跳转 ↗</a></div><div class="tool-modal-body"><div class="tool-modal-section"><div class="tool-modal-section-label">// 推荐理由</div><p class="tool-modal-reason" id="modal-reason"></p></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 标签</div><div class="tool-modal-tags" id="modal-tags"></div></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 下载 / 访问</div><div class="tool-modal-links" id="modal-links"></div><div class="tool-modal-no-links" id="modal-no-links" hidden>暂未提供外链,直接看官网或搜资料</div></div></div></div></div><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div><!-- 数据源(编译期嵌入 source/_data/*.yml)--><script id="tools-data-yaml" type="text/plain"># ============================================
 # 嵌入式工具列表 (Tools Registry)
 # 由 admin-server 自动写入,可手工调整
-# 工具的 links[] 包含完整数据(URL/提取码/类型)
+# 工具的链接完整数据会自动同步到 source/_data/links.yml 的 _shared section
 # ============================================
 - name: Claude Code
   category: ai
@@ -811,6 +811,7 @@ body::before {
   links:
     - key: stm32cubemx
       type: baidu
+      extract_code: u59n
 - name: Keil MDK5
   category: dev
   tagline: Keil MDK5 - dev
@@ -878,6 +879,7 @@ body::before {
 </script><script id="links-data-yaml" type="text/plain"># ============================================
 # 链接中央注册表 (按文章嵌套)
 # 由 admin-server 自动写入,可手工调整
+# _shared:工具页用到的共享链接(由 admin 同步)
 # ============================================
 claude-code-install-guide:
   - key: claude_official
@@ -954,9 +956,9 @@ _shared:
     type: baidu
     label: STM32CubeMX - dev
     url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
-    extract_code: ""
+    extract_code: u59n
     status: active
-    added: "2026-08-16"
+    added: "2026-08-21"
   - key: keil_mdk5
     type: baidu
     label: Keil MDK5 - dev
@@ -979,9 +981,17 @@ _shared:
     status: active
     added: "2026-08-16"
   - key: vscode
-    label: VSCode
+    label: 嵌入式开发主编辑器,编辑体验 + 扩展生态 + AI 插件
     url: https://code.visualstudio.com/
     type: official
     status: active
     added: "2026-08-17"
+    extract_code: ""
+  - key: claude_oneclick
+    label: ""
+    url: ""
+    type: 一键安装包
+    extract_code: ""
+    status: active
+    added: "2026-08-21"
 </script></div><script src="/js/site.js"></script><!-- ★ js-yaml 用于解析嵌套结构的 links.yml(自实现 parser 不支持嵌套数组)--><script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script><script src="/tools/tools.js"></script></body></html>
