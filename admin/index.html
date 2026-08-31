@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>管理后台 — EmbedAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    :root {
+      --bg: #faf9f6;
+      --bg-soft: #f3f1ec;
+      --bg-elev: #ffffff;
+      --border: rgba(26,26,31,0.08);
+      --border-strong: rgba(26,26,31,0.14);
+      --text: #1a1a1f;
+      --text-2: rgba(26,26,31,0.7);
+      --text-3: rgba(26,26,31,0.48);
+      --accent: #6b9e83;
+      --accent-soft: #d8e6dd;
+      --accent-glow: rgba(107,158,131,0.18);
+      --warm: #e8a87c;
+      --warm-soft: #f7e3d0;
+      --peach: #f4c6a8;
+      --sky: #a8c8e0;
+      --danger: #d97757;
+      --danger-soft: #f7e0d4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      line-height: 1.65;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 0%, var(--peach) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 0% 30%, var(--sky) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 100% 80%, var(--accent-soft) 0%, transparent 60%);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ===== Topbar ===== */
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-3);
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .status-dot {
+      display: inline-block; width: 8px; height: 8px;
+      background: var(--warm); border-radius: 50%;
+      margin-right: 0.5rem; box-shadow: 0 0 0 4px rgba(232,168,124,0.25);
+      animation: pulse 2.5s ease-in-out infinite; vertical-align: middle;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(232,168,124,0.25); }
+      50% { box-shadow: 0 0 0 8px transparent; }
+    }
+    .topbar a {
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.2s;
+      padding: 0.25rem 0.4rem;
+      border-radius: 6px;
+    }
+    .topbar a:hover { color: var(--accent); background: var(--accent-soft); }
+    .topbar-links { display: flex; gap: 0.5rem; }
+
+    /* ===== Header ===== */
+    .page-header { padding: 3rem 0 2rem; }
+    .page-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    h1 .accent {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .lead {
+      font-size: 0.98rem;
+      color: var(--text-2);
+      max-width: 620px;
+    }
+
+    /* ===== Tabs ===== */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-3);
+      padding: 0.85rem 1.25rem;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+      border-radius: 10px 10px 0 0;
+    }
+    .tab-btn:hover { color: var(--text-2); background: var(--bg-soft); }
+    .tab-btn.active { color: var(--text); }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0.5rem;
+      right: 0.5rem;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--warm));
+      border-radius: 2px 2px 0 0;
+      animation: slide-in 0.25s ease-out;
+    }
+    @keyframes slide-in {
+      from { transform: scaleX(0); opacity: 0; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+
+    /* ===== Main Layout ===== */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem 0 3rem;
+    }
+    .panel {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.5);
+    }
+    .panel-body { padding: 1.5rem; flex: 1; overflow-y: auto; max-height: 75vh; }
+
+    /* ===== Forms ===== */
+    .form-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .field-label .req { color: var(--warm); }
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .input, .select, .textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .textarea {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: var(--bg-elev);
+    }
+    .select {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1f' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      background-size: 16px;
+      padding-right: 2.2rem;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .field-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* ===== Link rows (tools tab) ===== */
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+    .link-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 0.5rem;
+      padding: 0.6rem;
+      background: var(--bg-soft);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      align-items: center;
+    }
+    .link-row .input, .link-row .select { padding: 0.45rem 0.7rem; font-size: 0.85rem; }
+    .row-remove {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .row-remove:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+    .add-btn {
+      background: var(--bg-soft);
+      border: 1px dashed var(--border-strong);
+      color: var(--text-2);
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .add-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      border-style: solid;
+    }
+
+    /* ===== Output panel ===== */
+    .output-area {
+      width: 100%;
+      min-height: 100%;
+      background: #1a1a1f;
+      color: #e8e8e0;
+      border: none;
+      border-radius: 0;
+      padding: 1.25rem 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      resize: none;
+      white-space: pre;
+      overflow: auto;
+    }
+    .output-area:focus { outline: none; }
+    .output-area::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* ===== Actions ===== */
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.5);
+    }
+    .btn {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.7rem 0.85rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: white;
+      border-color: transparent;
+    }
+    .btn-primary:hover { filter: brightness(1.05); color: white; }
+    .btn-save-server {
+      background: var(--bg-elev);
+      border-color: var(--warm);
+      color: var(--warm);
+      font-weight: 600;
+    }
+    .btn-save-server:hover {
+      background: var(--warm);
+      color: white;
+      border-color: var(--warm);
+    }
+    .btn-deploy {
+      background: linear-gradient(135deg, var(--accent), #5b8a6e);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+    }
+    .btn-deploy:hover {
+      filter: brightness(1.1);
+      color: white;
+    }
+    .btn-danger:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+
+    /* ===== Live Data Panel ===== */
+    .panel-live { margin-bottom: 1.5rem; }
+    .live-source {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      font-weight: normal;
+      margin-left: 0.5rem;
+    }
+    .panel-actions { display: flex; gap: 0.5rem; }
+
+    /* ===== Primary Actions (固定在 header 下) ===== */
+    .primary-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 0.5rem;
+      padding: 0.75rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      align-items: center;
+    }
+    .primary-actions .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+    .primary-actions .btn-link {
+      background: transparent;
+      border-color: transparent;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.5rem 0.7rem;
+    }
+    .primary-actions .btn-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .actions-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 0.25rem;
+    }
+
+    /* ===== AI Auto-fill Button ===== */
+    .field-row-inline {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .field-row-inline .input { flex: 1; }
+    .btn-ai {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex: 0;
+    }
+    .btn-ai:hover {
+      filter: brightness(1.15);
+      color: white;
+    }
+    .btn-extract {
+      background: linear-gradient(135deg, var(--warm), #c47a45);
+      color: white;
+      border-color: transparent;
+      font-weight: 600;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex: 0;
+    }
+    .btn-extract:hover {
+      filter: brightness(1.15);
+      color: white;
+    }
+
+    /* ===== Tool Link Row (stacked: 5 fields, roomy) ===== */
+    .link-row-stacked {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.7rem 0.85rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.6rem;
+    }
+    .link-row-stacked .input { font-size: 0.85rem; padding: 0.5rem 0.65rem; }
+    .link-row-stack-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    .link-row-stack-line .input-small { max-width: 140px; }
+    .link-row-stack-line .select { font-size: 0.85rem; padding: 0.45rem 0.5rem; }
+    .link-row-stack-line .row-remove {
+      width: 36px; height: 36px;
+      padding: 0;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    @media (max-width: 700px) {
+      .link-row-stack-line { grid-template-columns: 1fr; }
+    }
+
+    /* ===== Articles Tab ===== */
+    .articles-toolbar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .articles-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .article-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .article-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .article-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-title {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .article-item-meta {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.3rem;
+    }
+    .article-item-excerpt {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .article-item-tags {
+      margin-top: 0.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .article-item-tags .chip {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-2);
+    }
+    .section-divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+    .article-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .actions-spacer { flex: 1; }
+    .articles-list .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-3);
+      padding: 2rem;
+    }
+    .file-saved-indicator {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-3);
+      transition: all 0.3s;
+    }
+    .file-saved-indicator.saved {
+      color: #4a7d65;
+      font-weight: 600;
+      background: rgba(107, 158, 131, 0.15);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+    .file-saved-indicator code {
+      background: rgba(107, 158, 131, 0.2);
+      padding: 0.05rem 0.3rem;
+      border-radius: 3px;
+    }
+    .btn-small { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+    .live-empty {
+      padding: 1.5rem;
+      background: var(--bg-soft);
+      border-radius: 8px;
+      color: var(--text-2);
+    }
+    .live-empty code {
+      background: var(--bg-elev);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .live-empty .hint { font-size: 0.85rem; color: var(--text-3); margin-top: 0.5rem; }
+    .live-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .live-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .live-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .live-item-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .live-item-icon { font-size: 1.2rem; }
+    .live-item-name {
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .live-item-tagline {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .live-item-meta {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .live-item-meta .chip {
+      background: var(--bg-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .live-item-actions {
+      display: flex;
+      gap: 0.4rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
+    }
+
+    /* ===== Compact Link Card (minimal: name + url only) ===== */
+    .live-item-link {
+      padding: 0.55rem 0.7rem !important;
+      position: relative;
+    }
+    .live-item-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+    .live-item-row1 {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+    .live-item-row1 .live-item-name {
+      flex: 1;
+      font-size: 0.88rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .status-dot-inline {
+      font-size: 0.85rem;
+      flex: 0;
+    }
+    .live-item-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-left: 0.3rem;
+      border-left: 2px solid var(--border);
+    }
+    .live-item-hover {
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border);
+    }
+    .live-item-link:hover .live-item-hover {
+      display: flex;
+    }
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex: 0;
+      transition: all 0.15s;
+    }
+    .btn-icon:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .chip-mini {
+      background: var(--bg-soft);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--text-2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+    }
+    .chip-mini.chip-code {
+      background: rgba(232, 168, 124, 0.18);
+      color: #c47a45;
+    }
+    .chip-mini.chip-hint {
+      background: var(--bg-soft);
+      color: var(--text-3);
+      font-style: italic;
+    }
+    .badge-inline {
+      font-size: 0.6rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background: rgba(232, 168, 124, 0.15);
+      color: #c47a45;
+      font-family: 'JetBrains Mono', monospace;
+      flex: 0;
+    }
+    .live-item-link.status-inline {
+      border-left: 3px solid #e8a87c;
+    }
+    .status-dot-inline-mark {
+      font-size: 0.85rem;
+    }
+    .live-item-actions .btn {
+      flex: 1;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    /* ===== Article Section (Links Tab) ===== */
+    .live-article-section {
+      grid-column: 1 / -1;
+      margin-bottom: 0.5rem;
+    }
+    .live-article-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+    .article-icon { font-size: 1rem; }
+    .article-slug {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .article-count {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-soft);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+    .live-list-nested {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.6rem;
+    }
+
+    /* ===== Status Badges ===== */
+    .status-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .status-badge.status-active {
+      background: rgba(107, 158, 131, 0.15);
+      color: #4a7d65;
+    }
+    .status-badge.status-warning {
+      background: rgba(232, 168, 124, 0.18);
+      color: #c47a45;
+    }
+    .status-badge.status-broken {
+      background: rgba(220, 90, 90, 0.15);
+      color: #c44545;
+    }
+    .live-item-link.status-warning {
+      border-left: 3px solid #e8a87c;
+    }
+    .live-item-link.status-broken {
+      border-left: 3px solid #c44545;
+      opacity: 0.7;
+    }
+    .live-item-link.status-broken .live-item-name {
+      text-decoration: line-through;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(2rem);
+      background: var(--text);
+      color: var(--bg-elev);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.error { background: var(--danger); }
+
+    /* ===== Tab pane visibility ===== */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: flex; flex-direction: column; gap: 1rem; }
+
+    /* ===== Footer ===== */
+    .footer {
+      padding: 2rem 0 3rem;
+      border-top: 1px dashed var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 980px) {
+      .panels { grid-template-columns: 1fr; }
+      .panel-body { max-height: none; }
+      .output-area { min-height: 320px; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 1.25rem; }
+      .field-row, .field-row-3 { grid-template-columns: 1fr; }
+      .link-row { grid-template-columns: 1fr 1fr auto; }
+      .actions { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .link-row { grid-template-columns: 1fr; }
+      .row-remove { width: 100%; height: 36px; }
+      h1 { font-size: 1.8rem; }
+      .panel { border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; admin</span>
+        <div class="topbar-links">
+          <a href="/">/home</a>
+          <a href="/about/">/about</a>
+          <a href="https://github.com/zjqjy/embedai" target="_blank" rel="noopener">/repo ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <header class="page-header">
+      <div class="page-label">// admin panel</div>
+      <h1>🛠 管理<span class="accent">后台</span></h1>
+      <p class="lead">工具聚合 + 链接中央注册表 — 实时生成 YAML、localStorage 草稿、一键下载。</p>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tools" role="tab">📦 工具</button>
+        <button class="tab-btn" data-tab="links" role="tab">🔗 链接</button>
+        <button class="tab-btn" data-tab="articles" role="tab">📄 文章</button>
+      </nav>
+
+      <!-- ★ 主操作按钮：固定在 header 下方,永远可见 -->
+      <div class="primary-actions">
+        <button class="btn btn-primary" id="btn-save-server" title="需先运行 npm run admin 启动本地后端">💾 写入文件</button>
+        <button class="btn btn-deploy" id="btn-deploy" title="hexo generate + deploy,部署到 embedai.top">🚀 一键部署</button>
+        <button class="btn" id="btn-copy">📋 复制 YAML</button>
+        <button class="btn" id="btn-download">⬇ 下载 .yml</button>
+        <button class="btn" id="btn-save" title="仅存到浏览器 localStorage,不写文件">📝 暂存 (本地)</button>
+        <button class="btn btn-danger" id="btn-clear">🗑 清空</button>
+        <span class="actions-divider"></span>
+        <button class="btn btn-extract" id="btn-extract-from-articles" title="扫描文章正文表格,提取软件作为工具">📦 从文章提取</button>
+        <a class="btn btn-link" href="/tools/" target="_blank" title="新窗口打开 /tools/ 公开页">👁 浏览 /tools/</a>
+        <a class="btn btn-link" href="/" target="_blank" title="新窗口打开首页">🏠 首页</a>
+        <span id="file-saved-indicator" class="file-saved-indicator"></span>
+      </div>
+    </header>
+
+    <!-- ===== Live Data Panel（按 tab 显示：工具列表/链接列表/文章列表）===== -->
+    <section class="panel panel-live" id="panel-live">
+      <div class="panel-head">
+        <span>// <span id="live-tab-name">当前数据</span></span>
+        <span class="panel-actions">
+          <button class="btn btn-small" id="btn-reload-live" type="button">🔄 刷新</button>
+          <button class="btn btn-small btn-primary" id="btn-new" type="button">＋ 新增</button>
+        </span>
+      </div>
+      <div class="panel-body">
+        <div class="live-empty" id="live-empty" hidden>
+          <p>⚠️ 未连接后端，请先运行 <code>npm run admin</code> 启动服务</p>
+        </div>
+        <div class="live-list" id="live-list">
+          <!-- JS 注入当前 tab 对应列表 -->
+        </div>
+      </div>
+    </section>
+
+    <main class="panels">
+      <!-- ===== Form Panel ===== -->
+      <section class="panel">
+        <div class="panel-head">
+          <span>// form</span>
+        </div>
+        <div class="panel-body">
+
+          <!-- ===== Tools Tab ===== -->
+          <div class="tab-pane active" data-pane="tools">
+            <div class="form-grid">
+              <div class="field">
+                <label class="field-label" for="t-name">名称 <span class="req">*</span></label>
+                <input id="t-name" class="input" type="text" data-field="name" placeholder="例：STM32CubeIDE">
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="t-category">分类 <span class="req">*</span></label>
+                  <select id="t-category" class="select" data-field="category">
+                    <option value="dev">💻 dev / 软件开发</option>
+                    <option value="debug">🔌 debug / 调试烧录</option>
+                    <option value="ai">🤖 ai / 学习辅助</option>
+                    <option value="util">🛠 util / 实用工具</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="t-icon">图标</label>
+                  <input id="t-icon" class="input" type="text" data-field="icon" placeholder="emoji" maxlength="4">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="t-tagline">一句话 <span class="req">*</span></label>
+                <input id="t-tagline" class="input" type="text" data-field="tagline" placeholder="例：ST 官方 IDE，一站式 STM32 开发">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="t-reason">推荐理由 <span class="req">*</span></label>
+                <textarea id="t-reason" class="textarea" data-field="reason" placeholder="口语化，对齐「阿程的碎碎念」品牌…" rows="3"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="t-tags">标签</label>
+                <input id="t-tags" class="input" type="text" data-field="tags" placeholder="逗号分隔：STM32, IDE, ST">
+                <span class="field-hint">// 二级标签，用逗号分隔</span>
+              </div>
+
+              <div class="field">
+                <label class="field-label">链接列表</label>
+                <div class="links-list" id="t-links-list"></div>
+                <button type="button" class="add-btn" id="t-add-link">＋ 添加链接</button>
+                <span class="field-hint">// 引用 links.yml 的 key（不要重复写 url）</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Links Tab ===== -->
+          <div class="tab-pane" data-pane="links">
+            <div class="form-grid">
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="l-article">article_slug <span class="req">*</span></label>
+                  <input id="l-article" class="input" type="text" data-field="article_slug" placeholder="例：claude-code-install-guide" list="article-slugs-list">
+                  <datalist id="article-slugs-list">
+                    <!-- 由 JS 动态填充（来自 source/_posts/*.md） -->
+                  </datalist>
+                  <span class="field-hint">// 归属文章 (slug 格式 yyyy-mm-dd-name)</span>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="l-key">key <span class="req">*</span></label>
+                  <input id="l-key" class="input" type="text" data-field="key" placeholder="例：claude_oneclick">
+                  <span class="field-hint">// 英文短标识，文中用 {% link "key" %} 引用</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="l-type">type <span class="req">*</span></label>
+                  <select id="l-type" class="select" data-field="type">
+                    <option value="baidu">baidu / 百度网盘</option>
+                    <option value="official">official / 官网</option>
+                    <option value="github">github / GitHub</option>
+                    <option value="script">script / 脚本</option>
+                    <option value="signup">signup / 订阅/注册</option>
+                    <option value="doc">doc / 文档</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="l-status">status</label>
+                  <select id="l-status" class="select" data-field="status">
+                    <option value="active">✓ active / 正常</option>
+                    <option value="warning">⚠ warning / 警告</option>
+                    <option value="broken">❌ broken / 失效</option>
+                  </select>
+                  <span class="field-hint">// 链接状态标记</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="l-label">label <span class="req">*</span></label>
+                <input id="l-label" class="input" type="text" data-field="label" placeholder="显示名（按钮/链接文本）">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="l-url">url <span class="req">*</span></label>
+                <div class="field-row-inline">
+                  <input id="l-url" class="input" type="text" data-field="url" placeholder="https://...">
+                  <button type="button" class="btn btn-ai" id="btn-ai-autofill" title="粘贴 URL 后点这个按钮,自动识别 type/提取码/label/key">✨ AI</button>
+                </div>
+              </div>
+
+              <div class="field" id="l-extract-wrap">
+                <label class="field-label" for="l-extract">extract_code <span class="req">*</span></label>
+                <input id="l-extract" class="input" type="text" data-field="extract_code" placeholder="提取码（仅 baidu）">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="l-note">note</label>
+                <textarea id="l-note" class="textarea" data-field="note" placeholder="备注（添加日期 / 失效警告 / 替代关系）" rows="3"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="l-added">added</label>
+                <input id="l-added" class="input" type="date" data-field="added">
+                <span class="field-hint">// 默认今天</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Articles Tab ===== -->
+          <div class="tab-pane" data-pane="articles">
+            <div class="form-grid">
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-slug">slug (文件名) <span class="req">*</span></label>
+                  <input id="p-slug" class="input" type="text" data-field="slug" placeholder="例：2026-08-20-my-new-post">
+                  <span class="field-hint">// 文件名格式 YYYY-MM-DD-name.md</span>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-date">date <span class="req">*</span></label>
+                  <input id="p-date" class="input" type="date" data-field="date">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-title">title <span class="req">*</span></label>
+                <input id="p-title" class="input" type="text" data-field="title" placeholder="文章标题">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label" for="p-tags">tags (逗号分隔)</label>
+                  <input id="p-tags" class="input" type="text" data-field="tags" placeholder="嵌入式, Claude Code, 教程">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-categories">categories (逗号分隔)</label>
+                  <input id="p-categories" class="input" type="text" data-field="categories" placeholder="AI工具">
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-desc">description</label>
+                <input id="p-desc" class="input" type="text" data-field="description" placeholder="可选,SEO/摘要">
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-body">content (Markdown)</label>
+                <textarea id="p-body" class="textarea" data-field="content" placeholder="## 正文&#10;&#10;Markdown 内容..." rows="18" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"></textarea>
+                <span class="field-hint">// Hexo 会自动渲染,可用 {% link "claude_oneclick" %} 等 helper</span>
+              </div>
+              <div class="article-actions">
+                <button class="btn btn-danger" id="btn-article-delete" type="button">🗑 删除</button>
+                <span class="actions-spacer"></span>
+                <button class="btn btn-small" id="btn-article-cancel" type="button">取消编辑</button>
+                <button class="btn btn-primary" id="btn-article-save" title="需 npm run admin">💾 保存到文件</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== Output Panel ===== -->
+      <section class="panel">
+        <div class="panel-head">
+          <span>// yaml output</span>
+          <span id="output-name" style="color: var(--text-3);">tools.yml</span>
+        </div>
+        <textarea id="yaml-output" class="output-area" readonly spellcheck="false"></textarea>
+      </section>
+    </main>
+
+    <div class="footer">
+      <span>© 2026 阿程 · embedai.top // admin</span>
+      <span>前后端零依赖 · 纯静态 + localStorage</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

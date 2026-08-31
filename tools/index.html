@@ -1,0 +1,1050 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="阿程的嵌入式工具箱 - 嵌入式学习过程中高频使用的工具，分类清晰，按需自取"><title>工具箱 — 阿程的碎碎念</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"><link rel="stylesheet" href="/css/site.css"><style>:root {
+  --bg: #faf9f6;
+  --bg-soft: #f3f1ec;
+  --bg-elev: #ffffff;
+  --border: rgba(26,26,31,0.08);
+  --border-strong: rgba(26,26,31,0.14);
+  --text: #1a1a1f;
+  --text-2: rgba(26,26,31,0.7);
+  --text-3: rgba(26,26,31,0.48);
+  --accent: #6b9e83;
+  --accent-soft: #d8e6dd;
+  --accent-glow: rgba(107,158,131,0.18);
+  --warm: #e8a87c;
+  --warm-soft: #f7e3d0;
+  --peach: #f4c6a8;
+  --sky: #a8c8e0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); }
+body {
+  font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 0%, var(--peach) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 80%, var(--accent-soft) 0%, transparent 60%);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.topbar {
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  animation: pulse 2.5s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px var(--accent-glow); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+.topbar a {
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.topbar a:hover {
+  color: var(--accent);
+  background: var(--bg-soft);
+}
+.topbar a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.topbar-links { display: flex; gap: 0.5rem; align-items: center; }
+
+.hero {
+  padding: 3.5rem 0 2rem;
+  position: relative;
+  text-align: center;
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.hero-meta .tag {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 0.72rem;
+}
+.hero-meta .tag.accent {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent);
+}
+.hero h1 {
+  font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+/* data-char-in 会把每个字包成 span,父级 background-clip:text 对子元素失效,
+   渐变必须落在每个字符 span 上,否则文字是透明的 */
+.hero h1 [data-char] {
+  background: linear-gradient(135deg,
+    var(--text) 0%,
+    var(--text) 60%,
+    var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text-2);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  text-align: center;
+  line-height: 1.7;
+}
+
+/* ===== 筛选 chip 行 ===== */
+.filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250, 249, 246, 0.85);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  margin: 0 -2rem 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.filter-bar-inner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.filter-search {
+  position: relative;
+  flex: 0 1 340px;
+  min-width: 200px;
+}
+.filter-search-input {
+  width: 100%;
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+}
+.filter-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.filter-search-input::placeholder {
+  color: var(--text-3);
+}
+.filter-search-clear {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  width: 22px; height: 22px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  transition: all 0.15s;
+}
+.filter-search-clear:hover {
+  background: var(--text-2);
+  color: white;
+}
+.filter-search-hint {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+}
+/* 分类 chip 行:单行横向滚动,分类再多也不换行撑高 sticky 栏 */
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.15rem 0;
+  -webkit-mask-image: linear-gradient(90deg, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, #000 94%, transparent);
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0;
+  font-family: 'DM Sans', 'PingFang SC', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-2);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.filter-chip:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+.filter-chip.is-active {
+  background: var(--text);
+  color: #fff;
+  border-color: var(--text);
+}
+.filter-chip .chip-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.filter-chip.is-active .chip-tag {
+  color: rgba(255, 255, 255, 0.75);
+}
+.filter-chip .chip-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+}
+.filter-chip:not(.is-active) .chip-count {
+  background: var(--bg-soft);
+  color: var(--text-3);
+}
+.filter-clear {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.filter-clear:hover { color: var(--text); border-color: var(--text-3); }
+.filter-clear[hidden] { display: none; }
+.filter-tags-active {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  width: 100%;
+  margin-top: 0.4rem;
+}
+.filter-tags-active .tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--accent-soft);
+  color: #4a7a64;
+  padding: 0.2rem 0.5rem 0.2rem 0.6rem;
+  border-radius: 999px;
+  margin-right: 0.3rem;
+  margin-top: 0.2rem;
+}
+.filter-tags-active .tag-chip .x {
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+.filter-tags-active .tag-chip .x:hover { opacity: 1; }
+
+/* ===== 工具网格（复用 .cat 视觉） ===== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 4rem;
+  min-height: 220px;
+}
+.cat.tool-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 220px;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.35s ease, filter 0.35s ease,
+              box-shadow 0.2s ease, border-color 0.2s ease;
+  transform-style: preserve-3d;
+}
+/* 筛选不匹配直接移除出布局,不占屏幕(工具多了筛选才真正减负) */
+.tool-card.is-hidden {
+  display: none;
+}
+.tool-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 90px; height: 90px;
+  background: radial-gradient(circle at top right, var(--cat-color, var(--accent-soft)) 0%, transparent 70%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.tool-card:hover {
+  box-shadow: 0 12px 30px rgba(26,26,31,0.08);
+  border-color: var(--border-strong);
+}
+.tool-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.tool-card .cat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  z-index: 1;
+}
+.tool-card .cat-arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  color: var(--text-3);
+  transition: color 0.2s, transform 0.2s;
+  z-index: 1;
+}
+.tool-card:hover .cat-arrow { color: var(--accent); transform: translate(2px, -2px); }
+.tool-card .cat-icon {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0.1rem 0 0.2rem;
+  z-index: 1;
+}
+.tool-card h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  z-index: 1;
+}
+.tool-card .cat-desc {
+  font-size: 0.85rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  z-index: 1;
+}
+.tool-card .tool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+  z-index: 1;
+}
+.tool-card .tool-cat-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  background: var(--accent-soft);
+  border: 1px solid transparent;
+  color: #4a7a64;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.tool-card .tool-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-3);
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.tool-card .tool-tag:hover {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent);
+}
+.tool-card .tool-tag.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  border-style: solid;
+}
+.tool-card .cat-foot {
+  margin-top: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+.tool-card .cat-foot .links-count {
+  color: var(--accent);
+}
+.tool-card .cat-foot .links-count::before { content: '● '; }
+.tool-card .cat-foot .links-count.empty { color: var(--text-3); }
+.tool-card .cat-foot .links-count.empty::before { content: '○ '; }
+
+/* 加载/空状态 */
+.tools-loading,
+.tools-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+
+/* ===== 详情 Modal ===== */
+.tool-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.tool-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.tool-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 31, 0.55);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+.tool-modal-content {
+  position: relative;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 580px;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(26, 26, 31, 0.25);
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tool-modal.is-open .tool-modal-content {
+  transform: translateY(0) scale(1);
+}
+.tool-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.tool-modal-close:hover {
+  background: var(--text);
+  color: #fff;
+  transform: rotate(90deg);
+}
+.tool-modal-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tool-modal-header {
+  margin-bottom: 1.75rem;
+  padding-right: 0;
+}
+.tool-modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.tool-modal-header-text { flex: 1; min-width: 0; }
+.tool-modal-visit {
+  background: linear-gradient(135deg, var(--accent), #5b8a6e);
+  color: white;
+  text-decoration: none;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex: 0;
+  align-self: center;
+}
+.tool-modal-visit:hover {
+  filter: brightness(1.1);
+  color: white;
+  transform: translateY(-1px);
+}
+.tool-modal-icon {
+  display: inline-block;
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+.tool-modal-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+.tool-modal-tagline {
+  color: var(--text-2);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.tool-modal-section {
+  margin-bottom: 1.5rem;
+}
+.tool-modal-section:last-child { margin-bottom: 0; }
+.tool-modal-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.6rem;
+}
+.tool-modal-reason {
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+/* reason 以 ⚠️ 开头 → 视为重点提示,加暖色底+左边框 */
+.tool-modal-reason.is-warning {
+  background: linear-gradient(135deg, #f7e3d0 0%, #fff4e8 100%);
+  border: 1px solid rgba(232, 168, 124, 0.4);
+  border-left: 3px solid var(--warm);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  color: #5a3a1a;
+  font-weight: 500;
+}
+.tool-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tool-modal-tags .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  background: var(--bg-soft);
+  color: var(--text-2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+.tool-modal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.tool-modal-link {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.tool-modal-link:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-elev);
+}
+.tool-modal-link-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+  flex-wrap: wrap;
+}
+.tool-modal-link-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+.tool-modal-link-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.tool-modal-link-url {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-2);
+  word-break: break-all;
+  line-height: 1.5;
+  display: block;
+  text-decoration: none;
+  margin-bottom: 0.45rem;
+  transition: color 0.2s;
+}
+.tool-modal-link-url:hover { color: var(--accent); }
+.tool-modal-link-code {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+}
+.tool-modal-link-code .code-label {
+  color: var(--text-3);
+}
+.tool-modal-link-code .code-value {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+  color: var(--text);
+  font-weight: 500;
+  user-select: all;
+}
+.tool-modal-link-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.25rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.tool-modal-link-copy:hover {
+  background: var(--text);
+  transform: translateY(-1px);
+}
+.tool-modal-link-copy.is-copied {
+  background: var(--accent);
+  animation: copy-bounce 0.4s ease;
+}
+@keyframes copy-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.tool-modal-link-note {
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  line-height: 1.5;
+  font-style: italic;
+}
+.tool-modal-no-links {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  padding: 1.5rem;
+  text-align: center;
+  background: var(--bg-soft);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+}
+
+.footer {
+  padding: 2.5rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-top: 1px dashed var(--border);
+  margin-top: 3rem;
+}
+.footer .build { display: flex; gap: 1.5rem; }
+
+@media (max-width: 900px) {
+  .hero { padding: 3rem 0 1.75rem; }
+  .filter-bar { padding-left: 1.5rem; padding-right: 1.5rem; margin: 0 -1.5rem 1.5rem; }
+  /* 窄屏搜索独占一行,chip 行在下方横滚 */
+  .filter-bar-inner { flex-wrap: wrap; }
+  .filter-search { flex: 1 1 100%; }
+}
+@media (max-width: 480px) {
+  html, body { overflow-x: hidden; }
+  .container { padding: 0 1.25rem; }
+  .hero { padding: 3rem 0 1.75rem; }
+  .hero h1 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  .hero-sub { font-size: 0.92rem; }
+  .tool-card { padding: 1.25rem; min-height: 200px; }
+  .tool-modal { padding: 1rem; }
+  .tool-modal-content { padding: 1.75rem; border-radius: 18px; }
+  .tool-modal-title { font-size: 1.35rem; }
+}</style></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; tools</span><div class="topbar-links"><a href="/">首页</a><a href="/about/">关于</a><a class="active" href="/tools/">工具箱</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener">B 站 ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ live</span><span class="tag">~/阿程</span><span class="tools-count" id="hero-count">— —</span><span>· v1</span></div><h1 data-char-in>我的嵌入式工具箱</h1><p class="hero-sub">嵌入式学习过程中高频使用的工具，分类清晰，按需自取。</p></section><div class="filter-bar" data-reveal="fade"><div class="filter-bar-inner"><div class="filter-search"><input class="filter-search-input" id="filter-search" type="search" placeholder="搜索工具名 / 标签 / 描述…" autocomplete="off"><button class="filter-search-clear" id="filter-search-clear" type="button" hidden>✕</button><span class="filter-search-hint" id="filter-search-hint"></span></div><div class="filter-chips" id="filter-chips"></div><button class="filter-clear" id="filter-clear" type="button" hidden>✕ 清空筛选</button></div><div class="filter-tags-active" id="filter-tags-active"></div></div><section class="tools-grid" id="tools-grid"><div class="tools-loading" id="tools-loading">// 加载中...</div></section><div class="tools-empty" id="tools-empty" hidden>没有匹配的工具 · 试试清空筛选</div><!-- 详情 Modal(共享一个,JS 填充)--><div class="tool-modal" id="tool-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true"><div class="tool-modal-backdrop" data-modal-close></div><div class="tool-modal-content"><button class="tool-modal-close" type="button" data-modal-close aria-label="关闭详情">×</button><div class="tool-modal-header"><div class="tool-modal-icon" id="modal-icon"></div><div class="tool-modal-header-text"><h2 class="tool-modal-title" id="modal-title"></h2><p class="tool-modal-tagline" id="modal-tagline"></p></div><a class="tool-modal-visit" id="modal-visit" href="#" target="_blank" rel="noopener" hidden>跳转 ↗</a></div><div class="tool-modal-body"><div class="tool-modal-section"><div class="tool-modal-section-label">// 推荐理由</div><p class="tool-modal-reason" id="modal-reason"></p></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 标签</div><div class="tool-modal-tags" id="modal-tags"></div></div><div class="tool-modal-section"><div class="tool-modal-section-label">// 下载 / 访问</div><div class="tool-modal-links" id="modal-links"></div><div class="tool-modal-no-links" id="modal-no-links" hidden>暂未提供外链,直接看官网或搜资料</div></div></div></div></div><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div><!-- 数据源(编译期嵌入 source/_data/*.yml)--><script id="tools-data-yaml" type="text/plain"># ============================================
+# 嵌入式工具列表 (Tools Registry)
+# 由 admin-server 自动写入,可手工调整
+# 工具的 links[] 包含完整数据(URL/提取码/类型)
+# ============================================
+- name: Claude Code
+  category: ai
+  icon: 🤖
+  tagline: CLI 里的 AI 编程助手
+  reason: 嵌入式学习的好搭子，写驱动 / 调协议时问答比搜文档快
+  tags:
+    - AI
+    - CLI
+    - Anthropic
+  links:
+    - key: claude_oneclick
+      type: 一键安装包
+- name: Git
+  category: dev
+  tagline: Git - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: 🔀
+  links:
+    - key: git
+      type: baidu
+      label: Git - dev
+      url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+      extract_code: bmed
+      status: active
+      added: "2026-08-16"
+- name: STM32CubeMX
+  category: dev
+  icon: 🔧
+  tagline: STM32CubeMX - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  links:
+    - key: stm32cubemx
+      type: baidu
+- name: Keil MDK5
+  category: dev
+  tagline: Keil MDK5 - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: ⚙️
+  links:
+    - key: keil_mdk5
+      type: baidu
+      label: Keil MDK5 - dev
+      url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+      extract_code: mtib
+      status: active
+      added: "2026-08-16"
+- name: ccswitch
+  category: dev
+  tagline: ccswitch - dev
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - 嵌入式
+    - dev
+  icon: 📦
+  links:
+    - key: ccswitch
+      type: baidu
+      label: ccswitch - dev
+      url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+      extract_code: ccfz
+      status: active
+      added: "2026-08-16"
+- name: 嵌入式管理技能(EM-SKILL)
+  category: ai
+  tagline: 嵌入式管理技能(EM-SKILL) - ai
+  reason: 从文章 embedded-ai-dev-env 提取
+  tags:
+    - ai
+  icon: 📦
+  links:
+    - key: em-skill
+      type: baidu
+      label: 嵌入式管理技能(EM-SKILL) - ai
+      url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+      extract_code: hwr6
+      status: active
+      added: "2026-08-16"
+- name: VSCode
+  category: dev
+  tagline: 嵌入式开发主编辑器,编辑体验 + 扩展生态 + AI 插件
+  reason: ""
+  tags:
+    - 编辑器
+    - 嵌入式
+    - IDE
+  icon: 💻
+  links:
+    - key: vscode
+      type: official
+      label: 嵌入式开发主编辑器,编辑体验 + 扩展生态 + AI 插件
+      url: https://code.visualstudio.com/
+      extract_code: ""
+      status: active
+      added: "2026-08-17"
+- name: SEGGER J-Link
+  category: debug
+  icon: 🔌
+  tagline: ARM 内核调试 / 烧录器驱动,Keil / IAR / VSCode 通吃
+  reason: ⚠️ 安装时务必勾选 "Install legacy USB Driver for J-Link (requires admin rights)",否则 Keil / IAR 等旧版 IDE 识别不到 J-Link,会一直报 "No J-Link found"。
+  tags:
+    - 调试
+    - 烧录
+    - ARM
+    - JTAG
+  links:
+    - key: jlink_official
+      type: official
+      label: SEGGER 官方下载页
+      url: https://www.segger.com/downloads/jlink/
+      extract_code: ""
+      status: active
+      added: "2026-08-31"
+- name: ST-Link
+  category: debug
+  icon: 📡
+  tagline: ST 官方调试 / 烧录软件,STM32 开发必备
+  reason: ""
+  tags:
+    - 调试
+    - 烧录
+    - STM32
+  links:
+    - key: stlink
+      type: baidu
+      label: ST-Link 工具包
+      url: https://pan.baidu.com/s/1P2LROBZe-9kIPpeE0RdnKA?pwd=6znc
+      extract_code: 6znc
+      status: active
+      added: "2026-09-01"
+- name: Claude Desktop
+  category: ai
+  icon: 🖥️
+  tagline: Anthropic 官方桌面端 Claude,对话 / 文件 / 长上下文
+  reason: ⚠️ 需要搭配 ccswitch 使用,安装需要海外网络环境。
+  tags:
+    - AI
+    - Anthropic
+    - 桌面端
+    - 对话
+  links:
+    - key: claude_desktop
+      type: baidu
+      label: Claude Desktop 安装包
+      url: https://pan.baidu.com/s/1xcPFYvQI72PjzOMlXuhNBw?pwd=gyha
+      extract_code: gyha
+      status: active
+      added: "2026-09-01"
+</script><script id="links-data-yaml" type="text/plain"># ============================================
+# 链接中央注册表 (按文章嵌套)
+# 由 admin-server 自动写入,可手工调整
+# ============================================
+claude-code-install-guide:
+  - key: claude_official
+    label: Claude 官网
+    url: https://www.anthropic.com/
+    type: official
+    status: active
+    added: 2026-04-02T00:00:00.000Z
+  - key: claude_install_v4nb
+    label: Claude Code 安装包（旧版,需手动配环境）
+    url: https://pan.baidu.com/s/1t9bIh6wN8UstfEyk8n7Kqw
+    extract_code: v4nb
+    note: 已被一键包（claude_oneclick）替代，保留作历史备份
+    type: baidu
+    status: warning
+    added: 2026-04-02T00:00:00.000Z
+  - key: minimax_token_plan
+    label: MiniMax Token Plan 订阅
+    url: https://platform.minimaxi.com/subscribe/token-plan?code=CKMY9L4mM7&source=link
+    type: signup
+    status: active
+    added: 2026-04-02T00:00:00.000Z
+claude-code-oneclick-install:
+  - key: claude_oneclick
+    label: Claude Code 一键安装包
+    url: https://pan.baidu.com/s/1L2SvQYygjVW5ZajcGqK02Q
+    extract_code: 86kq
+    note: 含 ccswitch + Claude Code + Git，解压即用
+    type: baidu
+    status: active
+    added: 2026-05-31T00:00:00.000Z
+em-skill-install:
+  - key: em_skill_install
+    label: EM-SKILL 安装包（百度网盘）
+    url: https://pan.baidu.com/s/1CAKBDsFgvXV4bzglO4Mh-g?pwd=ikzm
+    extract_code: ikzm
+    type: baidu
+    status: active
+    added: 2026-05-01T00:00:00.000Z
+  - key: embed_ai_tool
+    label: embed-ai-tool (LeoKemp223)
+    url: https://github.com/LeoKemp223/embed-ai-tool
+    type: github
+    status: active
+    added: 2026-05-01T00:00:00.000Z
+  - key: xpack_openocd
+    label: xPack OpenOCD 发布页
+    url: https://github.com/xpack-dev-tools/openocd-xpack/releases
+    type: github
+    status: active
+    added: 2026-05-01T00:00:00.000Z
+  - key: em_skill_repo
+    label: EM-SKILL GitHub 项目页
+    url: https://github.com/zjqjy/embedded-project-manager
+    type: github
+    status: active
+    added: "2026-05-01"
+_shared:
+  - key: code_visualstudio_
+    label: VSCode
+    url: https://code.visualstudio.com/
+    type: official
+    status: active
+    note: 嵌入式开发主编辑器
+    added: 2026-08-17T00:00:00.000Z
+  - key: git
+    type: baidu
+    label: Git - dev
+    url: https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed
+    extract_code: bmed
+    status: active
+    added: "2026-08-16"
+  - key: stm32cubemx
+    type: baidu
+    label: STM32CubeMX - dev
+    url: https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n
+    extract_code: ""
+    status: active
+    added: "2026-08-16"
+  - key: keil_mdk5
+    type: baidu
+    label: Keil MDK5 - dev
+    url: https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib
+    extract_code: mtib
+    status: active
+    added: "2026-08-16"
+  - key: ccswitch
+    type: baidu
+    label: ccswitch - dev
+    url: https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz
+    extract_code: ccfz
+    status: active
+    added: "2026-08-16"
+  - key: em-skill
+    type: baidu
+    label: 嵌入式管理技能(EM-SKILL) - ai
+    url: https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6
+    extract_code: hwr6
+    status: active
+    added: "2026-08-16"
+  - key: vscode
+    label: VSCode
+    url: https://code.visualstudio.com/
+    type: official
+    status: active
+    added: "2026-08-17"
+</script></div><script src="/js/site.js"></script><!-- ★ js-yaml 用于解析嵌套结构的 links.yml(自实现 parser 不支持嵌套数组)--><script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script><script src="/tools/tools.js"></script></body></html>

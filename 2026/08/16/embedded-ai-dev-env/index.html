@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>嵌入式 AI 开发环境 · 四层工作流 | EmbedAI - 嵌入式与AI技术分享</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="VSCode + Claude Code + EM-SKILL + Git + STM32CubeMX + Keil + ccswitch,把现在用的工具重新摆一遍位置。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式 AI 开发环境 · 四层工作流">
+<meta property="og:url" content="https://embedai.top/2026/08/16/embedded-ai-dev-env/index.html">
+<meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
+<meta property="og:description" content="VSCode + Claude Code + EM-SKILL + Git + STM32CubeMX + Keil + ccswitch,把现在用的工具重新摆一遍位置。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://embedai.top/img/avatar.jpg">
+<meta property="article:published_time" content="2026-08-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-31T15:38:07.939Z">
+<meta property="article:author" content="EmbedAI">
+<meta property="article:tag" content="AI工具">
+<meta property="article:tag" content="Claude Code">
+<meta property="article:tag" content="嵌入式">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://embedai.top/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "嵌入式 AI 开发环境 · 四层工作流",
+  "url": "https://embedai.top/2026/08/16/embedded-ai-dev-env/",
+  "image": "https://embedai.top/img/avatar.jpg",
+  "datePublished": "2026-08-15T16:00:00.000Z",
+  "dateModified": "2026-08-31T15:38:07.939Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "EmbedAI",
+      "url": "https://embedai.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://embedai.top/2026/08/16/embedded-ai-dev-env/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '嵌入式 AI 开发环境 · 四层工作流',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/post-override.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a><a class="nav-page-title" href="/"><span class="site-name">嵌入式 AI 开发环境 · 四层工作流</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">嵌入式 AI 开发环境 · 四层工作流</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-31T15:38:07.939Z" title="更新于 2026-08-31 23:38:07">2026-08-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a></span></div><div class="meta-secondline"></div></div></div><article class="container post-content" id="article-container"><p>如果你是<strong>用 Keil + CubeMX 入门</strong>的嵌入式工程师,或者还在<strong>百度 + CSDN 拼凑代码</strong>的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。<strong>写代码、版本控制、基础框架、编译交付</strong>,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。</p>
+<p>本期所有资料打包放在网盘,链接在主页简介自取。</p>
+<hr>
+<h2 id="先回忆一下-——-你最早是怎么学的"><a href="#先回忆一下-——-你最早是怎么学的" class="headerlink" title="先回忆一下 —— 你最早是怎么学的?"></a>先回忆一下 —— 你最早是怎么学的?</h2><p><strong>CubeMX 配引脚 → Keil 写代码 → 编译下载。</strong> 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。</p>
+<p>做项目遇到问题 → <strong>百度 &#x2F; CSDN 搜一段,复制进去试。</strong> 不行换一篇,再试。论坛博客拼拼凑凑也能解决。</p>
+<p>这两种方式有问题吗?<strong>没有。</strong> 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。</p>
+<p>但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。</p>
+<hr>
+<h2 id="这套环境的四层结构"><a href="#这套环境的四层结构" class="headerlink" title="这套环境的四层结构"></a>这套环境的四层结构</h2><p>按工作流拆成四层,外加一个后勤:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">L1  写代码     VSCode  +  Claude Code  +  EM-SKILL</span><br><span class="line">L2  版本控制   Git</span><br><span class="line">L3  基础框架   STM32CubeMX</span><br><span class="line">L4  编译交付   MDK5 Keil</span><br><span class="line">后   勤        ccswitch (四层之外)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="每一层-——-工具的角色"><a href="#每一层-——-工具的角色" class="headerlink" title="每一层 —— 工具的角色"></a>每一层 —— 工具的角色</h2><h3 id="L1-·-写代码"><a href="#L1-·-写代码" class="headerlink" title="L1 · 写代码"></a>L1 · 写代码</h3><ul>
+<li><strong>VSCode</strong> —— 创作中心。编辑体验 + 扩展生态 + AI 插件支持,更适合干写代码这件事。<strong>只管写,编译不归它。</strong></li>
+<li><strong>Claude Code</strong> —— Anthropic 官方。<strong>不是补全,是 Agent。</strong> 用自然语言让它写 HAL 驱动、解释函数、修 bug —— 身边坐了个 AI 结对工程师。</li>
+<li><strong>EM-SKILL</strong> —— 嵌入式管理技能。<strong>管项目上下文 + 编译下载 + 串口。</strong> AI 每次接手不用重交代,验证闭环不离开编辑器。</li>
+</ul>
+<h3 id="L2-·-版本控制"><a href="#L2-·-版本控制" class="headerlink" title="L2 · 版本控制"></a>L2 · 版本控制</h3><ul>
+<li><strong>Git</strong> —— <strong>后悔药。</strong> AI 生成的代码可能有坑。每写完一个模块 commit 一次,清晰记录也帮 AI 理解项目演进。</li>
+</ul>
+<h3 id="L3-·-基础框架"><a href="#L3-·-基础框架" class="headerlink" title="L3 · 基础框架"></a>L3 · 基础框架</h3><ul>
+<li><strong>STM32CubeMX</strong> —— 角色没变。配时钟、配外设、生成 HAL。<strong>血肉都长在骨骼上。</strong></li>
+</ul>
+<h3 id="L4-·-编译交付"><a href="#L4-·-编译交付" class="headerlink" title="L4 · 编译交付"></a>L4 · 编译交付</h3><ul>
+<li><strong>MDK5 Keil</strong> —— 退居后台。<strong>不写代码,只出工具链。</strong> EM-SKILL 一键编译下载,底层调的就是它。疑难问题再打开它做断点、看寄存器 —— 最后一棒归它。</li>
+</ul>
+<h3 id="后勤-·-四层之外"><a href="#后勤-·-四层之外" class="headerlink" title="后勤 · 四层之外"></a>后勤 · 四层之外</h3><ul>
+<li><strong>ccswitch</strong> —— 开源 &#x2F; 免费 &#x2F; 跨平台。统一管 <strong>Claude Code &#x2F; Codex &#x2F; Gemini CLI</strong> 的订阅与渠道切换。顺带管 MCP &#x2F; Token 用量。</li>
+</ul>
+<hr>
+<h2 id="一句话"><a href="#一句话" class="headerlink" title="一句话"></a>一句话</h2><p><strong>VSCode + Claude Code + EM-SKILL</strong> 写代码,Git 管版本,CubeMX 出骨骼,Keil 管编译交付,ccswitch 盯 AI 订阅。</p>
+<p><strong>而你 —— 只负责架构设计和审查。</strong></p>
+<hr>
+<h2 id="本期资料"><a href="#本期资料" class="headerlink" title="本期资料"></a>本期资料</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>名称</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>VSCode</td>
+<td><a href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer">VSCode</a> <!-- TODO-DL-02 --></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Claude Code</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1lxHPVq5PomOaPuRURq5hUQ?pwd=4tff">https://pan.baidu.com/s/1lxHPVq5PomOaPuRURq5hUQ?pwd=4tff</a> <!-- TODO-DL-03 --></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Git</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed">https://pan.baidu.com/s/1Ry0XkUb9RszWcbHK4vIpxw?pwd=bmed</a> <!-- TODO-DL-04 --></td>
+</tr>
+<tr>
+<td>4</td>
+<td>STM32CubeMX</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n">https://pan.baidu.com/s/1JDrIOHRH0Mi1qSwe-Uvh_A?pwd=u59n</a> <!-- TODO-DL-05 --></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Keil MDK5</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib">https://pan.baidu.com/s/16PswbhiCwlleNBXZ--kwHA?pwd=mtib</a> <!-- TODO-DL-06 --></td>
+</tr>
+<tr>
+<td>6</td>
+<td>ccswitch</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz">https://pan.baidu.com/s/1PP8jQxOts-0NV3s8Zootvw?pwd=ccfz</a> <!-- TODO-DL-07 --></td>
+</tr>
+<tr>
+<td>7</td>
+<td>嵌入式管理技能(EM-SKILL)</td>
+<td><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6">https://pan.baidu.com/s/1F4Zn_TqWDBuC7eThJeZqew?pwd=hwr6</a> <!-- TODO-DL-08 --></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="加入交流"><a href="#加入交流" class="headerlink" title="加入交流"></a>加入交流</h2><p>如果在搭环境或使用过程中遇到任何疑问,欢迎扫码加入 QQ 交流群一起讨论:</p>
+<img src="/images/claude-code-install/qq交流群号.jpg" width="280" alt="QQ交流群">
+
+<blockquote>
+<p>💬 与志同道合的朋友一起交流学习。</p>
+</blockquote>
+<h2 id="支持一下"><a href="#支持一下" class="headerlink" title="支持一下"></a>支持一下</h2><p>笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。</p>
+<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0 4px">
+  <div style="text-align:center">
+    <img src="/images/reward/alipay.jpg" width="130" alt="支付宝">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 支付宝</div>
+  </div>
+  <div style="text-align:center">
+    <img src="/images/reward/wechat.jpg" width="130" alt="微信">
+    <div style="font-size:12px;color:#858585;margin-top:6px;font-family:'JetBrains Mono',monospace">// 微信</div>
+  </div>
+</div>
+
+<hr>
+<p>这里是 <strong>阿程的碎碎念</strong>,我们下期再见。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://embedai.top">EmbedAI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://embedai.top/2026/08/16/embedded-ai-dev-env/">https://embedai.top/2026/08/16/embedded-ai-dev-env/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://embedai.top" target="_blank">EmbedAI - 嵌入式与AI技术分享</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI%E5%B7%A5%E5%85%B7/">AI工具</a><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/%E6%95%99%E7%A8%8B/">教程</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><details class="post-reward"><summary class="reward-button" aria-label="支持作者"><i class="fas fa-mug-hot"></i><span class="txt">支持一下</span></summary><div class="reward-main"><p class="reward-tip">如果觉得有帮助,可以请我喝杯咖啡 ☕</p><ul class="reward-all"><li class="reward-item"><a href="/images/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li><li class="reward-item"><a href="/images/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></details><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Claude Code 一键安装包：无需环境配置，开箱即用</div></div><div class="info-2"><div class="info-item-1">前言还在为配置 Claude Code 环境而头疼？Node.js、Git、环境变量… 各种配置让人望而却步？ 今天给你带来一个 Claude Code 一键安装包，解压即用，无需任何环境配置！  下载方式Claude Code 一键安装包 提取码：86kq   💡 下载后解压，双击运行即可开始使用！   如果有任何疑问，欢迎扫码加入 QQ 交流群一起讨论：    💬 加入群聊，与志同道合的朋友一起交流学习！   支持一下笔记和资料都是免费的。如果觉得有帮助,可以请我喝杯咖啡,这会是更新的最大动力。              // 支付宝                // 微信    </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-01</div><div class="info-item-2">EM-SKILL 嵌入式项目开发管家安装教程</div></div><div class="info-2"><div class="info-item-1">EM-SKILL 是什么EM-SKILL（Embedded Project Manager Skill）是运行在 Claude Code 中的嵌入式项目管理技能，专注于固件开发场景的人机协作验证流程。 1EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）  核心功能   命令 功能    /em verify s&lt;N&gt; 执行验证流程：编译 → 烧录 → 串口   /em new [功能] 新功能开发流程   /em disc [话题] 需求讨论流程   /em initem 初始化工具环境   /em rec 恢复项目状态    安装方式方式一：ccswitch + 百度网盘（推荐）如果网络访问 GitHub 不便，推荐使用 ccswitch 工具通过百度网盘下载： EM-SKILL 安装包（百度网盘） 提取码：ikzm  方式二：Git 克隆先把 EM-SKILL 仓库地址 EM-SKILL GitHub 项目页 复制下来,然后在 Claude Code 对话中输入以下命令（把 &lt;URL&gt; 替换成上面...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">EmbedAI</div><div class="author-info-description">分享嵌入式技术、AI应用与提示词工程，记录学习历程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zjqjy" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://b23.tv/vMZmSdE" target="_blank" title="B站"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E5%9B%9E%E5%BF%86%E4%B8%80%E4%B8%8B-%E2%80%94%E2%80%94-%E4%BD%A0%E6%9C%80%E6%97%A9%E6%98%AF%E6%80%8E%E4%B9%88%E5%AD%A6%E7%9A%84"><span class="toc-number">1.</span> <span class="toc-text">先回忆一下 —— 你最早是怎么学的?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%99%E5%A5%97%E7%8E%AF%E5%A2%83%E7%9A%84%E5%9B%9B%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">这套环境的四层结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%8F%E4%B8%80%E5%B1%82-%E2%80%94%E2%80%94-%E5%B7%A5%E5%85%B7%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">3.</span> <span class="toc-text">每一层 —— 工具的角色</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#L1-%C2%B7-%E5%86%99%E4%BB%A3%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">L1 · 写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#L2-%C2%B7-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">L2 · 版本控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#L3-%C2%B7-%E5%9F%BA%E7%A1%80%E6%A1%86%E6%9E%B6"><span class="toc-number">3.3.</span> <span class="toc-text">L3 · 基础框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#L4-%C2%B7-%E7%BC%96%E8%AF%91%E4%BA%A4%E4%BB%98"><span class="toc-number">3.4.</span> <span class="toc-text">L4 · 编译交付</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E5%8B%A4-%C2%B7-%E5%9B%9B%E5%B1%82%E4%B9%8B%E5%A4%96"><span class="toc-number">3.5.</span> <span class="toc-text">后勤 · 四层之外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D"><span class="toc-number">4.</span> <span class="toc-text">一句话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E6%9C%9F%E8%B5%84%E6%96%99"><span class="toc-number">5.</span> <span class="toc-text">本期资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%85%A5%E4%BA%A4%E6%B5%81"><span class="toc-number">6.</span> <span class="toc-text">加入交流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E4%B8%80%E4%B8%8B"><span class="toc-number">7.</span> <span class="toc-text">支持一下</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流">嵌入式 AI 开发环境 · 四层工作流</a><time datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用">Claude Code 一键安装包：无需环境配置，开箱即用</a><time datetime="2026-05-30T16:00:00.000Z" title="发表于 2026-05-31 00:00:00">2026-05-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程">EM-SKILL 嵌入式项目开发管家安装教程</a><time datetime="2026-04-30T16:00:00.000Z" title="发表于 2026-05-01 00:00:00">2026-05-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/claude-code-install-guide/" title="Claude Code 安装教程">Claude Code 安装教程</a><time datetime="2026-04-02T13:10:00.000Z" title="发表于 2026-04-02 21:10:00">2026-04-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div></div></body></html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="EmbedAI - 嵌入式技术与 AI 应用分享"><title>EmbedAI — 嵌入式 × AI 技术笔记</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=DM+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"><link rel="stylesheet" href="/css/site.css"><style>:root {
+  --bg: #faf9f6;
+  --bg-soft: #f3f1ec;
+  --bg-elev: #ffffff;
+  --border: rgba(26,26,31,0.08);
+  --border-strong: rgba(26,26,31,0.14);
+  --text: #1a1a1f;
+  --text-2: rgba(26,26,31,0.7);
+  --text-3: rgba(26,26,31,0.48);
+  --accent: #6b9e83;
+  --accent-soft: #d8e6dd;
+  --accent-glow: rgba(107,158,131,0.18);
+  --warm: #e8a87c;
+  --warm-soft: #f7e3d0;
+  --peach: #f4c6a8;
+  --sky: #a8c8e0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); }
+body {
+  font-family: 'DM Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+/* 柔和渐变背景 */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 0%, var(--peach) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 80%, var(--accent-soft) 0%, transparent 60%);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 顶部状态栏 */
+.topbar {
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  animation: pulse 2.5s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px var(--accent-glow); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+.topbar a {
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.topbar a:hover {
+  color: var(--accent);
+  background: var(--bg-soft);
+}
+.topbar a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.topbar-links { display: flex; gap: 0.5rem; align-items: center; }
+
+/* Hero */
+.hero {
+  padding: 6rem 0 4rem;
+  position: relative;
+  text-align: center;
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.hero-meta .tag {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 0.72rem;
+}
+.hero-meta .tag.accent {
+  background: var(--accent-soft);
+  border-color: transparent;
+  color: var(--accent);
+}
+/* Hero 玻璃艺术字合体药丸:头像嵌左,标题居中 */
+.title-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.45rem 1.6rem 0.45rem 0.45rem;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+  position: relative;
+  overflow: hidden;
+
+  /* 毛玻璃主体 */
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.55) 0%,
+      rgba(255,255,255,0.25) 50%,
+      rgba(255,255,255,0.45) 100%),
+    linear-gradient(135deg, var(--accent-soft), var(--warm-soft));
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+
+  /* 多层阴影 */
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.85),
+    inset 0 -1px 0 rgba(232,168,124,0.22),
+    inset 0 0 40px rgba(232,168,124,0.14),
+    0 14px 44px rgba(232,168,124,0.28),
+    0 4px 14px rgba(26,26,31,0.06);
+
+  animation: chip-float 4s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes chip-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* 药丸内左侧头像 */
+.chip-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.85);
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.4),
+    0 4px 12px rgba(232,168,124,0.25);
+  transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1);
+}
+.chip-avatar:hover {
+  transform: scale(1.08);
+}
+
+/* 药丸内右侧标题文字 */
+.chip-title {
+  font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* data-char-in 会把每个字包成 inline-block span;
+   用纯色保证对比度(渐变文字在 span 化后 background-clip 会失效) */
+.chip-title [data-char] {
+  color: var(--text);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* 药丸内打字机光标 */
+.title-chip .cursor {
+  display: inline-block;
+  width: 0.16em;
+  height: 0.85em;
+  background: linear-gradient(180deg, var(--accent), var(--warm));
+  border-radius: 2px;
+  vertical-align: -0.1em;
+  margin-left: 0.05em;
+  animation: blink 1.1s steps(1) infinite;
+  box-shadow: 0 0 8px rgba(232,168,124,0.5);
+  flex-shrink: 0;
+}
+
+/* Hover 高光扫过 */
+.title-chip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(120deg,
+    transparent 0%,
+    rgba(255,255,255,0.55) 45%,
+    rgba(255,255,255,0.18) 55%,
+    transparent 100%);
+  transform: skewX(-22deg);
+  transition: left 0.9s cubic-bezier(0.2,0.8,0.2,1);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.title-chip:hover::before {
+  left: 130%;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.hero-sub {
+  font-size: 1.1rem;
+  color: var(--text-2);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: #ffffff;
+  background: var(--text);
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(26,26,31,0.12);
+}
+.hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26,26,31,0.18);
+}
+.hero-cta .arrow { transition: transform 0.2s; }
+.hero-cta:hover .arrow { transform: translateX(3px); }
+
+/* 数据条 - 卡片化 */
+.stats {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1rem;
+  margin: 2.5rem 0 5rem;
+}
+.stat {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.5rem 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26,26,31,0.06);
+}
+.stat .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.stat .label::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.stat:nth-child(2) .label::before { background: var(--warm); }
+.stat:nth-child(3) .label::before { background: var(--sky); }
+.stat:nth-child(4) .label::before { background: var(--peach); }
+.stat .value {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.stat .value .small {
+  font-size: 1rem;
+  color: var(--text-3);
+  font-weight: 500;
+  margin-left: 0.2rem;
+}
+.stat .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  margin-top: 0.5rem;
+}
+
+/* 区块 */
+.section { margin-bottom: 5rem; }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border);
+}
+.section-head h2 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.section-head .index {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+
+/* 最新文章 - 不对称布局 */
+.posts {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.25rem;
+}
+.post-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(26,26,31,0.08);
+  border-color: var(--border-strong);
+}
+.post-card .date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+.post-card .badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  background: var(--accent-soft);
+  color: #4a7a64;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  width: fit-content;
+  font-weight: 500;
+}
+.post-card .badge.warm {
+  background: var(--warm-soft);
+  color: #a86a3c;
+}
+.post-card h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.post-card.featured {
+  grid-row: span 2;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--bg-elev) 0%, var(--bg-soft) 100%);
+}
+.post-card.featured h3 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+.post-card .excerpt {
+  color: var(--text-2);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+.post-card .read-more {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-top: auto;
+  padding-top: 0.5rem;
+  transition: color 0.2s;
+}
+.post-card:hover .read-more { color: var(--accent); }
+
+/* 分类卡 */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.cat.muted {
+  opacity: 0.78;
+  cursor: default;
+}
+.cat.muted:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+.cat.muted:hover .cat-arrow {
+  color: var(--text-3);
+  transform: none;
+}
+.cat {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 200px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.cat::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle at top right, var(--cat-color, var(--accent-soft)) 0%, transparent 70%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.cat:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(26,26,31,0.08);
+  border-color: var(--border-strong);
+}
+.cat:hover .cat-arrow { color: var(--accent); transform: translate(2px, -2px); }
+.cat-arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-3);
+  transition: color 0.2s, transform 0.2s;
+  z-index: 1;
+}
+.cat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  z-index: 1;
+}
+.cat-icon {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--cat-color, var(--accent));
+  line-height: 1;
+  margin: 0.25rem 0 0.5rem;
+  z-index: 1;
+}
+.cat h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  z-index: 1;
+}
+.cat-desc {
+  font-size: 0.82rem;
+  color: var(--text-3);
+  line-height: 1.5;
+  z-index: 1;
+}
+.cat-foot {
+  margin-top: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-3);
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+.cat-foot .live { color: var(--accent); }
+.cat-foot .soon { color: var(--warm); }
+.cat-foot .live::before { content: '● '; }
+.cat-foot .soon::before { content: '○ '; }
+
+/* 工具箱:固定入口卡,高亮区别于普通分类 */
+.cat-tools {
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-elev) 65%);
+  border-color: var(--accent);
+}
+.cat-tools .cat-icon { color: #4a7a64; }
+.cat-tools:hover { border-color: #4a7a64; }
+
+/* 关于 */
+.about {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 0;
+  max-width: 720px;
+}
+.about-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  transition: box-shadow 0.2s;
+}
+.about-card:hover {
+  box-shadow: 0 12px 30px rgba(26,26,31,0.06);
+}
+.about-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+.about-card p {
+  color: var(--text-2);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.about-card p strong { color: var(--text); font-weight: 600; }
+.about-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+.about-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg-soft);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.about-btn:hover { background: var(--accent-soft); transform: translateX(2px); }
+.about-btn .arrow { font-family: 'JetBrains Mono', monospace; color: var(--text-3); }
+.about-btn:hover .arrow { color: var(--accent); }
+.about-stack {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.9;
+}
+.about-stack .row {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--border);
+  align-items: center;
+}
+.about-stack .row:last-child { border-bottom: none; }
+.about-stack .key { color: var(--text-3); min-width: 90px; font-size: 0.78rem; }
+.about-stack .val { color: var(--text); font-weight: 500; }
+.about-stack .pill {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: var(--accent-soft);
+  color: #4a7a64;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+  font-weight: 500;
+}
+
+/* 底部 */
+.footer {
+  padding: 2.5rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-top: 1px dashed var(--border);
+  margin-top: 3rem;
+}
+.footer .build { display: flex; gap: 1.5rem; }
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .posts { grid-template-columns: 1fr; }
+  .post-card.featured { grid-row: auto; }
+  .about { grid-template-columns: 1fr; }
+  .hero { padding: 4rem 0 3rem; }
+  .title-chip { gap: 0.9rem; padding: 0.4rem 1.3rem 0.4rem 0.4rem; }
+  .chip-avatar { width: 48px; height: 48px; }
+  .chip-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+}
+@media (max-width: 480px) {
+  html, body { overflow-x: hidden; }
+  .container { padding: 0 1.25rem; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .stat { padding: 1.1rem; }
+  .stat .value { font-size: 1.6rem; }
+  .topbar-inner { font-size: 0.65rem; gap: 0.5rem; }
+  .topbar-links { gap: 0.75rem; }
+  .hero { padding: 3rem 0 2rem; }
+  .title-chip { gap: 0.7rem; padding: 0.35rem 1.1rem 0.35rem 0.35rem; margin-bottom: 1rem; }
+  .chip-avatar { width: 42px; height: 42px; border-width: 1.5px; }
+  .chip-title { font-size: 1.3rem; }
+  .hero-sub { font-size: 0.95rem; }
+  .post-card, .post-card.featured { padding: 1.25rem; border-radius: 16px; }
+  .post-card.featured h3 { font-size: 1.25rem; }
+  .about-card { padding: 1.5rem; border-radius: 18px; }
+  .about-btn { padding: 0.8rem 1rem; font-size: 0.85rem; }
+}</style><meta name="generator" content="Hexo 8.1.2"></head><body><div class="container"><div class="topbar" data-reveal="fade"><div class="topbar-inner"><span><span class="status-dot"></span>embedai.top &nbsp;//&nbsp; live</span><div class="topbar-links"><a class="active" href="/">首页</a><a href="/tools/">工具箱</a><a href="/about/">关于</a><a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener">B 站 ↗</a></div></div></div><section class="hero" data-reveal="up"><div class="hero-meta"><span class="tag accent">✦ online</span><span class="tag">~/阿程</span><span>2026 — present</span><span>· v2.0</span></div><div class="title-chip"><img class="chip-avatar" src="/img/avatar.jpg" alt="阿程"><h1 class="chip-title" data-char-in>阿程的碎碎念</h1><span class="cursor"></span></div><p class="hero-sub">我的工程笔记本。STM32、提示词、用 AI 写代码的真实踩坑——能复现的那种，慢慢写慢慢更。</p><a class="hero-cta" href="#latest" data-magnetic="0.3" data-ripple>看最新几篇<span class="arrow">→</span></a></section><div class="stats" data-reveal="up" data-reveal-delay="1"><div class="stat" data-tilt data-tilt-max="4" data-tilt-scale="1.02"><div class="label">articles</div><div class="value"><span class="count-up" data-count-up="4" data-count-suffix="">0</span></div><div class="meta">篇已发布</div></div><div class="stat" data-tilt data-tilt-max="4" data-tilt-scale="1.02"><div class="label">categories</div><div class="value"><span class="count-up" data-count-up="2" data-count-suffix="">0</span></div><div class="meta">个内容分类</div></div><div class="stat" data-tilt data-tilt-max="4" data-tilt-scale="1.02"><div class="label">updated</div><div class="value"><span class="small">2026-08-31</span></div></div><div class="stat" data-tilt data-tilt-max="4" data-tilt-scale="1.02"><div class="label">stack</div><div class="value"><span class="small">STM32 / ESP32 / Claude Code</span></div></div></div><section class="section" id="latest" data-reveal="up"><div class="section-head"><h2>最新文章</h2><div class="index">// 01</div></div><div class="posts"><a class="post-card featured" href="/2026/08/16/embedded-ai-dev-env/" data-tilt data-tilt-max="4" data-tilt-scale="1.01" data-ripple><span class="badge">NEW · 2026-08-16</span><h3>嵌入式 AI 开发环境 · 四层工作流</h3><div class="excerpt">VSCode + Claude Code + EM-SKILL + Git + STM32CubeMX + Keil + ccswitch,把现在用的工具重新摆一遍位置。</div><div class="read-more">READ_FULL.md →</div></a><a class="post-card" href="/2026/05/31/claude-code-oneclick-install/" data-tilt data-tilt-max="4" data-tilt-scale="1.01" data-ripple><span class="badge warm">2026-05-31</span><h3>Claude Code 一键安装包：无需环境配置，开箱即用</h3><div class="read-more">READ_FULL.md →</div></a><a class="post-card" href="/2026/05/01/em-skill-install/" data-tilt data-tilt-max="4" data-tilt-scale="1.01" data-ripple><span class="badge warm">2026-05-01</span><h3>EM-SKILL 嵌入式项目开发管家安装教程</h3><div class="read-more">READ_FULL.md →</div></a><a class="post-card" href="/2026/04/02/claude-code-install-guide/" data-tilt data-tilt-max="4" data-tilt-scale="1.01" data-ripple><span class="badge warm">2026-04-02</span><h3>Claude Code 安装教程</h3><div class="read-more">READ_FULL.md →</div></a></div></section><section class="section" data-reveal="up"><div class="section-head"><h2>内容分类</h2><div class="index">// 02</div></div><div class="categories"><a class="cat" href="/categories/ai-tools/" data-tilt data-tilt-max="4" data-tilt-scale="1.02" data-ripple><span class="cat-num">01</span><span class="cat-arrow">→</span><div class="cat-icon">AI</div><h3>AI工具</h3><div class="cat-desc">Claude Code 等 AI 工具使用技巧</div><div class="cat-foot"><span class="live">active</span><span>3 篇</span></div></a><a class="cat" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/" data-tilt data-tilt-max="4" data-tilt-scale="1.02" data-ripple><span class="cat-num">02</span><span class="cat-arrow">→</span><div class="cat-icon">EMB</div><h3>嵌入式</h3><div class="cat-desc">STM32 / ESP32 / RTOS 实战笔记</div><div class="cat-foot"><span class="live">active</span><span>1 篇</span></div></a><a class="cat cat-tools" href="/tools/" data-tilt data-tilt-max="4" data-tilt-scale="1.02" data-ripple><span class="cat-num">03</span><span class="cat-arrow">→</span><div class="cat-icon">TOOLS</div><h3>工具箱</h3><div class="cat-desc">个人精选的嵌入式工具，慢慢加</div><div class="cat-foot"><span class="live">active</span><span>持续更新</span></div></a></div></section><section class="section" data-reveal="up"><div class="section-head"><h2>关于我</h2><div class="index">// 03</div></div><div class="about"><div class="about-card" data-tilt data-tilt-max="4" data-tilt-scale="1.01"><div class="about-label">// 我</div><p>折腾<strong>STM32 / ESP32 / RTOS</strong>，也重度使用<strong>Claude Code</strong>写代码。这个站点是我的工程笔记本——能复现的那种，慢慢写慢慢更。</p><p class="signature">—— 阿程</p><div class="about-actions"><a class="about-btn" href="/about/" data-magnetic="0.25" data-ripple><span>多聊两句</span><span class="arrow">→</span></a><a class="about-btn" href="https://b23.tv/yT4tCJd" target="_blank" rel="noopener" data-magnetic="0.25" data-ripple><span>B 站</span><span class="arrow">↗</span></a></div></div></div></section><div class="footer"><span>© 2026 阿程 · embedai.top</span><div class="build"><span>sha: embedai@main</span><span>阿程的碎碎念</span></div></div></div><script src="/js/site.js"></script><script src="/js/confetti.js"></script></body></html>
