@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Quicker: 嵌入式开发者的 Windows 自动化面板 | EmbedAI - 嵌入式与AI技术分享</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Quicker 是 Windows 下的&quot;快捷动作面板&quot;,把零散的鼠标点击 &#x2F; 键盘快捷键 &#x2F; 文本片段 &#x2F; 脚本动作全部集中到一个轮盘里,按一下鼠标中键就能触发。本文介绍它能干什么、嵌入式开发怎么用,以及一些我自己每天都在用的动作组合。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Quicker: Windows 下的鼠标中键轮盘 | EmbedAI - 嵌入式与AI技术分享</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Quicker 把每天重复点几十次的鼠标点击、键盘快捷键、串口日志打时间戳这些事,压成一个鼠标中键呼出的轮盘。这是我自己的动作清单和踩坑。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Quicker: 嵌入式开发者的 Windows 自动化面板">
+<meta property="og:title" content="Quicker: Windows 下的鼠标中键轮盘">
 <meta property="og:url" content="https://embedai.top/2026/09/01/quicker-windows-automation/index.html">
 <meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
-<meta property="og:description" content="Quicker 是 Windows 下的&quot;快捷动作面板&quot;,把零散的鼠标点击 &#x2F; 键盘快捷键 &#x2F; 文本片段 &#x2F; 脚本动作全部集中到一个轮盘里,按一下鼠标中键就能触发。本文介绍它能干什么、嵌入式开发怎么用,以及一些我自己每天都在用的动作组合。">
+<meta property="og:description" content="Quicker 把每天重复点几十次的鼠标点击、键盘快捷键、串口日志打时间戳这些事,压成一个鼠标中键呼出的轮盘。这是我自己的动作清单和踩坑。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://embedai.top/img/avatar.jpg">
 <meta property="article:published_time" content="2026-08-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-31T16:14:56.372Z">
+<meta property="article:modified_time" content="2026-08-31T16:21:24.336Z">
 <meta property="article:author" content="EmbedAI">
 <meta property="article:tag" content="Quicker">
 <meta property="article:tag" content="Windows">
@@ -18,11 +18,11 @@
 <meta name="twitter:image" content="https://embedai.top/img/avatar.jpg"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "Quicker: 嵌入式开发者的 Windows 自动化面板",
+  "headline": "Quicker: Windows 下的鼠标中键轮盘",
   "url": "https://embedai.top/2026/09/01/quicker-windows-automation/",
   "image": "https://embedai.top/img/avatar.jpg",
   "datePublished": "2026-08-31T16:00:00.000Z",
-  "dateModified": "2026-08-31T16:14:56.372Z",
+  "dateModified": "2026-08-31T16:21:24.336Z",
   "author": [
     {
       "@type": "Person",
@@ -139,148 +139,44 @@
   },
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Quicker: 嵌入式开发者的 Windows 自动化面板',
+  title: 'Quicker: Windows 下的鼠标中键轮盘',
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/post-override.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a><a class="nav-page-title" href="/"><span class="site-name">Quicker: 嵌入式开发者的 Windows 自动化面板</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Quicker: 嵌入式开发者的 Windows 自动化面板</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-31T16:00:00.000Z" title="发表于 2026-09-01 00:00:00">2026-09-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-31T16:14:56.372Z" title="更新于 2026-09-01 00:14:56">2026-09-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a></span></div><div class="meta-secondline"></div></div></div><article class="container post-content" id="article-container"><h2 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h2><p>Quicker 是一个常驻在 Windows 任务栏的小工具。<strong>按一下鼠标中键</strong>,屏幕边缘会弹出一个”动作轮盘”,里面是你提前录好的动作(模拟按键、运行脚本、打开应用、填入文本片段……)。</p>
-<p>最直观的功能类比是 AutoHotkey + 一个图形化面板 + 一个动作市场。</p>
-<p>核心特点:</p>
-<ul>
-<li><strong>图形化面板</strong>,不用写配置文件就能配出几百个动作</li>
-<li><strong>动作市场</strong>可以直接装别人做好的动作(键鼠模拟、窗口管理、文本处理、OCR、翻译……)</li>
-<li>支持 <strong>组合动作</strong>(一个按钮里串多个步骤,带条件分支)</li>
-<li>内置 <strong>文本面板</strong>(类似 aText &#x2F; Espanso 的 snippet 工具)</li>
-<li>完全本地运行,免费版够用</li>
-</ul>
+}</script><link rel="stylesheet" href="/css/post-override.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a><a class="nav-page-title" href="/"><span class="site-name">Quicker: Windows 下的鼠标中键轮盘</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Quicker: Windows 下的鼠标中键轮盘</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-31T16:00:00.000Z" title="发表于 2026-09-01 00:00:00">2026-09-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-31T16:21:24.336Z" title="更新于 2026-09-01 00:21:24">2026-09-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a></span></div><div class="meta-secondline"></div></div></div><article class="container post-content" id="article-container"><h2 id="为什么装这玩意"><a href="#为什么装这玩意" class="headerlink" title="为什么装这玩意"></a>为什么装这玩意</h2><p>装 Quicker 之前,我每天大概要点 200 次鼠标。其中至少一半是重复的——烧录、复位、开串口助手、抓 log、查手册。点着点着就麻了,跟工厂流水线没区别。</p>
+<p>Quicker 就是治这个的。常驻任务栏,按一下鼠标中键,屏幕边缘弹一个轮盘,里面是我提前录好的动作:模拟按键、跑脚本、开应用、贴文本片段,什么都能干。</p>
+<p>跟 AutoHotkey 比,它不用写配置文件,动作市场里别人写好的直接装。免费版够我用了。</p>
 <hr>
-<h2 id="我用-Quicker-解决了哪些事"><a href="#我用-Quicker-解决了哪些事" class="headerlink" title="我用 Quicker 解决了哪些事"></a>我用 Quicker 解决了哪些事</h2><p>嵌入式开发日常里有大量重复操作:打开串口助手、查手册页、烧录、写测试日志、复位、读寄存器…… 这些动作每个 3 秒,加起来一天浪费半小时很正常。Quicker 把它们压成一个按钮。</p>
-<p>下面是我<strong>每天都在用</strong>的动作举例,分两类:</p>
-<h3 id="1-系统级-跨软件"><a href="#1-系统级-跨软件" class="headerlink" title="1. 系统级 &#x2F; 跨软件"></a>1. 系统级 &#x2F; 跨软件</h3><table>
-<thead>
-<tr>
-<th>动作</th>
-<th>触发</th>
-<th>干什么</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>截屏 + OCR</td>
-<td>中键 + 1</td>
-<td>截屏后自动 OCR 文字到剪贴板,贴到 Claude Code 里直接问</td>
-</tr>
-<tr>
-<td>搜当前窗口</td>
-<td>中键 + 2</td>
-<td>把当前窗口标题 + 选中文本塞进浏览器搜索框</td>
-</tr>
-<tr>
-<td>打开 Keil 工程</td>
-<td>中键 + 3</td>
-<td>跑一段脚本定位最近修改的 <code>.uvprojx</code> 并打开</td>
-</tr>
-<tr>
-<td>复制文件路径</td>
-<td>中键 + 4</td>
-<td>把资源管理器当前选中文件的绝对路径复制到剪贴板</td>
-</tr>
-<tr>
-<td>重启串口助手</td>
-<td>中键 + 5</td>
-<td>关掉所有 <code>PuTTY</code> &#x2F; <code>Xshell</code> 进程再开一份</td>
-</tr>
-</tbody></table>
-<h3 id="2-嵌入式专用"><a href="#2-嵌入式专用" class="headerlink" title="2. 嵌入式专用"></a>2. 嵌入式专用</h3><table>
-<thead>
-<tr>
-<th>动作</th>
-<th>触发</th>
-<th>干什么</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>烧录 STM32</td>
-<td>中键 + Q</td>
-<td>调用 <code>STM32_Programmer_CLI</code> 一键烧录</td>
-</tr>
-<tr>
-<td>读 J-Link SN</td>
-<td>中键 + W</td>
-<td>命令行查 J-Link 序列号,贴到 bug 报告</td>
-</tr>
-<tr>
-<td>复位目标板</td>
-<td>中键 + E</td>
-<td>触发 NRST 引脚或者发个串口指令</td>
-</tr>
-<tr>
-<td>串口日志打时间戳</td>
-<td>中键 + R</td>
-<td>给剪贴板里的日志每行加 <code>[HH:MM:SS]</code> 前缀</td>
-</tr>
-<tr>
-<td>查芯片手册</td>
-<td>中键 + T</td>
-<td>把当前选中的寄存器名塞进百度 &#x2F; Google</td>
-</tr>
-</tbody></table>
-<p>每一项在 Quicker 里只需要 <strong>30 秒配置一次</strong>,之后每天省 5–10 秒,一年就是好几小时。</p>
+<h2 id="我每天点的那几个动作"><a href="#我每天点的那几个动作" class="headerlink" title="我每天点的那几个动作"></a>我每天点的那几个动作</h2><p>按频率排,前 5 个:</p>
+<p><strong>截屏 OCR 提问</strong> — 截一段串口报错,自动 OCR,直接贴到 Claude Code 输入框回车。这是高频动作,基本看到报错就用。1.5 秒走完整个流程,省得我手敲那串十六进制。</p>
+<p><strong>STM32 烧录</strong> — 调一次 <code>STM32_Programmer_CLI</code> 烧 <code>.bin</code>。一行命令的事,但每次打开 PowerShell、改路径、敲命令,烦。</p>
+<p><strong>串口日志打时间戳</strong> — 复制一段日志,Quick 跑个小脚本给每行加 <code>[HH:MM:SS]</code> 前缀。这个用 Python 写不超过 10 行,放在 Quicker 里就是一键。</p>
+<p><strong>复位目标板</strong> — 调 NRST 引脚或者发串口指令。实测下来比按板子上那个 RESET 按钮快多了,尤其是连续调试的时候。</p>
+<p><strong>重启串口助手</strong> — 关掉所有 PuTTY &#x2F; Xshell 再开一份。这种”先全关再开”的操作人手动做要 4 步,Quicker 一步。</p>
+<p>剩下还有”复制当前文件路径”、”搜当前窗口内容”、”读 J-Link 序列号”这些,频率没那么高,但配置一次每天省 5 秒,一年就是半小时。</p>
 <hr>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>官网下载:</p>
-<span style="color:red">[未知链接: quicker_official]</span>
+<h2 id="怎么配的"><a href="#怎么配的" class="headerlink" title="怎么配的"></a>怎么配的</h2><p>以”烧录 + 开串口”为例:</p>
+<p>中键 → 右键轮盘空白处 → 新建组合动作。加两步:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">步骤 1: 运行程序</span><br><span class="line">  STM32_Programmer_CLI.exe -c port=SWD -d &quot;C:\fw\project.bin&quot; 0x08000000 -v -rst</span><br><span class="line"></span><br><span class="line">步骤 2: 启动应用</span><br><span class="line">  Xshell.exe -newtab 192.168.1.10:23</span><br></pre></td></tr></table></figure>
 
-<p>安装完会在任务栏常驻一个图标,右键 → 设置 → 把”启动方式”改成”开机自启”就完事了。</p>
-<blockquote>
-<p>第一次启动会要求<strong>管理员权限</strong>(要装一个常驻服务用来截屏和发键鼠事件),允许就行。</p>
-</blockquote>
+<p>触发键设成中键 + Q,保存。以后按住中键往 Q 上一甩,烧录 + 串口就同时到位。</p>
+<p>Quicker 的步骤默认是串行的。可以加等待、提取输出做条件判断——我自己写过个组合:”烧录 → 等 5 秒 → 抓串口前 200 行 → 喂给 Claude Code”,调试协议 bug 时基本不用我自己盯了。</p>
 <hr>
-<h2 id="怎么配出”嵌入式专用动作”"><a href="#怎么配出”嵌入式专用动作”" class="headerlink" title="怎么配出”嵌入式专用动作”"></a>怎么配出”嵌入式专用动作”</h2><p>举一个完整的例子:<strong>烧录 STM32 + 打开串口</strong>。</p>
+<h2 id="跟-Claude-Code-怎么配合"><a href="#跟-Claude-Code-怎么配合" class="headerlink" title="跟 Claude Code 怎么配合"></a>跟 Claude Code 怎么配合</h2><p>OCR 提问那个动作上面已经说了。再补两个:</p>
+<p><strong>预处理日志再喂给 Claude</strong> — Quick 里跑一段 Python,把 <code>0x1234 -&gt; 0x5678</code> 这种寄存器错配格式化成可读 diff,Claude 看起来更准。原样贴十六进制有时候它会抓错重点。</p>
+<p><strong>代码片段</strong> — Quicker 自带文本面板,我在里面塞了 <code>__WEAK</code> 函数、<code>HAL_UART_RxCpltCallback</code>、DMA 双缓冲这些嵌入式常用的模板,要的时候搜一下粘贴,不用翻旧工程。</p>
+<hr>
+<h2 id="安装和坑"><a href="#安装和坑" class="headerlink" title="安装和坑"></a>安装和坑</h2><p>官网下载 — <a href="https://www.getquicker.net/" target="_blank" rel="noopener noreferrer">Quicker 官网</a>,从顶部工具箱卡片也能进。安装后任务栏会多个图标,右键设置里把”开机自启”勾上。第一次启动会要管理员权限——它要装一个常驻服务用来发键鼠事件,不是恶意。</p>
+<p>免费版限 5 个组合动作,专业版 99 元&#x2F;年,我买了。动作组合就是 Quicker 的核心,99 块几天就回本。</p>
+<p>OCR 是本地引擎,准确率没云端 API 高,但胜在快 + 离线。真要高准确率,自己接百度 &#x2F; 腾讯 OCR API,Quick 能调 HTTP。</p>
+<p>公司电脑先申请再装——它要常驻服务,有些公司策略不让。Mac &#x2F; Linux 用户就跳过吧。</p>
+<hr>
+<h2 id="怎么开始"><a href="#怎么开始" class="headerlink" title="怎么开始"></a>怎么开始</h2><p>刚装别一口气配 50 个动作。我自己的轮盘现在 15 个,已经是极限,再多就要分组或者分页。先配 3 个最痛的:</p>
 <ol>
-<li>中键调出轮盘 → 右键 → “新建组合动作”</li>
-<li>加两个步骤:<ul>
-<li><strong>步骤 1</strong>:运行程序 → <code>C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeProgrammer\bin\STM32_Programmer_CLI.exe -c port=SWD -d &quot;C:\firmware\project.bin&quot; 0x08000000 -v -rst</code></li>
-<li><strong>步骤 2</strong>:启动应用 → <code>Xshell.exe -newtab &quot;192.168.1.10:23&quot;</code></li>
-</ul>
-</li>
-<li>设触发键:中键 + Q</li>
-<li>保存</li>
+<li>时间戳(写日志必备)</li>
+<li>OCR 提问(配 Claude Code)</li>
+<li>你最常用的脚本启动(我的是烧录)</li>
 </ol>
-<p>以后按住鼠标中键往 Q 上一甩,就完成”烧录 + 开串口”两件事。</p>
-<blockquote>
-<p>提示:Quick 步骤之间默认串行,可以加 <code>等待窗口</code> &#x2F; <code>条件判断</code> &#x2F; <code>正则提取输出</code> 来做更复杂的流程。我自己写过一个”烧录 → 等 5 秒 → 抓串口前 200 行 → 自动贴到 Claude Code 提问”的组合,调试协议 bug 时特别好用。</p>
-</blockquote>
-<hr>
-<h2 id="跟-Claude-Code-配合"><a href="#跟-Claude-Code-配合" class="headerlink" title="跟 Claude Code 配合"></a>跟 Claude Code 配合</h2><p>这是我最推荐的搭配:</p>
-<ol>
-<li><strong>截屏 + OCR 一键提问</strong>:截一段串口报错 → OCR → 自动 <code>type</code> 到 Claude Code 当前输入框 → 回车。整个流程 1.5 秒,等于”看到错就问”。</li>
-<li><strong>报错日志预处理</strong>:Quick 动作里跑一段 Python,把 <code>0x1234 -&gt; 0x5678</code> 这种寄存器错配格式化成可读的 diff,再喂给 Claude。</li>
-<li><strong>快捷改代码片段</strong>:在文本面板里放好嵌入式常用的模板(<code>__WEAK</code> 函数、<code>HAL_UART_RxCpltCallback</code>、DMA 双缓冲……),Quicker 里搜一下就贴出来。</li>
-</ol>
-<hr>
-<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p><strong>适合用的人</strong>:</p>
-<ul>
-<li>每天和 Windows &#x2F; IDE &#x2F; 串口助手打交道</li>
-<li>重复操作多(烧录 &#x2F; 复位 &#x2F; 抓 log &#x2F; 查手册)</li>
-<li>不想花时间学 AutoHotkey 但想要自动化</li>
-</ul>
-<p><strong>不适合的场景</strong>:</p>
-<ul>
-<li>纯 Linux &#x2F; macOS 用户(没用)</li>
-<li>一天就点两三次鼠标(没必要)</li>
-<li>公司电脑不让装第三方常驻服务(找 IT 谈)</li>
-</ul>
-<p><strong>坑</strong>:</p>
-<ul>
-<li>免费版限制 5 个动作组合,<strong>专业版 99 元&#x2F;年</strong>很值</li>
-<li>部分动作要管理员权限,公司电脑要先申请</li>
-<li>截屏 OCR 用的是本地引擎,准确率没有云端 API 高(但胜在快 + 离线)</li>
-</ul>
-<hr>
-<h2 id="我的设置建议"><a href="#我的设置建议" class="headerlink" title="我的设置建议"></a>我的设置建议</h2><p>如果你刚开始用,<strong>别一口气配 50 个动作</strong>。先从 3 个最痛的开始:</p>
-<ol>
-<li>一个<strong>当前时间戳</strong>动作(写日志必备)</li>
-<li>一个<strong>OCR + 提问</strong>动作(配合 Claude Code)</li>
-<li>一个<strong>你最常用的脚本启动</strong>(我的是烧录)</li>
-</ol>
-<p>用一周觉得离不开,再慢慢加。动作太多反而记不住,得不<strong>等于没用</strong>。</p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://embedai.top">EmbedAI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://embedai.top/2026/09/01/quicker-windows-automation/">https://embedai.top/2026/09/01/quicker-windows-automation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://embedai.top" target="_blank">EmbedAI - 嵌入式与AI技术分享</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/Quicker/">Quicker</a><a class="post-meta__tags" href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">自动化</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><details class="post-reward"><summary class="reward-button" aria-label="支持作者"><i class="fas fa-mug-hot"></i><span class="txt">支持一下</span></summary><div class="reward-main"><p class="reward-tip">如果觉得有帮助,可以请我喝杯咖啡 ☕</p><ul class="reward-all"><li class="reward-item"><a href="/images/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li><li class="reward-item"><a href="/images/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></details><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">嵌入式 AI 开发环境 · 四层工作流</div></div><div class="info-2"><div class="info-item-1">如果你是用 Keil + CubeMX 入门的嵌入式工程师,或者还在百度 + CSDN 拼凑代码的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。写代码、版本控制、基础框架、编译交付,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。 本期所有资料打包放在网盘,链接在主页简介自取。  先回忆一下 —— 你最早是怎么学的?CubeMX 配引脚 → Keil 写代码 → 编译下载。 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。 做项目遇到问题 → 百度 &#x2F; CSDN 搜一段,复制进去试。 不行换一篇,再试。论坛博客拼拼凑凑也能解决。 这两种方式有问题吗?没有。 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。 但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。  这套环境的四层结构按工作流拆成四层,外加一个后勤: 12345L1  写代码     VSCode  +  Claude Code  +  EM-SKILLL2  版本控制   GitL3  基础框架   STM32CubeMXL4  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-16</div><div class="info-item-2">嵌入式 AI 开发环境 · 四层工作流</div></div><div class="info-2"><div class="info-item-1">如果你是用 Keil + CubeMX 入门的嵌入式工程师,或者还在百度 + CSDN 拼凑代码的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。写代码、版本控制、基础框架、编译交付,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。 本期所有资料打包放在网盘,链接在主页简介自取。  先回忆一下 —— 你最早是怎么学的?CubeMX 配引脚 → Keil 写代码 → 编译下载。 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。 做项目遇到问题 → 百度 &#x2F; CSDN 搜一段,复制进去试。 不行换一篇,再试。论坛博客拼拼凑凑也能解决。 这两种方式有问题吗?没有。 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。 但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。  这套环境的四层结构按工作流拆成四层,外加一个后勤: 12345L1  写代码     VSCode  +  Claude Code  +  EM-SKILLL2  版本控制   GitL3  基础框架   STM32CubeMXL4  ...</div></div></div></a><a class="pagination-related" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-01</div><div class="info-item-2">EM-SKILL 嵌入式项目开发管家安装教程</div></div><div class="info-2"><div class="info-item-1">EM-SKILL 是什么EM-SKILL（Embedded Project Manager Skill）是运行在 Claude Code 中的嵌入式项目管理技能，专注于固件开发场景的人机协作验证流程。 1EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）  核心功能   命令 功能    /em verify s&lt;N&gt; 执行验证流程：编译 → 烧录 → 串口   /em new [功能] 新功能开发流程   /em disc [话题] 需求讨论流程   /em initem 初始化工具环境   /em rec 恢复项目状态    安装方式方式一：ccswitch + 百度网盘（推荐）如果网络访问 GitHub 不便，推荐使用 ccswitch 工具通过百度网盘下载： EM-SKILL 安装包（百度网盘） 提取码：ikzm  方式二：Git 克隆先把 EM-SKILL 仓库地址 EM-SKILL GitHub 项目页 复制下来,然后在 Claude Code 对话中输入以下命令（把 &lt;URL&gt; 替换成上面...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">EmbedAI</div><div class="author-info-description">分享嵌入式技术、AI应用与提示词工程，记录学习历程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zjqjy" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://b23.tv/vMZmSdE" target="_blank" title="B站"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%83%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">它是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%94%A8-Quicker-%E8%A7%A3%E5%86%B3%E4%BA%86%E5%93%AA%E4%BA%9B%E4%BA%8B"><span class="toc-number">2.</span> <span class="toc-text">我用 Quicker 解决了哪些事</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B3%BB%E7%BB%9F%E7%BA%A7-%E8%B7%A8%E8%BD%AF%E4%BB%B6"><span class="toc-number">2.1.</span> <span class="toc-text">1. 系统级 &#x2F; 跨软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%B8%93%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">2. 嵌入式专用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E9%85%8D%E5%87%BA%E2%80%9D%E5%B5%8C%E5%85%A5%E5%BC%8F%E4%B8%93%E7%94%A8%E5%8A%A8%E4%BD%9C%E2%80%9D"><span class="toc-number">4.</span> <span class="toc-text">怎么配出”嵌入式专用动作”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%9F-Claude-Code-%E9%85%8D%E5%90%88"><span class="toc-number">5.</span> <span class="toc-text">跟 Claude Code 配合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">6.</span> <span class="toc-text">优缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E8%AE%BE%E7%BD%AE%E5%BB%BA%E8%AE%AE"><span class="toc-number">7.</span> <span class="toc-text">我的设置建议</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/01/quicker-windows-automation/" title="Quicker: 嵌入式开发者的 Windows 自动化面板">Quicker: 嵌入式开发者的 Windows 自动化面板</a><time datetime="2026-08-31T16:00:00.000Z" title="发表于 2026-09-01 00:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流">嵌入式 AI 开发环境 · 四层工作流</a><time datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用">Claude Code 一键安装包：无需环境配置，开箱即用</a><time datetime="2026-05-30T16:00:00.000Z" title="发表于 2026-05-31 00:00:00">2026-05-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程">EM-SKILL 嵌入式项目开发管家安装教程</a><time datetime="2026-04-30T16:00:00.000Z" title="发表于 2026-05-01 00:00:00">2026-05-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/claude-code-install-guide/" title="Claude Code 安装教程">Claude Code 安装教程</a><time datetime="2026-04-02T13:10:00.000Z" title="发表于 2026-04-02 21:10:00">2026-04-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div></div></body></html>
+<p>一周用下来觉得离不开,再慢慢加。动作太多反而记不住键位,光配置没用上。</p>
+<p>还有触发键不要都堆鼠标中键,容易自己按错。中键留给高频的,F1-F12、Ctrl+数字留给低频。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://embedai.top">EmbedAI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://embedai.top/2026/09/01/quicker-windows-automation/">https://embedai.top/2026/09/01/quicker-windows-automation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://embedai.top" target="_blank">EmbedAI - 嵌入式与AI技术分享</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/Quicker/">Quicker</a><a class="post-meta__tags" href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">自动化</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><details class="post-reward"><summary class="reward-button" aria-label="支持作者"><i class="fas fa-mug-hot"></i><span class="txt">支持一下</span></summary><div class="reward-main"><p class="reward-tip">如果觉得有帮助,可以请我喝杯咖啡 ☕</p><ul class="reward-all"><li class="reward-item"><a href="/images/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li><li class="reward-item"><a href="/images/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></details><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">嵌入式 AI 开发环境 · 四层工作流</div></div><div class="info-2"><div class="info-item-1">如果你是用 Keil + CubeMX 入门的嵌入式工程师,或者还在百度 + CSDN 拼凑代码的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。写代码、版本控制、基础框架、编译交付,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。 本期所有资料打包放在网盘,链接在主页简介自取。  先回忆一下 —— 你最早是怎么学的?CubeMX 配引脚 → Keil 写代码 → 编译下载。 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。 做项目遇到问题 → 百度 &#x2F; CSDN 搜一段,复制进去试。 不行换一篇,再试。论坛博客拼拼凑凑也能解决。 这两种方式有问题吗?没有。 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。 但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。  这套环境的四层结构按工作流拆成四层,外加一个后勤: 12345L1  写代码     VSCode  +  Claude Code  +  EM-SKILLL2  版本控制   GitL3  基础框架   STM32CubeMXL4  ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-01</div><div class="info-item-2">EM-SKILL 嵌入式项目开发管家安装教程</div></div><div class="info-2"><div class="info-item-1">EM-SKILL 是什么EM-SKILL（Embedded Project Manager Skill）是运行在 Claude Code 中的嵌入式项目管理技能，专注于固件开发场景的人机协作验证流程。 1EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）  核心功能   命令 功能    /em verify s&lt;N&gt; 执行验证流程：编译 → 烧录 → 串口   /em new [功能] 新功能开发流程   /em disc [话题] 需求讨论流程   /em initem 初始化工具环境   /em rec 恢复项目状态    安装方式方式一：ccswitch + 百度网盘（推荐）如果网络访问 GitHub 不便，推荐使用 ccswitch 工具通过百度网盘下载： EM-SKILL 安装包（百度网盘） 提取码：ikzm  方式二：Git 克隆先把 EM-SKILL 仓库地址 EM-SKILL GitHub 项目页 复制下来,然后在 Claude Code 对话中输入以下命令（把 &lt;URL&gt; 替换成上面...</div></div></div></a><a class="pagination-related" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-16</div><div class="info-item-2">嵌入式 AI 开发环境 · 四层工作流</div></div><div class="info-2"><div class="info-item-1">如果你是用 Keil + CubeMX 入门的嵌入式工程师,或者还在百度 + CSDN 拼凑代码的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。写代码、版本控制、基础框架、编译交付,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。 本期所有资料打包放在网盘,链接在主页简介自取。  先回忆一下 —— 你最早是怎么学的?CubeMX 配引脚 → Keil 写代码 → 编译下载。 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。 做项目遇到问题 → 百度 &#x2F; CSDN 搜一段,复制进去试。 不行换一篇,再试。论坛博客拼拼凑凑也能解决。 这两种方式有问题吗?没有。 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。 但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。  这套环境的四层结构按工作流拆成四层,外加一个后勤: 12345L1  写代码     VSCode  +  Claude Code  +  EM-SKILLL2  版本控制   GitL3  基础框架   STM32CubeMXL4  ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">EmbedAI</div><div class="author-info-description">分享嵌入式技术、AI应用与提示词工程，记录学习历程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zjqjy" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://b23.tv/vMZmSdE" target="_blank" title="B站"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A3%85%E8%BF%99%E7%8E%A9%E6%84%8F"><span class="toc-number">1.</span> <span class="toc-text">为什么装这玩意</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E6%AF%8F%E5%A4%A9%E7%82%B9%E7%9A%84%E9%82%A3%E5%87%A0%E4%B8%AA%E5%8A%A8%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">我每天点的那几个动作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E9%85%8D%E7%9A%84"><span class="toc-number">3.</span> <span class="toc-text">怎么配的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%9F-Claude-Code-%E6%80%8E%E4%B9%88%E9%85%8D%E5%90%88"><span class="toc-number">4.</span> <span class="toc-text">跟 Claude Code 怎么配合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%92%8C%E5%9D%91"><span class="toc-number">5.</span> <span class="toc-text">安装和坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%BC%80%E5%A7%8B"><span class="toc-number">6.</span> <span class="toc-text">怎么开始</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/01/quicker-windows-automation/" title="Quicker: Windows 下的鼠标中键轮盘">Quicker: Windows 下的鼠标中键轮盘</a><time datetime="2026-08-31T16:00:00.000Z" title="发表于 2026-09-01 00:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流">嵌入式 AI 开发环境 · 四层工作流</a><time datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用">Claude Code 一键安装包：无需环境配置，开箱即用</a><time datetime="2026-05-30T16:00:00.000Z" title="发表于 2026-05-31 00:00:00">2026-05-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程">EM-SKILL 嵌入式项目开发管家安装教程</a><time datetime="2026-04-30T16:00:00.000Z" title="发表于 2026-05-01 00:00:00">2026-05-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/02/claude-code-install-guide/" title="Claude Code 安装教程">Claude Code 安装教程</a><time datetime="2026-04-02T13:10:00.000Z" title="发表于 2026-04-02 21:10:00">2026-04-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div></div></body></html>
