@@ -627,6 +627,16 @@ html(lang="zh-CN")
         font-size: 0.95rem;
         line-height: 1.7;
       }
+      /* reason 以 ⚠️ 开头 → 视为重点提示,加暖色底+左边框 */
+      .tool-modal-reason.is-warning {
+        background: linear-gradient(135deg, #f7e3d0 0%, #fff4e8 100%);
+        border: 1px solid rgba(232, 168, 124, 0.4);
+        border-left: 3px solid var(--warm);
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        color: #5a3a1a;
+        font-weight: 500;
+      }
       .tool-modal-tags {
         display: flex;
         flex-wrap: wrap;

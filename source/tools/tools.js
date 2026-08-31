@@ -663,6 +663,11 @@
     modalTitle.textContent = tool.name || '';
     modalTagline.textContent = tool.tagline || '';
     modalReason.textContent = tool.reason || '';
+    if (tool.reason && tool.reason.indexOf('⚠️') === 0) {
+      modalReason.classList.add('is-warning');
+    } else {
+      modalReason.classList.remove('is-warning');
+    }
 
     modalTags.innerHTML = '';
     (tool.tags || []).forEach(function (t) {

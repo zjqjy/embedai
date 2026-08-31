@@ -106,3 +106,56 @@
       extract_code: ""
       status: active
       added: "2026-08-17"
+- name: SEGGER J-Link
+  category: debug
+  icon: 🔌
+  tagline: ARM 内核调试 / 烧录器驱动,Keil / IAR / VSCode 通吃
+  reason: ⚠️ 安装时务必勾选 "Install legacy USB Driver for J-Link (requires admin rights)",否则 Keil / IAR 等旧版 IDE 识别不到 J-Link,会一直报 "No J-Link found"。
+  tags:
+    - 调试
+    - 烧录
+    - ARM
+    - JTAG
+  links:
+    - key: jlink_official
+      type: official
+      label: SEGGER 官方下载页
+      url: https://www.segger.com/downloads/jlink/
+      extract_code: ""
+      status: active
+      added: "2026-08-31"
+- name: ST-Link
+  category: debug
+  icon: 📡
+  tagline: ST 官方调试 / 烧录软件,STM32 开发必备
+  reason: ""
+  tags:
+    - 调试
+    - 烧录
+    - STM32
+  links:
+    - key: stlink
+      type: baidu
+      label: ST-Link 工具包
+      url: https://pan.baidu.com/s/1P2LROBZe-9kIPpeE0RdnKA?pwd=6znc
+      extract_code: 6znc
+      status: active
+      added: "2026-09-01"
+- name: Claude Desktop
+  category: ai
+  icon: 🖥️
+  tagline: Anthropic 官方桌面端 Claude,对话 / 文件 / 长上下文
+  reason: ⚠️ 需要搭配 ccswitch 使用,安装需要海外网络环境。
+  tags:
+    - AI
+    - Anthropic
+    - 桌面端
+    - 对话
+  links:
+    - key: claude_desktop
+      type: baidu
+      label: Claude Desktop 安装包
+      url: https://pan.baidu.com/s/1xcPFYvQI72PjzOMlXuhNBw?pwd=gyha
+      extract_code: gyha
+      status: active
+      added: "2026-09-01"
