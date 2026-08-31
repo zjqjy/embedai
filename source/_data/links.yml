@@ -107,3 +107,11 @@ _shared:
     type: official
     status: active
     added: "2026-08-17"
+
+quicker-windows-automation:
+  - key: quicker_official
+    label: Quicker 官网
+    url: https://www.getquicker.net/
+    type: official
+    status: active
+    added: 2026-09-01
