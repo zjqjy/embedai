@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录 | EmbedAI - 嵌入式与AI技术分享</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="把 MAX98357 和 INMP441 交给 AI agent：先喂数据手册换一份图文报告，再一句话提需求，接线、写码、编译烧录全程有文档，成品会响会听。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录">
+<meta property="og:url" content="https://embedai.top/2026/10/26/esp32-i2s-speaker-mic-ai-driver/index.html">
+<meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
+<meta property="og:description" content="把 MAX98357 和 INMP441 交给 AI agent：先喂数据手册换一份图文报告，再一句话提需求，接线、写码、编译烧录全程有文档，成品会响会听。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://embedai.top/img/avatar.jpg">
+<meta property="article:published_time" content="2026-10-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-26T07:56:51.430Z">
+<meta property="article:author" content="EmbedAI">
+<meta property="article:tag" content="AI编程">
+<meta property="article:tag" content="Claude Code">
+<meta property="article:tag" content="ESP32">
+<meta property="article:tag" content="I2S">
+<meta property="article:tag" content="嵌入式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://embedai.top/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录",
+  "url": "https://embedai.top/2026/10/26/esp32-i2s-speaker-mic-ai-driver/",
+  "image": "https://embedai.top/img/avatar.jpg",
+  "datePublished": "2026-10-25T16:00:00.000Z",
+  "dateModified": "2026-10-26T07:56:51.430Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "EmbedAI",
+      "url": "https://embedai.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://embedai.top/2026/10/26/esp32-i2s-speaker-mic-ai-driver/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/post-override.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a><a class="nav-page-title" href="/"><span class="site-name">让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-25T16:00:00.000Z" title="发表于 2026-10-26 00:00:00">2026-10-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-26T07:56:51.430Z" title="更新于 2026-10-26 15:56:51">2026-10-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E6%90%AD%E5%AD%90/">代码搭子</a></span></div><div class="meta-secondline"></div></div></div><article class="container post-content" id="article-container"><p>玩嵌入式的谁没被驱动折磨过：数据手册几十页，例程跑不通，一行行抠寄存器。这期我把 MAX98357（功放喇叭）和 INMP441（数字麦克风）两颗芯片的驱动整个交给 AI agent——资料先喂给它，出一份图文学习报告；需求一句话提进去，它追问、拆任务、写代码；我负责接线、编译、烧录。成品就是本期视频开头那样：长按屏幕播《起风了》高潮段，单击录音再回放。</p>
+<p>视频看操作过程，这篇放干货：接线表、I2S 关键配置、踩坑清单，照着能复现。</p>
+<h2 id="硬件就两颗芯片：MAX98357-出声，INMP441-拾音"><a href="#硬件就两颗芯片：MAX98357-出声，INMP441-拾音" class="headerlink" title="硬件就两颗芯片：MAX98357 出声，INMP441 拾音"></a>硬件就两颗芯片：MAX98357 出声，INMP441 拾音</h2><p>声音链路一进一出，各用一颗专用芯片，都挂在同一种总线上：</p>
+<ul>
+<li>MAX98357：内置 16bit DAC + D 类功放，把 ESP32 发来的数字采样变成推得动喇叭的电流。它自动识别 I2S 时钟，没有寄存器可配——供电、给时钟、给数据，就出声。</li>
+<li>INMP441：MEMS 拾音 + 片上 24bit ADC + I2S 从接口，声音进芯片、数字出芯片，ESP32 拿到的直接是采样值。</li>
+</ul>
+<p>两颗芯片与 ESP32-S3 之间都走 I2S 三根线：BCLK（位时钟）、WS（帧同步）、SD（串行数据）。全链路统一 16kHz &#x2F; 16bit——人声能量集中在 4kHz 以下，采样率取最高频率两倍就够还原。</p>
+<p><img src="/img/buddy-ep04/wiring.png" alt="音频接线总图"></p>
+<p>接线表如下，引脚是我按避让原则挑的：避开屏幕触摸（1<del>7&#x2F;10&#x2F;18&#x2F;21）、USB（19&#x2F;20）、strapping（0&#x2F;45&#x2F;46）和 PSRAM 专用（26</del>37）。</p>
+<table>
+<thead>
+<tr>
+<th>MAX98357（喇叭，I2S1 发）</th>
+<th>ESP32-S3</th>
+<th>INMP441（麦克风，I2S0 收）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VIN → 3.3V（就近并 220µF）</td>
+<td>3V3</td>
+<td>VDD ← 3.3V（<strong>严禁 5V</strong>）</td>
+</tr>
+<tr>
+<td>GND → 共地</td>
+<td>GND</td>
+<td>GND → 共地</td>
+</tr>
+<tr>
+<td>DIN ← GPIO14</td>
+<td>GPIO14</td>
+<td>SD → GPIO11</td>
+</tr>
+<tr>
+<td>BCLK ← GPIO12</td>
+<td>GPIO12</td>
+<td>WS → GPIO8</td>
+</tr>
+<tr>
+<td>LRC ← GPIO13</td>
+<td>GPIO13</td>
+<td>SCK → GPIO9</td>
+</tr>
+<tr>
+<td>SD ← GPIO15（使能）</td>
+<td>GPIO15</td>
+<td>L&#x2F;R → GND（不许悬空）</td>
+</tr>
+<tr>
+<td>GAIN 悬空（9dB）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>OUT± → 8Ω 2W 喇叭</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>器材清单：ESP32-S3 开发板、MAX98357 模块、INMP441 模块、8Ω 2W 喇叭、公对公杜邦线若干。</p>
+<h2 id="第一步不是写代码，是让-AI-先学"><a href="#第一步不是写代码，是让-AI-先学" class="headerlink" title="第一步不是写代码，是让 AI 先学"></a>第一步不是写代码，是让 AI 先学</h2><p>驱动写错多半是原理没吃透，所以流程第一步是把资料交给 agent 学习。我用的编排技能是自己的 EM skill（安装见文末），调它的 learn 命令，提示词大概这样：</p>
+<blockquote>
+<p>学习 MAX98357 和 INMP441 的驱动原理与接线。资料在 docs 目录：ESP32-S3 数据手册、核心板原理图、两颗芯片的数据手册。产出图文学习报告，作为后续开发参考。</p>
+</blockquote>
+<p>它会检索资料、读数据手册，最后产出一份带图的报告。这份报告后来就是全程的技术底座，两段核心结论贴在这里。</p>
+<p>播放方向：音频文件本来就是一个采样数列，ESP32 把数列写进 DMA 环形缓冲，I2S 硬件按节拍把采样送上三根线，MAX98357 接到后依次做数字转电压、电压放大功率，膜片推动空气。CPU 只负责填缓冲，搬运是 DMA 的活。</p>
+<p><img src="/img/buddy-ep04/playback-chain.png" alt="播放数据流"></p>
+<p>录音方向正好相反：三根线里 SCK、WS 两根时钟是 ESP32 发出去的，只有 SD 一根回来。INMP441 内部完成声音到数字的转换，ESP32 按同样的节拍收数。</p>
+<p><img src="/img/buddy-ep04/mic-chain.png" alt="拾音链路"></p>
+<p>有一个细节值得单独记：INMP441 的 24bit 采样装在 32bit 帧槽的高位。ESP32 按 32bit 槽收到 int32 后移位取值即可；要是按 16bit 槽配置，MSB 直接被截掉，录出来全是错位噪声——这是社区第一大配置错误。</p>
+<p><img src="/img/buddy-ep04/i2s-frame.png" alt="24bit 装进 32bit 帧"></p>
+<p>报告里同时定稿了两个容易踩雷的时序：上电时先起 I2S 时钟、延时约 250ms 再拉高 SD（防爆音）；停止时先拉低 SD 再停时钟（BCLK 运行中撤掉 WS 会输出大直流，有烧喇叭风险）。</p>
+<p>看完报告接好线，有不懂的地方直接追问 agent，直到自己想明白再开工。</p>
+<h2 id="需求一句话给够，agent-追问四轮再动手"><a href="#需求一句话给够，agent-追问四轮再动手" class="headerlink" title="需求一句话给够，agent 追问四轮再动手"></a>需求一句话给够，agent 追问四轮再动手</h2><p>开工用 EM skill 的 new 命令，需求原文就这么一句：</p>
+<blockquote>
+<p>实现麦克风和喇叭驱动。长按屏幕播放《起风了》高潮段，播放中再长按停止；单击屏幕开始录音，再次单击停止并立即回放。</p>
+</blockquote>
+<p>它没有直接开写，先追问了四个问题，都是影响边界的：</p>
+<ol>
+<li>和上一版音频代码什么关系？——从零重写极简版，旧版留作参考。</li>
+<li>重写边界？——只写这两颗芯片的驱动和应用逻辑，屏幕触摸沿用。</li>
+<li>歌曲素材哪来？——从 150 秒完整版里自动剪出高潮三句。</li>
+<li>什么算完成？——编译通过 + 真机四个交互全过；录音 16kHz&#x2F;16bit&#x2F;单声道，上限 60 秒。</li>
+</ol>
+<p>追问完它给出理解摘要，我确认后进入拆分：五个子系统（喇叭驱动、麦克风驱动、演示应用、歌曲素材、界面复用），每个都有明确参数。接着是硬件对齐环节，agent 把接线表列出来让我核对——这一步拦住过我的错接，值得留着。</p>
+<p>全部确认后，需求和拆分落成文档存在工程的 features 目录里。这一设计的实际好处在第二天兑现：我中断了一次开发，新会话里敲一条 rec 命令，agent 把上下文完整恢复到中断点，接着干。</p>
+<h2 id="代码只有两段值得看"><a href="#代码只有两段值得看" class="headerlink" title="代码只有两段值得看"></a>代码只有两段值得看</h2><p>整个驱动一千多行，真正决定成败的是两段。</p>
+<p>第一段，I2S 初始化。标准 Philips 时序、16kHz、16bit、单声道（硬件自动复制左右声道），MAX98357 不需要 MCLK：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* bsp_audio_out.c（节选） */</span></span><br><span class="line"><span class="type">i2s_chan_config_t</span> chan = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_1, I2S_ROLE_MASTER);</span><br><span class="line">chan.auto_clear = <span class="literal">true</span>;                 <span class="comment">/* disable 时 DMA 自动清零，收尾干净 */</span></span><br><span class="line">i2s_new_channel(&amp;chan, &amp;s_tx, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">i2s_std_config_t</span> <span class="built_in">std</span> = &#123;</span><br><span class="line">    .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(AUDIO_SAMPLE_RATE),</span><br><span class="line">    .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT,</span><br><span class="line">                                                    I2S_SLOT_MODE_MONO),</span><br><span class="line">    .gpio_cfg = &#123;</span><br><span class="line">        .mclk = I2S_GPIO_UNUSED,        <span class="comment">/* MAX98357 不需要 MCLK */</span></span><br><span class="line">        .bclk = AUDIO_BCLK_PIN,         <span class="comment">/* GPIO12 */</span></span><br><span class="line">        .ws   = AUDIO_LRCK_PIN,         <span class="comment">/* GPIO13 */</span></span><br><span class="line">        .dout = AUDIO_DIN_PIN,          <span class="comment">/* GPIO14 */</span></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">i2s_channel_init_std_mode(s_tx, &amp;<span class="built_in">std</span>);</span><br><span class="line">i2s_channel_enable(s_tx);</span><br><span class="line">vTaskDelay(pdMS_TO_TICKS(<span class="number">250</span>));         <span class="comment">/* 时钟稳定后再放行功放，防爆音 */</span></span><br><span class="line">bsp_audio_out_mute(<span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p>第二段，麦克风收数。按 32bit 槽读进 int32，取高 16 位，算术移位自动保符号：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* bsp_audio_in.c（节选） */</span></span><br><span class="line"><span class="type">static</span> <span class="type">int32_t</span> raw[MIC_DMA_FRAMES];</span><br><span class="line">i2s_channel_read(s_rx, raw, <span class="keyword">sizeof</span>(raw), &amp;bytes, <span class="number">200</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">uint32_t</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    chunk[i] = (<span class="type">int16_t</span>)(raw[i] &gt;&gt; <span class="number">16</span>); <span class="comment">/* 高 16 位，算术移位保符号 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>写代码的活 agent 用多 agent 分工完成：主 agent 拆任务，三个子 agent 分别做各子系统，完成后再互查一遍。我全程没改一行，只负责看懂。</p>
+<h2 id="编译烧录，四条交互全过才算完"><a href="#编译烧录，四条交互全过才算完" class="headerlink" title="编译烧录，四条交互全过才算完"></a>编译烧录，四条交互全过才算完</h2><p>代码写完回到 VS Code，用 ESP-IDF 插件编译烧录。两个注意点：目标芯片要选对（选错构建直接失败）；首次全量编译要等几分钟，之后增量很快。</p>
+<p>验收清单就四条，对照着按一遍：</p>
+<ol>
+<li>长按屏幕 → 播放《起风了》高潮段</li>
+<li>播放中再长按 → 停止，回待机</li>
+<li>单击 → 开始录音，界面计时</li>
+<li>录音中再单击 → 停止并立即回放</li>
+</ol>
+<p>实测一次通过：喇叭出声、录音回放，串口没有 brownout 和爆音。最后一条 result 命令发给 agent，它更新项目文档、归档这个步骤——工作流闭环。要是哪条不过，把失败现象描述发过去，它按现象排查原因，改完再验。</p>
+<h2 id="踩坑速查"><a href="#踩坑速查" class="headerlink" title="踩坑速查"></a>踩坑速查</h2><p>下面这些坑学习报告里都有，贴出来省得再踩：</p>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>喇叭完全无声</td>
+<td>SD 引脚被拉低</td>
+<td>SD 拉高才发声，先查使能脚</td>
+</tr>
+<tr>
+<td>上电”噗”一声</td>
+<td>先开功放后起时钟</td>
+<td>先 init I2S，延时 250ms 再放 SD</td>
+</tr>
+<tr>
+<td>麦克风读出全 0</td>
+<td>L&#x2F;R 悬空（静默模式）</td>
+<td>L&#x2F;R 必须接 GND 或 VDD</td>
+</tr>
+<tr>
+<td>录音全是错位噪声</td>
+<td>I2S 槽配成 16bit，MSB 被截</td>
+<td>按 32bit 槽收，再移位取值</td>
+</tr>
+<tr>
+<td>麦克风无响应</td>
+<td>误接 5V 烧毁</td>
+<td>INMP441 只吃 3.3V，别照抄喇叭接法</td>
+</tr>
+<tr>
+<td>反复 brownout 复位</td>
+<td>3.3V 顶不住功放峰值电流</td>
+<td>退 5V 供电方案 + GAIN 接 GND</td>
+</tr>
+</tbody></table>
+<h2 id="资料包"><a href="#资料包" class="headerlink" title="资料包"></a>资料包</h2><p>本期资料包在粉丝群公告，里面是：驱动源码（bsp&#x2F;audio 目录）、学习报告全文、需求与拆分文档（features&#x2F;S10）、接线表、本文用到的全部提示词，以及一张可直接打印的接线图。</p>
+<p>EM skill 的安装方法见站内这篇：<a href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程">EM skill 安装指引</a>。任意一个 AI 编程工具（Claude Code &#x2F; Codex &#x2F; ZCode）都能跑这套流程，编排技能是通用的。</p>
+<p>桌面搭子系列继续往下走：耳朵嘴巴装上了，下期让它把听到的听懂。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://embedai.top">EmbedAI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://embedai.top/2026/10/26/esp32-i2s-speaker-mic-ai-driver/">https://embedai.top/2026/10/26/esp32-i2s-speaker-mic-ai-driver/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://embedai.top" target="_blank">EmbedAI - 嵌入式与AI技术分享</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a><a class="post-meta__tags" href="/tags/ESP32/">ESP32</a><a class="post-meta__tags" href="/tags/I2S/">I2S</a><a class="post-meta__tags" href="/tags/AI%E7%BC%96%E7%A8%8B/">AI编程</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><details class="post-reward"><summary class="reward-button" aria-label="支持作者"><i class="fas fa-mug-hot"></i><span class="txt">支持一下</span></summary><div class="reward-main"><p class="reward-tip">如果觉得有帮助,可以请我喝杯咖啡 ☕</p><ul class="reward-all"><li class="reward-item"><a href="/images/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li><li class="reward-item"><a href="/images/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/images/reward/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li></ul></div></details><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/10/06/media-review-skill/" title="我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟</div></div><div class="info-2"><div class="info-item-1">拍口播 1 小时，麻烦的是口播粗剪和复盘：冷场、口头禅、卡壳剪到半夜；发完只看播放量，视频差在哪没人说。我给自己写了个开源工作流 media-review，跑在自己每天的剪辑流程里——这期视频的粗剪就是它做的。本文记录它的结构和实测数据，想直接用的看安装一节。 它包了两件事：发前粗剪，发后归因1233h 素材 ──cut──▶ 剪映草稿 ──精剪发布──▶ review ──▶ 复盘报告 ──▶ 写回/改进实验                    │                       ▲                    └─ 逐字稿归档，review 直接取（发前喂发后）  一个 /media 入口，按意图路由：要剪素材说”粗剪”，发完视频说”复盘”。粗剪时归档的逐字稿，就是复盘时的直接输入，工作流自己闭环。 发前：三层漏斗，AI 只删铁废料三层漏斗的设计原则是 AI 不拍板：每一层都有人工复核点，删不删你说了算。 第一层：静音压缩，冷场全砍挂机跑：ffmpeg 静音检测把思考停顿、喝水、翻稿子的空白压掉，产物时长逐秒对齐，不丢内容。实测 75:33 → 19:...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-01</div><div class="info-item-2">EM-SKILL 嵌入式项目开发管家安装教程</div></div><div class="info-2"><div class="info-item-1">EM-SKILL 是什么EM-SKILL（Embedded Project Manager Skill）是运行在 Claude Code 中的嵌入式项目管理技能，专注于固件开发场景的人机协作验证流程。 1EM-SKILL = 流程控制（verify 命令）+ 工具执行（build/flash/serial）  核心功能   命令 功能    /em verify s&lt;N&gt; 执行验证流程：编译 → 烧录 → 串口   /em new [功能] 新功能开发流程   /em disc [话题] 需求讨论流程   /em initem 初始化工具环境   /em rec 恢复项目状态    安装方式方式一：ccswitch + 百度网盘（推荐）如果网络访问 GitHub 不便，推荐使用 ccswitch 工具通过百度网盘下载： EM-SKILL 安装包（百度网盘） 提取码：ikzm  方式二：Git 克隆先把 EM-SKILL 仓库地址 EM-SKILL GitHub 项目页 复制下来,然后在 Claude Code 对话中输入以下命令（把 &lt;URL&gt; 替换成上面...</div></div></div></a><a class="pagination-related" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-16</div><div class="info-item-2">嵌入式 AI 开发环境 · 四层工作流</div></div><div class="info-2"><div class="info-item-1">如果你是用 Keil + CubeMX 入门的嵌入式工程师,或者还在百度 + CSDN 拼凑代码的学生 —— 这篇文章把你现在用的工具重新摆一遍位置。写代码、版本控制、基础框架、编译交付,四层各司其职;四层之外,还有一个管 AI 订阅的后勤。 本期所有资料打包放在网盘,链接在主页简介自取。  先回忆一下 —— 你最早是怎么学的?CubeMX 配引脚 → Keil 写代码 → 编译下载。 学生时代一个工程一个工程地练,学会了外设、看时序。这条路走得通,很多学校实验室还这么教。 做项目遇到问题 → 百度 &#x2F; CSDN 搜一段,复制进去试。 不行换一篇,再试。论坛博客拼拼凑凑也能解决。 这两种方式有问题吗?没有。 在 AI Agent 出现之前,这是嵌入式开发者最主流、最有效的路。 但今天 —— 工具的角色变了。同一把刀,从切菜变成了雕花。  这套环境的四层结构按工作流拆成四层,外加一个后勤: 12345L1  写代码     VSCode  +  Claude Code  +  EM-SKILLL2  版本控制   GitL3  基础框架   STM32CubeMXL4  ...</div></div></div></a><a class="pagination-related" href="/2026/10/06/media-review-skill/" title="我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-06</div><div class="info-item-2">我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟</div></div><div class="info-2"><div class="info-item-1">拍口播 1 小时，麻烦的是口播粗剪和复盘：冷场、口头禅、卡壳剪到半夜；发完只看播放量，视频差在哪没人说。我给自己写了个开源工作流 media-review，跑在自己每天的剪辑流程里——这期视频的粗剪就是它做的。本文记录它的结构和实测数据，想直接用的看安装一节。 它包了两件事：发前粗剪，发后归因1233h 素材 ──cut──▶ 剪映草稿 ──精剪发布──▶ review ──▶ 复盘报告 ──▶ 写回/改进实验                    │                       ▲                    └─ 逐字稿归档，review 直接取（发前喂发后）  一个 /media 入口，按意图路由：要剪素材说”粗剪”，发完视频说”复盘”。粗剪时归档的逐字稿，就是复盘时的直接输入，工作流自己闭环。 发前：三层漏斗，AI 只删铁废料三层漏斗的设计原则是 AI 不拍板：每一层都有人工复核点，删不删你说了算。 第一层：静音压缩，冷场全砍挂机跑：ffmpeg 静音检测把思考停顿、喝水、翻稿子的空白压掉，产物时长逐秒对齐，不丢内容。实测 75:33 → 19:...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">EmbedAI</div><div class="author-info-description">分享嵌入式技术、AI应用与提示词工程，记录学习历程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zjqjy" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://b23.tv/vMZmSdE" target="_blank" title="B站"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E5%B0%B1%E4%B8%A4%E9%A2%97%E8%8A%AF%E7%89%87%EF%BC%9AMAX98357-%E5%87%BA%E5%A3%B0%EF%BC%8CINMP441-%E6%8B%BE%E9%9F%B3"><span class="toc-number">1.</span> <span class="toc-text">硬件就两颗芯片：MAX98357 出声，INMP441 拾音</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E4%B8%8D%E6%98%AF%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%8C%E6%98%AF%E8%AE%A9-AI-%E5%85%88%E5%AD%A6"><span class="toc-number">2.</span> <span class="toc-text">第一步不是写代码，是让 AI 先学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9C%80%E6%B1%82%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%BB%99%E5%A4%9F%EF%BC%8Cagent-%E8%BF%BD%E9%97%AE%E5%9B%9B%E8%BD%AE%E5%86%8D%E5%8A%A8%E6%89%8B"><span class="toc-number">3.</span> <span class="toc-text">需求一句话给够，agent 追问四轮再动手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%8F%AA%E6%9C%89%E4%B8%A4%E6%AE%B5%E5%80%BC%E5%BE%97%E7%9C%8B"><span class="toc-number">4.</span> <span class="toc-text">代码只有两段值得看</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%83%A7%E5%BD%95%EF%BC%8C%E5%9B%9B%E6%9D%A1%E4%BA%A4%E4%BA%92%E5%85%A8%E8%BF%87%E6%89%8D%E7%AE%97%E5%AE%8C"><span class="toc-number">5.</span> <span class="toc-text">编译烧录，四条交互全过才算完</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E9%80%9F%E6%9F%A5"><span class="toc-number">6.</span> <span class="toc-text">踩坑速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%96%99%E5%8C%85"><span class="toc-number">7.</span> <span class="toc-text">资料包</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/26/esp32-i2s-speaker-mic-ai-driver/" title="让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录">让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录</a><time datetime="2026-10-25T16:00:00.000Z" title="发表于 2026-10-26 00:00:00">2026-10-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/06/media-review-skill/" title="我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟">我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟</a><time datetime="2026-10-05T16:00:00.000Z" title="发表于 2026-10-06 00:00:00">2026-10-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流">嵌入式 AI 开发环境 · 四层工作流</a><time datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用">Claude Code 一键安装包：无需环境配置，开箱即用</a><time datetime="2026-05-30T16:00:00.000Z" title="发表于 2026-05-31 00:00:00">2026-05-31</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/01/em-skill-install/" title="EM-SKILL 嵌入式项目开发管家安装教程">EM-SKILL 嵌入式项目开发管家安装教程</a><time datetime="2026-04-30T16:00:00.000Z" title="发表于 2026-05-01 00:00:00">2026-05-01</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div></div></body></html>
