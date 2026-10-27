@@ -1,0 +1,238 @@
+/* ============================================================
+ * editorial-post.css — Butterfly 页面层换肤（S2 编辑排版统一）
+ * 作用面：所有 Butterfly 渲染的页面（文章/工具/关于/归档/分类）。
+ * 首页是独立自定义模板，走 editorial.css，不经此文件。
+ * 手法：覆盖 Butterfly 的 :root 设计变量 + 少量结构样式，
+ * 让主题组件（卡片/TOC/分页/代码块）自动继承新语言。
+ * 配色与首页 editorial.css 保持同一套 token。
+ * ============================================================ */
+
+:root {
+  --global-bg: #faf7ee;
+  --font-color: #26221a;
+  --card-bg: #ffffff;
+  --card-box-shadow: 0 1px 2px rgba(74, 60, 24, 0.04), 0 10px 30px rgba(74, 60, 24, 0.06);
+  --card-hover-box-shadow: 0 2px 4px rgba(74, 60, 24, 0.05), 0 18px 44px rgba(74, 60, 24, 0.1);
+  --text-highlight-color: #a86f08;
+  --default-bg-color: #a86f08;
+  --btn-bg: #26221a;
+  --btn-color: #faf7ee;
+  --btn-hover-color: #a86f08;
+  --toc-link-color: rgba(38, 34, 26, 0.66);
+  --hr-border: rgba(94, 78, 40, 0.14);
+  --hr-before-color: #d9930f;
+  --blockquote-color: #26221a;
+  --blockquote-bg: #fbf3dd;
+  --card-meta: rgba(38, 34, 26, 0.42);
+  --light-grey: #edeae2;
+  --dark-grey: rgba(38, 34, 26, 0.66);
+  --search-bg: #ffffff;
+  --zoom-bg: #faf7ee;
+}
+
+/* 格纹纸底 */
+body {
+  background-color: var(--global-bg) !important;
+  background-image:
+    linear-gradient(rgba(94, 78, 40, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 78, 40, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  font-family: 'DM Sans', 'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', sans-serif;
+  color: #26221a;
+}
+
+/* 展示字体：标题与站名 */
+h1, h2, h3, h4, h5, h6,
+#site-name,
+#post-info .post-title,
+#page-header.post-bg .post-title {
+  font-family: 'Plus Jakarta Sans', 'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* 等宽注记：文章 meta / 面包屑 / 标签 */
+#post-info .post-meta,
+.post-meta,
+#post .tag_share a,
+#breadcrumb,
+.article-sort-item-time,
+time {
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: 0.05em;
+}
+
+/* 顶部导航：奶油底 + 发丝线，去掉重阴影 */
+#nav,
+#web_bg {
+  background: rgba(250, 247, 238, 0.82);
+}
+#nav:not(.nav-fixed) { background: transparent; }
+#nav.nav-fixed {
+  backdrop-filter: saturate(150%) blur(14px);
+  -webkit-backdrop-filter: saturate(150%) blur(14px);
+  box-shadow: none;
+  border-bottom: 1px solid rgba(94, 78, 40, 0.12);
+}
+#nav .site-name { color: #26221a; }
+#nav .menus_item:hover .menus_item_child,
+#nav .menus_item.menus_item_hover .menus_item_child { box-shadow: var(--card-box-shadow); }
+
+/* 文章头图区：无封面时融入纸面 */
+#page-header.post-bg {
+  background-color: var(--global-bg);
+  background-image: none;
+}
+#page-header.post-bg::before { opacity: 0.25; }
+#post-info .post-title { color: #26221a; text-shadow: none; }
+#post-info .post-meta { color: rgba(38, 34, 26, 0.42); }
+#post-info .post-meta a { color: rgba(38, 34, 26, 0.66); }
+
+/* 正文卡片容器 */
+#post {
+  background: var(--card-bg);
+  border-radius: 22px;
+  box-shadow: var(--card-box-shadow);
+  border: 1px solid rgba(94, 78, 40, 0.07);
+}
+
+/* 侧栏卡片与 TOC */
+.card-widget,
+#card-toc,
+#aside-content .sticky_layout .card-widget {
+  border-radius: 16px !important;
+  border: 1px solid rgba(94, 78, 40, 0.07);
+  padding: 1.05rem 1.15rem !important;
+}
+#aside-content .card-widget .card-title {
+  font-size: 0.95rem !important;
+  margin-bottom: 0.7rem !important;
+}
+#aside-content .item-headline { font-size: 0.9rem; }
+
+/* 标签云：统一字号，胶囊化（压掉 Butterfly 按权重放大的内联字号） */
+#aside-content .card-tag-cloud a {
+  font-size: 0.8rem !important;
+  line-height: 1.6 !important;
+  display: inline-block !important;
+  padding: 0.12rem 0.6rem !important;
+  margin: 0.14rem 0.1rem !important;
+  background: #fbf3dd !important;
+  border-radius: 999px !important;
+  color: #5c5648 !important;
+}
+#aside-content .card-tag-cloud a:hover {
+  background: #a86f08 !important;
+  color: #faf7ee !important;
+}
+
+/* 归档 / 最近文章行：紧凑 */
+#aside-content .aside-list-item {
+  padding: 0.28rem 0 !important;
+  margin: 0 !important;
+}
+#aside-content .aside-list-item .name { font-size: 0.87rem !important; }
+
+/* 网站信息行 */
+#aside-content .webinfo-item {
+  padding: 0.22rem 0 !important;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+/* 正文元素 */
+#article-container h2,
+#article-container h3 {
+  border-left: 3px solid #d9930f;
+  padding-left: 0.6em;
+  background: none;
+}
+#article-container img { border-radius: 14px; }
+#article-container blockquote {
+  border-radius: 0 12px 12px 0;
+  border-left: 3px solid #d9930f;
+}
+#article-container code {
+  background: #fbf3dd;
+  color: #a86f08;
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+}
+#article-container .table-wrap > table {
+  border-radius: 10px;
+  border: 1px solid rgba(94, 78, 40, 0.14);
+}
+#article-container .table-wrap > table thead { background: #fbf3dd; }
+
+/* 代码块：暖墨底 + 圆角 */
+#article-container.highlight-wrap,
+figure.highlight,
+pre {
+  border-radius: 14px;
+}
+figure.highlight .highlight-tools { background: #fbf3dd; color: rgba(38, 34, 26, 0.66); }
+
+/* 分页 / 相关文章卡（延续 post-override 的浅色化并统一圆角） */
+#pagination .pagination-related,
+#pagination .prev-next {
+  border-radius: 18px;
+}
+
+/* 正文内链接：暖色，去 Butterfly 默认蓝 */
+#article-container a,
+#post a:not(.about-btn) {
+  color: #a86f08;
+}
+#article-container a:hover,
+#post a:hover { color: #26221a; }
+
+/* 时间轴：暖发丝线 + 暖黄圆点 */
+.article-sort {
+  border-left: 1px solid rgba(94, 78, 40, 0.14);
+}
+.article-sort-item::before {
+  background: #d9930f !important;
+  border-color: #faf7ee !important;
+}
+.article-sort-item-year,
+.article-sort-item-time { color: rgba(38, 34, 26, 0.42) !important; }
+
+/* 侧栏数字/标签云：去蓝灰 */
+#aside-content .item-headline .aside-list-item-count,
+#aside-content .card-info .card-info-data .card-info-data-item a .headline-count,
+#tag-cloud a,
+#aside-content .card-tag-cloud a {
+  color: rgba(38, 34, 26, 0.66) !important;
+}
+#tag-cloud a:hover,
+#aside-content .card-tag-cloud a:hover { color: #a86f08 !important; }
+
+/* 文末标签胶囊：暖色 */
+#post .tag_share a {
+  background: #fbf3dd;
+  color: #a86f08;
+  border: 1px solid rgba(217, 147, 15, 0.2);
+}
+
+/* 页脚：融进纸面 */
+#footer {
+  background: transparent;
+  color: rgba(38, 34, 26, 0.42);
+  border-top: 1px solid rgba(94, 78, 40, 0.14);
+}
+#footer::before { display: none; }
+#footer a { color: rgba(38, 34, 26, 0.66); }
+#footer-wrap { color: rgba(38, 34, 26, 0.42); }
+
+/* 右下角按钮（回到顶部等） */
+#rightside { --card-bg: #ffffff; }
+#rightside #rightside-config,
+#rightside #rightside-down,
+#rightside #rightside-up {
+  background: #ffffff;
+  color: #26221a;
+  box-shadow: var(--card-box-shadow);
+  border: 1px solid rgba(94, 78, 40, 0.1);
+}
+
+/* 阅读模式/搜索弹层等浮层用纸色 */
+#search-mask, .search-dialog { --search-bg: #ffffff; }

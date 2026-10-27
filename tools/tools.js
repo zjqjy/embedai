@@ -369,6 +369,14 @@
 
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
+  // 图标：以 / 开头视为图片资产路径，否则按文本(emoji)渲染
+  function iconHtml(icon) {
+    if (icon && icon.indexOf('/') === 0) {
+      return '<img class="cat-icon-img" src="' + escapeHtml(icon) + '" alt="">';
+    }
+    return escapeHtml(icon || '');
+  }
+
   function renderCards() {
     grid.innerHTML = '';
     tools.forEach(function (tool, idx) {
@@ -399,7 +407,7 @@
         '<span class="cat-num">' + pad2(idx + 1) + '</span>' +
         // ★ 用 ↗ 表示「点击访问」更直白
         '<span class="cat-arrow" title="点击查看详情">↗</span>' +
-        '<div class="cat-icon">' + escapeHtml(tool.icon || '') + '</div>' +
+        '<div class="cat-icon">' + iconHtml(tool.icon) + '</div>' +
         '<h3>' + escapeHtml(tool.name || '') + '</h3>' +
         '<div class="cat-desc">' + escapeHtml(tool.tagline || '') + '</div>' +
         '<div class="tool-tags">' +
@@ -628,15 +636,26 @@
     });
   }
 
-  if (clearBtn) {
-    clearBtn.addEventListener('click', function () {
-      state.category = 'all';
-      state.activeTags.clear();
-      document.querySelectorAll('.tool-tag.is-active').forEach(function (el) {
-        el.classList.remove('is-active');
-      });
-      applyFilter();
+  function clearAllFilters() {
+    state.category = 'all';
+    state.activeTags.clear();
+    state.search = '';
+    if (searchInput) searchInput.value = '';
+    document.querySelectorAll('.tool-tag.is-active').forEach(function (el) {
+      el.classList.remove('is-active');
     });
+    applyFilter();
+    if (searchInput) searchInput.focus();
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', clearAllFilters);
+  }
+
+  // 空状态卡里的「清空筛选」按钮
+  const emptyClearBtn = document.getElementById('tools-empty-clear');
+  if (emptyClearBtn) {
+    emptyClearBtn.addEventListener('click', clearAllFilters);
   }
 
   if (activeTagsBox) {
@@ -659,7 +678,7 @@
     if (!tool) return;
     lastFocused = card;
 
-    modalIcon.textContent = tool.icon || '';
+    modalIcon.innerHTML = iconHtml(tool.icon);
     modalTitle.textContent = tool.name || '';
     modalTagline.textContent = tool.tagline || '';
     modalReason.textContent = tool.reason || '';

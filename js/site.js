@@ -509,6 +509,25 @@
     els.forEach((el) => io.observe(el));
   }
 
+  // -------- hero 插画微动效：CSS 怠速浮动 + 指针视差倾斜 --------
+  function initHeroArtLife() {
+    const art = document.querySelector('.hero-art');
+    if (!art || prefersReducedMotion) return;
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+    const zone = art.closest('.hero') || art.parentElement;
+    zone.addEventListener('mousemove', (e) => {
+      const r = art.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
+      const dy = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
+      art.style.translate = (dx * 16).toFixed(1) + 'px ' + (dy * 10).toFixed(1) + 'px';
+      art.style.rotate = (dx * 1.4).toFixed(2) + 'deg';
+    });
+    zone.addEventListener('mouseleave', () => {
+      art.style.translate = '0px 0px';
+      art.style.rotate = '0deg';
+    });
+  }
+
   // -------- 启动 --------
   function init() {
     initReveal();
@@ -522,6 +541,7 @@
     initParallax();
     initSmoothAnchors();
     initCharIn();
+    initHeroArtLife();
   }
 
   // 暴露给动态渲染的页面(tools 页筛选重渲染后补绑倾斜)

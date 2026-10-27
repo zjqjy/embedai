@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>404 — 阿程的碎碎念</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    :root {
+      --paper: #faf7ee;
+      --ink: #26221a;
+      --ink-2: rgba(38, 34, 26, 0.66);
+      --ink-3: rgba(38, 34, 26, 0.42);
+      --line: rgba(94, 78, 40, 0.14);
+      --line-strong: rgba(94, 78, 40, 0.26);
+      --accent: #d9930f;
+      --accent-deep: #a86f08;
+      --accent-tint: #fbf3dd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--paper); }
+    body {
+      font-family: 'DM Sans', 'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(rgba(94, 78, 40, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94, 78, 40, 0.05) 1px, transparent 1px);
+      background-size: 44px 44px;
+      display: flex;
+      flex-direction: column;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(640px 420px at 6% -4%, rgba(233, 178, 42, 0.14), transparent 65%);
+      pointer-events: none;
+    }
+    .wrap {
+      position: relative;
+      flex: 1;
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .topline {
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .topline a {
+      color: var(--ink-2);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      border-bottom: 1px solid transparent;
+    }
+    .topline a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+    .stage {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 3rem 0;
+    }
+    .code {
+      font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+      font-size: clamp(5rem, 14vw, 11rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(56, 46, 20, 0.25);
+      user-select: none;
+    }
+    h1 {
+      font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 800;
+      margin: 1.6rem 0 0.8rem;
+    }
+    .sub {
+      color: var(--ink-2);
+      max-width: 460px;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      color: var(--paper);
+      background: var(--ink);
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      background: var(--accent-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(74, 60, 24, 0.05), 0 18px 44px rgba(74, 60, 24, 0.1);
+    }
+    .btn .arrow { transition: transform 0.2s; }
+    .btn:hover .arrow { transform: translateX(4px); }
+    .art {
+      width: clamp(280px, 34vw, 460px);
+      user-select: none;
+      pointer-events: none;
+      transform: scaleX(-1); /* 猫面朝右，和文案左右呼应 */
+    }
+    .foot {
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      color: var(--ink-3);
+      letter-spacing: 0.05em;
+      border-top: 1px solid var(--line-strong);
+      padding-top: 1.2rem;
+    }
+    @media (max-width: 820px) {
+      .stage { grid-template-columns: 1fr; text-align: center; }
+      .sub { margin-left: auto; margin-right: auto; }
+      .art { margin: 0 auto; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topline">
+      <span>阿程的碎碎念 // 404</span>
+      <a href="/">返回首页</a>
+      <a href="/tools/">工具箱</a>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="code">404</div>
+        <h1>这页连猫都怀疑它存在过。</h1>
+        <p class="sub">
+          它围着这个地址闻了两圈，尾巴炸了三次，最后决定不看你了。地址可能输错了，或者页面已经被我撤下——回首页看看最新的吧。
+        </p>
+        <a class="btn" href="/">回首页 <span class="arrow">→</span></a>
+      </div>
+      <img class="art" src="/img/site/scene-litter.png" alt="小猫怀疑地看着自动猫砂盆" data-pet>
+    </div>
+    <div class="foot">© 2026 阿程 · embedai.top</div>
+  </div>
+  <script src="/js/site.js"></script>
+  <script src="/js/cat-widget.js"></script>
+</body>
+</html>

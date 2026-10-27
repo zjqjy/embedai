@@ -265,6 +265,8 @@
       .stats { grid-template-columns: 1fr; }
     }
   </style>
+  <!-- 编辑排版统一换肤层（S2）：在旧内联样式之后加载，靠层叠覆盖 -->
+  <link rel="stylesheet" href="/css/editorial-shared.css">
 </head>
 <body>
   <div class="container">
@@ -352,6 +354,29 @@
       </div>
     </section>
 
+    <section class="page" data-reveal="up">
+      <div class="page-label">// 家里两位同事</div>
+      <div class="duo">
+        <figure>
+          <img src="/img/site/scene-meet.png" alt="小猫第一次遇见桌面搭子机器人">
+          <figcaption>初遇：猫 vs 我做的桌面搭子</figcaption>
+        </figure>
+        <div class="emoji-player">
+          <div class="emoji-stage">
+            <img id="emoji-stage-img" src="/img/site/emoji-happy.png" alt="表情预览">
+          </div>
+          <div class="emoji-tabs" role="tablist" aria-label="猫表情切换">
+            <button class="emoji-tab is-active" type="button" data-emoji="/img/site/emoji-happy.png" aria-label="开心"><img src="/img/site/emoji-happy.png" alt=""></button>
+            <button class="emoji-tab" type="button" data-emoji="/img/site/emoji-confused.png" aria-label="疑惑"><img src="/img/site/emoji-confused.png" alt=""></button>
+            <button class="emoji-tab" type="button" data-emoji="/img/site/emoji-shock.png" aria-label="震惊"><img src="/img/site/emoji-shock.png" alt=""></button>
+            <button class="emoji-tab" type="button" data-emoji="/img/site/emoji-proud.png" aria-label="得意"><img src="/img/site/emoji-proud.png" alt=""></button>
+            <button class="emoji-tab" type="button" data-emoji="/img/site/emoji-sleepy.png" aria-label="困倦"><img src="/img/site/emoji-sleepy.png" alt=""></button>
+          </div>
+        </div>
+        <p class="duo-note">美短 × 狸花，本站首席监工。它监督下的每一篇笔记都经过闻两圈、踩一脚、睡一觉三重质检。</p>
+      </div>
+    </section>
+
     <div class="footer">
       <span>© 2026 阿程 · embedai.top</span>
       <span>阿程的碎碎念</span>
@@ -359,6 +384,31 @@
   </div>
 
   <script src="/js/site.js"></script>
+  <script src="/js/cat-widget.js"></script>
+  <script>
+    // 表情播放器：点标签切换大图，弹跳动画 + 选中态
+    (function () {
+      const stage = document.getElementById('emoji-stage-img');
+      const tabs = document.querySelectorAll('.emoji-tab');
+      if (!stage || !tabs.length) return;
+      tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const src = btn.dataset.emoji;
+          if (!src || stage.getAttribute('src') === src) return;
+          stage.setAttribute('src', src);
+          stage.classList.remove('is-popping');
+          void stage.offsetWidth; // 重置动画
+          stage.classList.add('is-popping');
+          tabs.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+        });
+      });
+      // 点大猫本尊 = 随机换表情
+      stage.addEventListener('click', function () {
+        const others = [...tabs].filter(function (b) { return b.dataset.emoji !== stage.getAttribute('src'); });
+        if (others.length) others[Math.floor(Math.random() * others.length)].click();
+      });
+    })();
+  </script>
   <script>
     // 技能条: 进入视口后把 data-w 写到 inline width,触发 CSS transition 的生长动画
     (function () {
