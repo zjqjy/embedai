@@ -683,7 +683,7 @@ body::before {
 @media (max-width: 900px) {
   .hero { padding: 4.5rem 0 3.5rem; }
   .hero-grid { grid-template-columns: 1fr; }
-  .hero-art { height: clamp(240px, 42vw, 360px); margin-top: 1rem; align-self: center; }
+  .hero-art { height: clamp(240px, 42vw, 360px); margin-top: 1rem; justify-self: center; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stat { padding: 1.2rem 1.3rem; }
   .stat:nth-child(3) { border-left: none; }
@@ -854,6 +854,9 @@ body::before {
   padding: 0.9rem 0 0.7rem;
   overflow-x: auto;
   scrollbar-width: none;
+  /* 右缘渐隐提示可横滑(与 tools 页 filter-chips 同款);内容不溢出时无视觉效果 */
+  -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, #000 92%, transparent);
 }
 .section-nav-inner::-webkit-scrollbar { display: none; }
 .sec-link {
