@@ -710,3 +710,179 @@ body::before {
   .about-btn { padding: 0.7rem 0.95rem; font-size: 0.82rem; }
   .footer .ghost-num { display: none; }
 }
+
+/* ===== S3-A: 我做的作品区(分组卡片网格) + 关于我经历时间线 ===== */
+.work-group { margin-bottom: 1.9rem; }
+.work-group:last-child { margin-bottom: 0; }
+.work-group-head {
+  display: flex; align-items: baseline; gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.9rem;
+}
+.work-group-head .count {
+  color: var(--accent-deep);
+  background: var(--accent-tint);
+  border-radius: 999px;
+  padding: 0.06rem 0.5rem;
+  font-size: 0.64rem;
+}
+.work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.work-card {
+  display: flex; flex-direction: column; gap: 0.55rem;
+  background: var(--surface);
+  border: 1px solid rgba(94, 78, 40, 0.07);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.4rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.25s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.work-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); border-color: var(--line); }
+.work-card h3 { display: flex; align-items: center; gap: 0.6rem; margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.05rem; color: var(--ink); }
+.work-card:hover h3 { color: var(--accent-deep); }
+.work-desc { color: var(--ink-2); font-size: 0.88rem; line-height: 1.6; flex: 1; }
+.work-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.2rem; }
+.work-metric { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+.work-arrow { font-family: var(--mono); color: var(--ink-3); transition: color 0.2s, transform 0.2s; }
+.work-card:hover .work-arrow { color: var(--accent-deep); transform: translateX(2px); }
+@media (max-width: 768px) { .work-grid { grid-template-columns: 1fr; } }
+.work-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--sage);
+  background: rgba(125, 148, 113, 0.12);
+  border: 1px solid rgba(125, 148, 113, 0.3);
+  padding: 0.08rem 0.5rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.work-tag.wip { color: var(--accent-deep); background: var(--accent-tint); border-color: rgba(217, 147, 15, 0.35); }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
+.chip {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ink-2);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+}
+.timeline { display: flex; flex-direction: column; }
+.tl-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding: 0.75rem 0.1rem;
+  border-bottom: 1px dashed var(--line);
+}
+.tl-row:last-child { border-bottom: none; }
+.tl-year { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); white-space: nowrap; }
+.tl-role { font-family: var(--display); font-weight: 700; font-size: 1.02rem; color: var(--ink); }
+.tl-flag {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  padding: 0.08rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.tl-flag.now { color: var(--accent-deep); background: var(--accent-tint); border-color: rgba(217, 147, 15, 0.35); }
+@media (max-width: 480px) {
+  .tl-row { grid-template-columns: auto 1fr; }
+  .tl-flag { grid-column: 2; justify-self: start; }
+}
+
+/* ===== S3-B: 代码搭子专栏卡 ===== */
+.series-card { position: relative; }
+.series-head { display: flex; justify-content: space-between; align-items: center; }
+.series-bot {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--sage);
+  background: rgba(125, 148, 113, 0.12);
+  border: 1px solid rgba(125, 148, 113, 0.3);
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+.series-title { font-family: var(--display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); margin: 0.9rem 0 0.6rem; }
+.series-sub { color: var(--ink-2); max-width: 560px; line-height: 1.7; margin-bottom: 1.4rem; }
+
+/* ===== S3-C: 工程笔记区分类 chips ===== */
+.notes-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.6rem; }
+.note-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.note-chip:hover { border-color: var(--line-strong); background: var(--surface-soft); transform: translateY(-1px); }
+.note-chip .chip-name { font-weight: 600; font-size: 0.9rem; }
+.note-chip .chip-count { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); }
+.note-chip-archives { background: none; border-style: dashed; }
+.note-chip-archives .chip-name { color: var(--ink-2); }
+
+/* ===== S3: 大字号分区导航(仿参考站 sticky scrollspy) ===== */
+.section-nav {
+  position: sticky;
+  top: 50px; /* topbar(1rem*2 padding + 0.75rem 行高 + 1px 边框) */
+  z-index: 40;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.section-nav-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 2.2rem;
+  padding: 0.9rem 0 0.7rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-nav-inner::-webkit-scrollbar { display: none; }
+.sec-link {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+  color: var(--ink-3);
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.2s;
+}
+.sec-link:hover { color: var(--ink-2); }
+.sec-link::after {
+  content: '';
+  position: absolute;
+  left: -0.15em;
+  right: -0.15em;
+  bottom: 0.02em;
+  height: 0.32em;
+  background: var(--accent);
+  opacity: 0;
+  transform: scaleX(0.6);
+  transform-origin: left center;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: -1;
+}
+.sec-link.is-active { color: var(--ink); }
+.sec-link.is-active::after { opacity: 0.55; transform: scaleX(1); }
+#works, #series, #notes, #about { scroll-margin-top: 135px; }
+#elsewhere { scroll-margin-top: 100px; }

@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器 | EmbedAI - 嵌入式与AI技术分享</title><meta name="author" content="EmbedAI"><meta name="copyright" content="EmbedAI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从下载安装到跑通第一个 AI 任务，手把手把 ego lite 挂到 Claude Code 上。本期 B 站视频的完整图文版。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器">
+<meta property="og:url" content="https://embedai.top/2026/11/08/ego-browser-tutorial/index.html">
+<meta property="og:site_name" content="EmbedAI - 嵌入式与AI技术分享">
+<meta property="og:description" content="从下载安装到跑通第一个 AI 任务，手把手把 ego lite 挂到 Claude Code 上。本期 B 站视频的完整图文版。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://embedai.top/img/avatar.jpg">
+<meta property="article:published_time" content="2026-11-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-09T09:40:03.852Z">
+<meta property="article:author" content="EmbedAI">
+<meta property="article:tag" content="AI浏览器">
+<meta property="article:tag" content="Claude">
+<meta property="article:tag" content="ego">
+<meta property="article:tag" content="安装教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://embedai.top/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器",
+  "url": "https://embedai.top/2026/11/08/ego-browser-tutorial/",
+  "image": "https://embedai.top/img/avatar.jpg",
+  "datePublished": "2026-11-07T16:00:00.000Z",
+  "dateModified": "2026-11-09T09:40:03.852Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "EmbedAI",
+      "url": "https://embedai.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://embedai.top/2026/11/08/ego-browser-tutorial/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/css/editorial-post.css"><link rel="stylesheet" href="/css/post-override.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><i class="fa-fw fas fa-toolbox"></i><span> 工具箱</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EmbedAI - 嵌入式与AI技术分享</span></a><a class="nav-page-title" href="/"><span class="site-name">ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><i class="fa-fw fas fa-toolbox"></i><span> 工具箱</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-07T16:00:00.000Z" title="发表于 2026-11-08 00:00:00">2026-11-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-09T09:40:03.852Z" title="更新于 2026-11-09 17:40:03">2026-11-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E7%A8%8B%E7%AC%94%E8%AE%B0/">工程笔记</a></span></div><div class="meta-secondline"></div></div></div><article class="container post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一期视频里，我一个键都没碰，AI 自己打开我的 B 站后台，把最近 30 天的视频数据一条条抄下来做成复盘表格。干活的那个浏览器叫 <strong>ego lite</strong>，免费的 Agent 浏览器，我自己高强度用下来，觉得它是当下最好用的一个。</p>
+<p>视频里安装那段只有一分钟，评论区不少人在问细节，这篇就把完整流程补上：从下载安装，到挂到 Claude Code 上，再到跑通你的第一个任务，照着做就行。想先看视频版：</p>
+<a href="https://www.douyin.com/video/7705474016131271962" target="_blank" rel="noopener noreferrer">本期视频版（抖音）</a>
+
+<p><img src="/images/ego-browser-tutorial/01-intro-auto-data.jpg" alt="开场实况：AI 自己打开 ego lite 进 B 站后台，把近 30 天视频的播放、点赞数据逐条抄录下来"></p>
+<h2 id="先搞清楚一件事：它不是-AI，是个「给-AI-用的浏览器」"><a href="#先搞清楚一件事：它不是-AI，是个「给-AI-用的浏览器」" class="headerlink" title="先搞清楚一件事：它不是 AI，是个「给 AI 用的浏览器」"></a>先搞清楚一件事：它不是 AI，是个「给 AI 用的浏览器」</h2><p>很多人装完就懵：这玩意怎么不干活？</p>
+<p>因为 <strong>ego lite 本身不是 AI</strong>，它就是一个浏览器——一个专门给 AI 准备的 Chrome。你需要再配一个 agent 来使唤它，Claude Code、Codex 都行。分工是这样的：</p>
+<ul>
+<li><strong>你</strong>：提需求，等结果</li>
+<li><strong>agent</strong>（Claude Code 等）：接需求，规划步骤，指挥浏览器</li>
+<li><strong>ego lite</strong>：真正去打开网页、点按钮、填表单的那个「手」</li>
+</ul>
+<p>装 ego lite 的时候，你原来 Chrome 里的书签、密码、登录过的网站，一键全给你搬过来。这一点很关键，后面会讲为什么。</p>
+<h2 id="第一步：安装-ego-lite"><a href="#第一步：安装-ego-lite" class="headerlink" title="第一步：安装 ego lite"></a>第一步：安装 ego lite</h2><p>下载地址：</p>
+<a href="https://lite.ego.app/" target="_blank" rel="noopener noreferrer">ego lite 官网下载（Windows / macOS）</a>
+
+<blockquote>
+<p>💡 官网会自动识别你的操作系统，Windows 版下载完是一个安装包，双击运行。</p>
+</blockquote>
+<p>安装过程中 Windows 可能会弹 SmartScreen 蓝色警告框（「Windows 已保护你的电脑」）。新出的软件没积累够下载量签名，SmartScreen 都会例行拦这么一道。点 <strong>更多信息 → 仍要运行</strong> 就行。</p>
+<p>装完打开 ego lite，跟着<strong>首次引导</strong>走完。这一步做了两件事：</p>
+<ol>
+<li>把你原来的浏览器数据搬进来（书签、密码、登录态）；</li>
+<li>把 <code>ego-browser</code> 命令注册进系统 PATH，agent 之后就是靠这个命令使唤它的。</li>
+</ol>
+<blockquote>
+<p>⚠️ 引导没走完就关掉窗口的话，命令不会注册。装完老老实实把引导走完。</p>
+</blockquote>
+<p><img src="/images/ego-browser-tutorial/02-official-download.jpg" alt="ego lite 官网下载页，按操作系统获取对应安装包"></p>
+<h2 id="第二步：确认装好了"><a href="#第二步：确认装好了" class="headerlink" title="第二步：确认装好了"></a>第二步：确认装好了</h2><p>这里有个小坑要先记住：<strong>PATH 只对新开的进程生效</strong>。所以验证之前，先关掉旧的终端，<strong>新开一个</strong>。</p>
+<p>最直观的验证方式：打开 Claude Code，输入 <code>/ego</code>——</p>
+<ul>
+<li>能弹出 ego-browser 这个命令 → 配置成功，可以开工了</li>
+<li>什么都没有 → 看下面的排查</li>
+</ul>
+<p>命令行验证也行（PowerShell）：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Command</span> ego<span class="literal">-browser</span></span><br><span class="line">ego<span class="literal">-browser</span> skill</span><br></pre></td></tr></table></figure>
+
+<p><code>ego-browser skill</code> 能打印出一份「浏览器使用说明书」，说明环境已经就绪——这份说明书就是装的时候自动挂给 agent 的 skill，agent 每次干活前都会读它。</p>
+<p><img src="/images/ego-browser-tutorial/03-ego-command-check.jpg" alt="在 Claude Code 输入 &#x2F;ego，弹出 ego-browser 命令即代表环境配置成功"></p>
+<h3 id="找不到-ego-命令怎么办"><a href="#找不到-ego-命令怎么办" class="headerlink" title="找不到 &#x2F;ego 命令怎么办"></a>找不到 &#x2F;ego 命令怎么办</h3><p>视频里给了两个方法，从轻到重试：</p>
+<ol>
+<li><strong>重启 agent</strong>。让 Claude Code 重新加载一遍技能目录，大部分情况到这一步就好了；</li>
+<li>还不行，就让 agent 自己执行安装脚本重新获取一遍技能（官网引导页有现成命令，复制给 agent 执行即可）。</li>
+</ol>
+<p>再不行，重开 ego lite 把首次引导重新走一遍，然后<strong>新开终端</strong>再试。</p>
+<h2 id="第三步：配置-agent-环境"><a href="#第三步：配置-agent-环境" class="headerlink" title="第三步：配置 agent 环境"></a>第三步：配置 agent 环境</h2><p>ego lite 官网提供了 agent 环境的配置指引，点官网上的对应链接，有专门的视频教程一步步带着配。agent 侧装好 ego-browser 这个 skill 之后，你就可以直接用大白话给它派活了。</p>
+<p>我的 Claude Code 完整环境（包括国内怎么装、一键安装包）之前写过，见 <a href="/2026/05/31/claude-code-oneclick-install/">Claude Code 一键安装包</a> 和 <a href="/2026/05/01/em-skill-install/">EM-SKILL 安装教程</a>，这里不重复。</p>
+<h2 id="第四步：跑通你的第一个任务"><a href="#第四步：跑通你的第一个任务" class="headerlink" title="第四步：跑通你的第一个任务"></a>第四步：跑通你的第一个任务</h2><p>拿视频里那个真实任务举例。最近 B 站评论区应该都刷到过那种蓝色小鲸鱼头像的号，张口就是「大肥鱼」，一堆直播间还有「大肥鱼」在播。这玩意到底是个啥？我自己懒得翻，直接丢给 AI。</p>
+<p>提示词就一句话，可以直接复制：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用 ego-browser 上 B站查一下大肥鱼是什么、『大肥鱼直播』是个什么玩法，</span><br><span class="line">再把 QQ 机器人怎么搭，一起整理成一份入门笔记。</span><br></pre></td></tr></table></figure>
+
+<p>发送之后它就自己去 B 站搜帖、翻评论、进直播间扒玩法，连 QQ 机器人怎么搭的路子都摸一遍。这个阶段你什么都不用干，等它把笔记落好就行——我自己查这些少说折腾一晚上，它前后几分钟。</p>
+<p><img src="/images/ego-browser-tutorial/05-whale-comments.jpg" alt="AI 在 B 站搜「大鲸鱼」，冒出一整页鲸鱼头像的直播间账号"></p>
+<p><img src="/images/ego-browser-tutorial/06-dafaiyu-task.jpg" alt="AI 自己上 B 站搜帖、翻评论、进直播间，把大肥鱼直播玩法和机器人搭建路子摸了一遍"></p>
+<h2 id="为什么专门给它写一篇"><a href="#为什么专门给它写一篇" class="headerlink" title="为什么专门给它写一篇"></a>为什么专门给它写一篇</h2><ul>
+<li><strong>登录态一直在</strong>。这是我最受不了其他方案的地方：大多数 agent 内置浏览器不保存登录，今天登了明天又得登一遍。ego lite 就是你天天用的这个浏览器，登录一直在——视频里它进我 B 站后台，连密码都没碰。</li>
+<li><strong>不打架</strong>。你该刷 B 站刷 B 站，AI 的任务走独立空间，不抢你的标签页。</li>
+<li><strong>省 token</strong>。它是写一段代码一次全跑完，省掉了看一步点一步的来回。</li>
+<li><strong>免费</strong>。官方给的数据：任务成功率 93%，成本约是其他方案的三分之一，这个你们自己参考。</li>
+</ul>
+<p><img src="/images/ego-browser-tutorial/04-split-screen.jpg" alt="分屏画面：人这一格正常刷 B 站，AI 在另一格的独立空间里干活"></p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p><strong>Q：装完 Claude Code 里没有 &#x2F;ego 命令？</strong><br>九成是没新开终端，或者首次引导没走完。按上面第二步的排查顺序来：新终端 → 重启 agent → 重跑引导。</p>
+<p><strong>Q：它和我的 Chrome 是什么关系？会把我数据弄丢吗？</strong><br>它就是把你的浏览器数据搬过来用，互不干扰，原 Chrome 一个字节都不动。</p>
+<p><strong>Q：Mac 能用吗？</strong><br>能，官网对应系统包下载即可，流程一样。</p>
+<p><strong>Q：对网络有要求吗？</strong><br>它是正经浏览器，你平时怎么上网它就怎么上网，不需要额外配置。</p>
+<hr>
+<p>ego lite 相关链接：</p>
+<a href="https://www.douyin.com/video/7705474016131271962" target="_blank" rel="noopener noreferrer">本期视频版（抖音）</a>
+
+<a href="https://github.com/citrolabs/ego-lite" target="_blank" rel="noopener noreferrer">ego lite GitHub 仓库</a>
+
+<p>如果有任何疑问，欢迎扫码加入 QQ 交流群一起讨论（本期视频的安装包、提示词全文也都在群公告）：</p>
+<img src="/images/ego-browser-tutorial/qq交流群号.jpg" width="300" alt="QQ交流群">
+
+<blockquote>
+<p>💬 加入群聊，与志同道合的朋友一起交流学习！</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://embedai.top">EmbedAI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://embedai.top/2026/11/08/ego-browser-tutorial/">https://embedai.top/2026/11/08/ego-browser-tutorial/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://embedai.top" target="_blank">EmbedAI - 嵌入式与AI技术分享</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Claude/">Claude</a><a class="post-meta__tags" href="/tags/%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">安装教程</a><a class="post-meta__tags" href="/tags/ego/">ego</a><a class="post-meta__tags" href="/tags/AI%E6%B5%8F%E8%A7%88%E5%99%A8/">AI浏览器</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/08/esp32-lcd-ai-driver/" title="AI 写嵌入式驱动靠谱吗：我让它三步点亮一块 LCD 触摸屏"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI 写嵌入式驱动靠谱吗：我让它三步点亮一块 LCD 触摸屏</div></div><div class="info-2"><div class="info-item-1">上期视频里，AI 给桌面代码搭子点亮了 LED，学会了眨眼。这期换成 LCD 触摸屏：原理图、数据手册、驱动代码，全程 AI 顶着写，我只出资料、核对、验收。 视频里前置学习那段只有一分钟，评论区不少人问细节。这篇把完整流程补上：怎么让 AI 学驱动、怎么接线、怎么调到出画面，照着做就行。 先说结论AI 写嵌入式驱动，靠谱，但前提是活要拆对。我的拆法是三步：  前置学习：让 AI 先把原理图、数据手册、参考代码啃一遍，产出它自己的图文教程 照图接线：接线图让 AI 画，我逐根核对，照接 实现与调试：AI 列计划、写代码、跑测试；失败了我把现象描述回去，它自查  人的角色不是写代码，是出资料、核对、验收。AI 从头到尾没碰过我的板子，烧录按键还是我按的。 第一步：让 AI 先学前置课直接让 AI 生成驱动代码，效果很差。我的做法是先把原理图、数据手册和厂商参考代码喂给它，让它先啃一遍。 啃完它会自己在项目里整理出一篇图文教程：LCD 怎么出像素、触摸怎么报坐标，自己画图自己举例。  这篇教程有两个用处。对我，它是课本：翻一遍就知道这块屏的触摸走 I2C、显示走 SPI；软件层用 L...</div></div></div></a><a class="pagination-related" href="/2026/10/26/esp32-i2s-speaker-mic-ai-driver/" title="让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录</div></div><div class="info-2"><div class="info-item-1">玩嵌入式的谁没被驱动折磨过：数据手册几十页，例程跑不通，一行行抠寄存器。这期我把 MAX98357（功放喇叭）和 INMP441（数字麦克风）两颗芯片的驱动整个交给 AI agent——资料先喂给它，出一份图文学习报告；需求一句话提进去，它追问、拆任务、写代码；我负责接线、编译、烧录。成品就是本期视频开头那样：长按屏幕播《起风了》高潮段，单击录音再回放。 视频看操作过程，这篇放干货：接线表、I2S 关键配置、踩坑清单，照着能复现。 硬件就两颗芯片：MAX98357 出声，INMP441 拾音声音链路一进一出，各用一颗专用芯片，都挂在同一种总线上：  MAX98357：内置 16bit DAC + D 类功放，把 ESP32 发来的数字采样变成推得动喇叭的电流。它自动识别 I2S 时钟，没有寄存器可配——供电、给时钟、给数据，就出声。 INMP441：MEMS 拾音 + 片上 24bit ADC + I2S 从接口，声音进芯片、数字出芯片，ESP32 拿到的直接是采样值。  两颗芯片与 ESP32-S3 之间都走 I2S 三根线：BCLK（位时钟）、WS（帧同步）、SD（串行数据）...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/02/claude-code-install-guide/" title="Claude Code 安装教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-02</div><div class="info-item-2">Claude Code 安装教程</div></div><div class="info-2"><div class="info-item-1">Claude Code 安装教程第一部分：概述Claude Code 是什么？ Claude Code 是 Claude 官网 推出的命令行工具，可以让你在终端中直接使用 Claude AI 进行编程辅助。它能帮你：  阅读和理解代码 自动编写和修改代码 调试和修复 bug 执行 Git 操作 解释技术概念  简单来说，它就像一个随时待命的 AI 编程助手，直接在你的终端里为你服务。 为什么要用 Claude Code？ 相比网页版 Claude，Claude Code 可以直接访问你的项目文件，理解项目结构，帮你完成实际的编码工作。对于开发者来说，这是提升效率的强力工具。  第二部分：为什么选择这个教程很多人在安装 Claude Code 时会遇到各种坑：下载慢、配置复杂、不知道用什么 API… 这个教程的特点：  快速简单：提供国内百度网盘下载，无需翻墙，配置步骤清晰明了 实用：搭配 MiniMax Coding Plan，不按 token 计费，5 小时刷新窗口，个人开发完全够用   百度网盘下载：  Claude Code 安装包（旧版,需手动配环境） ⚠️ 提取码：v4...</div></div></div></a><a class="pagination-related" href="/2026/05/31/claude-code-oneclick-install/" title="Claude Code 一键安装包：无需环境配置，开箱即用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-31</div><div class="info-item-2">Claude Code 一键安装包：无需环境配置，开箱即用</div></div><div class="info-2"><div class="info-item-1">前言还在为配置 Claude Code 环境而头疼？Node.js、Git、环境变量… 各种配置让人望而却步？ 今天给你带来一个 Claude Code 一键安装包，解压即用，无需任何环境配置！  下载方式Claude Code 一键安装包 提取码：86kq   💡 下载后解压，双击运行即可开始使用！   如果有任何疑问，欢迎扫码加入 QQ 交流群一起讨论：    💬 加入群聊，与志同道合的朋友一起交流学习！  </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">EmbedAI</div><div class="author-info-description">分享嵌入式技术、AI应用与提示词工程，记录学习历程</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zjqjy" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://b23.tv/vMZmSdE" target="_blank" title="B站"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a><a class="social-icon" href="https://www.douyin.com/user/MS4wLjABAAAAm3jt0D1mIx2XzT2RLuJ5fstN3Zr2lnDh3a_-k6WKekCS-VoOhzd2KgJ0OxgAzQbX" target="_blank" title="抖音"><i class="fab fa-tiktok" style="color: #161823;"></i></a><a class="social-icon" href="https://www.xiaohongshu.com/user/profile/5f10381b0000000001004af5" target="_blank" title="小红书"><i class="fas fa-book" style="color: #FF2442;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E6%90%9E%E6%B8%85%E6%A5%9A%E4%B8%80%E4%BB%B6%E4%BA%8B%EF%BC%9A%E5%AE%83%E4%B8%8D%E6%98%AF-AI%EF%BC%8C%E6%98%AF%E4%B8%AA%E3%80%8C%E7%BB%99-AI-%E7%94%A8%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8%E3%80%8D"><span class="toc-number">2.</span> <span class="toc-text">先搞清楚一件事：它不是 AI，是个「给 AI 用的浏览器」</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%AE%89%E8%A3%85-ego-lite"><span class="toc-number">3.</span> <span class="toc-text">第一步：安装 ego lite</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E7%A1%AE%E8%AE%A4%E8%A3%85%E5%A5%BD%E4%BA%86"><span class="toc-number">4.</span> <span class="toc-text">第二步：确认装好了</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%BE%E4%B8%8D%E5%88%B0-ego-%E5%91%BD%E4%BB%A4%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">4.1.</span> <span class="toc-text">找不到 &#x2F;ego 命令怎么办</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E9%85%8D%E7%BD%AE-agent-%E7%8E%AF%E5%A2%83"><span class="toc-number">5.</span> <span class="toc-text">第三步：配置 agent 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E8%B7%91%E9%80%9A%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1"><span class="toc-number">6.</span> <span class="toc-text">第四步：跑通你的第一个任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%93%E9%97%A8%E7%BB%99%E5%AE%83%E5%86%99%E4%B8%80%E7%AF%87"><span class="toc-number">7.</span> <span class="toc-text">为什么专门给它写一篇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">8.</span> <span class="toc-text">常见问题</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/08/ego-browser-tutorial/" title="ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器">ego lite 安装与上手教程：给 AI 配一个能记住登录的浏览器</a><time datetime="2026-11-07T16:00:00.000Z" title="发表于 2026-11-08 00:00:00">2026-11-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/08/esp32-lcd-ai-driver/" title="AI 写嵌入式驱动靠谱吗：我让它三步点亮一块 LCD 触摸屏">AI 写嵌入式驱动靠谱吗：我让它三步点亮一块 LCD 触摸屏</a><time datetime="2026-11-07T16:00:00.000Z" title="发表于 2026-11-08 00:00:00">2026-11-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/26/esp32-i2s-speaker-mic-ai-driver/" title="让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录">让 AI 给桌面搭子装上耳朵和嘴巴：喇叭麦克风驱动实录</a><time datetime="2026-10-25T16:00:00.000Z" title="发表于 2026-10-26 00:00:00">2026-10-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/06/media-review-skill/" title="我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟">我把口播粗剪和复盘交给一个 skill：75 分钟素材剪到 19 分钟</a><time datetime="2026-10-05T16:00:00.000Z" title="发表于 2026-10-06 00:00:00">2026-10-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/08/16/embedded-ai-dev-env/" title="嵌入式 AI 开发环境 · 四层工作流">嵌入式 AI 开发环境 · 四层工作流</a><time datetime="2026-08-15T16:00:00.000Z" title="发表于 2026-08-16 00:00:00">2026-08-16</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By EmbedAI</span></div><div class="footer_custom_text"><a class="beian-link" href="https://beian.miit.gov.cn" target="_blank" rel="noopener nofollow">闽ICP备2026045373号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script src="/js/cat-widget.js"></script></div></body></html>

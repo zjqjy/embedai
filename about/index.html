@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>关于 — EmbedAI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/fonts/fonts.css">
   <link rel="stylesheet" href="/css/site.css">
   <style>
     :root {
@@ -209,6 +207,40 @@
     .action .arrow { font-family: 'JetBrains Mono', monospace; color: var(--text-3); transition: transform 0.2s; }
     .action:hover .arrow { color: var(--accent); transform: translateX(2px); }
 
+    /* 经历时间线(S3 迁入) */
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
+    .chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-2);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+    }
+    .timeline { display: flex; flex-direction: column; }
+    .tl-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: baseline;
+      gap: 1.2rem;
+      padding: 0.75rem 0.1rem;
+      border-bottom: 1px dashed var(--border);
+    }
+    .tl-row:last-child { border-bottom: none; }
+    .tl-year { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-3); white-space: nowrap; }
+    .tl-role { font-family: 'Plus Jakarta Sans', 'PingFang SC', sans-serif; font-weight: 700; font-size: 1.02rem; color: var(--text); }
+    .tl-flag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      color: var(--text-3);
+      border: 1px solid var(--border);
+      padding: 0.08rem 0.5rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .tl-flag.now { color: #4a7a64; background: var(--accent-soft); border-color: var(--accent-soft); }
+
     /* 计数器 */
     .stats {
       display: grid;
@@ -275,8 +307,8 @@
         <span><span class="status-dot"></span>阿程的碎碎念 &nbsp;//&nbsp; about</span>
         <div class="topbar-links">
           <a href="/">首页</a>
-          <a href="/tools/">工具箱</a>
           <a href="/about/">关于</a>
+          <a href="/tools/">工具箱</a>
           <a href="https://b23.tv/vMZmSdE" target="_blank" rel="noopener">B 站 ↗</a>
         </div>
       </div>
@@ -312,6 +344,14 @@
           <div class="actions">
             <a href="https://b23.tv/yT4tCJd" target="_blank" rel="noopener" class="action" data-magnetic="0.2" data-ripple>
               <span>B 站主页</span>
+              <span class="arrow">↗</span>
+            </a>
+            <a href="https://www.xiaohongshu.com/user/profile/5f10381b0000000001004af5" target="_blank" rel="noopener" class="action" data-magnetic="0.2" data-ripple>
+              <span>小红书主页</span>
+              <span class="arrow">↗</span>
+            </a>
+            <a href="https://www.douyin.com/user/MS4wLjABAAAAm3jt0D1mIx2XzT2RLuJ5fstN3Zr2lnDh3a_-k6WKekCS-VoOhzd2KgJ0OxgAzQbX" target="_blank" rel="noopener" class="action" data-magnetic="0.2" data-ripple>
+              <span>抖音主页</span>
               <span class="arrow">↗</span>
             </a>
             <a href="/" class="action" data-magnetic="0.2" data-ripple>
@@ -355,6 +395,29 @@
     </section>
 
     <section class="page" data-reveal="up">
+      <div class="card" data-tilt data-tilt-max="3">
+        <div class="card-label">// 经历</div>
+        <div class="chips">
+          <span class="chip">02 年</span>
+          <span class="chip">嵌入式</span>
+          <span class="chip">猫 × 2</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-row">
+            <span class="tl-year">2026.01 — 今</span>
+            <span class="tl-role">嵌入式工程师</span>
+            <span class="tl-flag now">现在</span>
+          </div>
+          <div class="tl-row">
+            <span class="tl-year">2024 — 2026.01</span>
+            <span class="tl-role">电气工程师</span>
+            <span class="tl-flag">曾在</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-reveal="up">
       <div class="page-label">// 家里两位同事</div>
       <div class="duo">
         <figure>
@@ -378,7 +441,7 @@
     </section>
 
     <div class="footer">
-      <span>© 2026 阿程 · embedai.top</span>
+      <span>© 2026 阿程 · embedai.top</span><a class="beian" href="https://beian.miit.gov.cn" target="_blank" rel="noopener nofollow">闽ICP备2026045373号</a>
       <span>阿程的碎碎念</span>
     </div>
   </div>
